@@ -1,12 +1,12 @@
-package service;
+package service.friend;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dao.FriendshipDao;
-import dao.FriendshipDao_Impl;
-import model.Friendship;
+import dao.friend.FriendshipDao;
+import dao.friend.FriendshipDao_Impl;
+import model.friend.Friendship;
 
 public class FriendshipService_Impl implements FriendshipService {
 	
@@ -146,12 +146,12 @@ public class FriendshipService_Impl implements FriendshipService {
 	
 	@Override
 	public List<Map<String, String>> getPendingRequests(Integer memberId) {
-		return dao.getFriendshipsAsRequesterSpecifer(memberId, "R", memberId);
+		return dao.getFriendshipsAsRequesterSpecifier(memberId, "R", memberId);
 	}
 	
 	@Override
 	public List<Map<String, String>> getReceivedPendingRequests(Integer memberId) {
-		return dao.getFriendshipsAsAddresseeSpecifer(memberId, "R", memberId);
+		return dao.getFriendshipsAsAddresseeSpecifier(memberId, "R", memberId);
 	}	
 
 }

@@ -1,4 +1,4 @@
-package service;
+package service.friend;
 
 import java.util.List;
 import java.util.Map;

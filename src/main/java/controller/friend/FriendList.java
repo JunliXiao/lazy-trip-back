@@ -1,4 +1,4 @@
-package controller;
+package controller.friend;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
-import model.Friendship;
-import service.FriendshipService_Impl;
+import service.friend.FriendshipService_Impl;
 
 @WebServlet("/friends")
 public class FriendList extends HttpServlet {

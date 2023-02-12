@@ -1,4 +1,4 @@
-package dao;
+package dao.friend;
 
 import java.util.List;
 import java.util.Map;
@@ -17,8 +17,8 @@ public interface FriendshipDao<Friendship> {
 	
 	List<Map<String, String>> getFriendshipsAsAddressee(Integer addresseeId, String statusCode);
 	
-	List<Map<String, String>> getFriendshipsAsRequesterSpecifer(Integer requesterId, String statusCode, Integer specifierId);
+	List<Map<String, String>> getFriendshipsAsRequesterSpecifier(Integer requesterId, String statusCode, Integer specifierId);
 	
-	List<Map<String, String>> getFriendshipsAsAddresseeSpecifer(Integer addresseeId, String statusCode, Integer specifierId);	
+	List<Map<String, String>> getFriendshipsAsAddresseeSpecifier(Integer addresseeId, String statusCode, Integer specifierId);
 	
 }

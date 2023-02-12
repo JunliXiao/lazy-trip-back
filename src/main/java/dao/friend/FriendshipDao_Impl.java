@@ -1,37 +1,33 @@
-package dao;
+package dao.friend;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
-import model.Friendship;
+import dao.HikariDataSource;
+import model.friend.Friendship;
 
 public class FriendshipDao_Impl implements FriendshipDao<Friendship>{
 	
-	DataSource dataSource;
-	
 	public FriendshipDao_Impl() {
-		dataSource = ServiceLocator.getInstance().getDataSource();
+//		dataSource = ServiceLocator.getInstance().getDataSource();
 	}
 
 	@Override
 	public boolean addFriendship(Integer requesterId, Integer addresseeId) {
 		boolean hasRequested = false;
 		String sql = "INSERT INTO friendship (`requester_id`, `addressee_id`, `status_code`, `specifier_id`) VALUES (?, ?, 'R', ?);";
-		try (Connection connection = dataSource.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = HikariDataSource.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, requesterId);
 			ps.setInt(2, addresseeId);
 			ps.setInt(3, requesterId);
-			hasRequested = ps.executeUpdate() != 0 ? true : false;
+			hasRequested = ps.executeUpdate() != 0;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -41,18 +37,18 @@ public class FriendshipDao_Impl implements FriendshipDao<Friendship>{
 	}
 
 	@Override
-	public boolean updateFriendship(Integer memberIdA, Integer memberIdB, String statusCode, Integer speciferId) {
+	public boolean updateFriendship(Integer memberIdA, Integer memberIdB, String statusCode, Integer specifierId) {
 		boolean hasUpdated = false;
 		String sql = "UPDATE friendship SET status_code = ?, specifier_id = ? WHERE (addressee_id = ? AND requester_id = ?) OR (requester_id = ? AND addressee_id = ?);";
-		try (Connection connection = dataSource.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = HikariDataSource.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setString(1, statusCode);
-			ps.setInt(2, speciferId);
+			ps.setInt(2, specifierId);
 			ps.setInt(3, memberIdA);
 			ps.setInt(4, memberIdB);
 			ps.setInt(5, memberIdA);
 			ps.setInt(6, memberIdB);
-			hasUpdated = ps.executeUpdate() != 0 ? true : false;
+			hasUpdated = ps.executeUpdate() != 0;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -66,8 +62,8 @@ public class FriendshipDao_Impl implements FriendshipDao<Friendship>{
 		String statusCode = "U"; // null
 		String sql = "SELECT status_code FROM friendship WHERE (addressee_id = ? AND requester_id = ?) OR (requester_id = ? AND addressee_id = ?);";
 		
-		try (Connection connection = dataSource.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = HikariDataSource.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, memberIdA);
 			ps.setInt(2, memberIdB);
 			ps.setInt(3, memberIdA);
@@ -87,14 +83,15 @@ public class FriendshipDao_Impl implements FriendshipDao<Friendship>{
 	@Override
 	public List<Map<String, String>> getFriendships(Integer memberId, String statusCode) {
 		List< Map<String, String> > friends = new ArrayList<>();
-		String sql = "SELECT member_id, member_account, member_name FROM member\r\n"
-				+ "	WHERE member_id IN \r\n"
-				+ "(SELECT addressee_id FROM friendship WHERE status_code = ? AND requester_id = ?\r\n"
-				+ "	UNION\r\n"
-				+ "SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?);";
+		String sql = """
+				SELECT member_id, member_account, member_name FROM member\r
+					WHERE member_id IN \r
+				(SELECT addressee_id FROM friendship WHERE status_code = ? AND requester_id = ?\r
+					UNION\r
+				SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?);""";
 		
-		try (Connection connection = dataSource.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = HikariDataSource.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setString(1, statusCode);
 			ps.setInt(2, memberId);
 			ps.setString(3, statusCode);
@@ -117,12 +114,13 @@ public class FriendshipDao_Impl implements FriendshipDao<Friendship>{
 	@Override
 	public List<Map<String, String>> getFriendshipsAsRequester(Integer requesterId, String statusCode) {
 		List< Map<String, String> > friends = new ArrayList<>();
-		String sql = "SELECT member_id, member_account, member_name FROM member\r\n"
-				+ "	WHERE member_id IN \r\n"
-				+ "(SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ? AND status_code = ?);";
+		String sql = """
+				SELECT member_id, member_account, member_name FROM member\r
+					WHERE member_id IN \r
+				(SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ? AND status_code = ?);""";
 		
-		try (Connection connection = dataSource.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = HikariDataSource.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, requesterId);
 			ps.setString(2, statusCode);
 			ResultSet rs = ps.executeQuery();
@@ -143,12 +141,13 @@ public class FriendshipDao_Impl implements FriendshipDao<Friendship>{
 	@Override
 	public List<Map<String, String>> getFriendshipsAsAddressee(Integer addresseeId, String statusCode) {
 		List< Map<String, String> > friends = new ArrayList<>();
-		String sql = "SELECT member_id, member_account, member_name FROM member\r\n"
-				+ "	WHERE member_id IN \r\n"
-				+ "(SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ? AND status_code = ?);";
+		String sql = """
+				SELECT member_id, member_account, member_name FROM member\r
+					WHERE member_id IN \r
+				(SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ? AND status_code = ?);""";
 		
-		try (Connection connection = dataSource.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = HikariDataSource.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, addresseeId);
 			ps.setString(2, statusCode);
 			ResultSet rs = ps.executeQuery();
@@ -167,14 +166,15 @@ public class FriendshipDao_Impl implements FriendshipDao<Friendship>{
 	}	
 	
 	@Override
-	public List<Map<String, String>> getFriendshipsAsRequesterSpecifer(Integer requesterId, String statusCode, Integer specifierId) {
+	public List<Map<String, String>> getFriendshipsAsRequesterSpecifier(Integer requesterId, String statusCode, Integer specifierId) {
 		List< Map<String, String> > friends = new ArrayList<>();
-		String sql = "SELECT member_id, member_account, member_name FROM member\r\n"
-				+ "	WHERE member_id IN \r\n"
-				+ "(SELECT addressee_id FROM friendship WHERE requester_id = ? AND status_code = ? AND specifier_id = ?);";
+		String sql = """
+				SELECT member_id, member_account, member_name FROM member\r
+					WHERE member_id IN \r
+				(SELECT addressee_id FROM friendship WHERE requester_id = ? AND status_code = ? AND specifier_id = ?);""";
 		
-		try (Connection connection = dataSource.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = HikariDataSource.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, requesterId);
 			ps.setString(2, statusCode);
 			ps.setInt(3, specifierId);
@@ -195,14 +195,15 @@ public class FriendshipDao_Impl implements FriendshipDao<Friendship>{
 	
 
 	@Override
-	public List<Map<String, String>> getFriendshipsAsAddresseeSpecifer(Integer addresseeId, String statusCode, Integer specifierId) {
+	public List<Map<String, String>> getFriendshipsAsAddresseeSpecifier(Integer addresseeId, String statusCode, Integer specifierId) {
 		List< Map<String, String> > friends = new ArrayList<>();
-		String sql = "SELECT member_id, member_account, member_name FROM member\r\n"
-				+ "	WHERE member_id IN \r\n"
-				+ "(SELECT requester_id FROM friendship WHERE addressee_id = ? AND status_code = ? AND specifier_id = ?);";
+		String sql = """
+				SELECT member_id, member_account, member_name FROM member\r
+					WHERE member_id IN \r
+				(SELECT requester_id FROM friendship WHERE addressee_id = ? AND status_code = ? AND specifier_id = ?);""";
 		
-		try (Connection connection = dataSource.getConnection();
-				PreparedStatement ps = connection.prepareStatement(sql)) {
+		try (Connection connection = HikariDataSource.getConnection();
+			 PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, addresseeId);
 			ps.setString(2, statusCode);
 			ps.setInt(3, specifierId);
