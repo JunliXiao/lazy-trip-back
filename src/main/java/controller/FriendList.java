@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,13 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import model.Friendship;
-import service.FriendshipService;
+import service.FriendshipService_Impl;
 
-@WebServlet("/friendship")
-public class FriendshipController extends HttpServlet {
+@WebServlet("/friends")
+public class FriendList extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	Gson _gson = new Gson();
+	Gson gson = new Gson();
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,17 +26,16 @@ public class FriendshipController extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		
-		FriendshipService service = new FriendshipService();
-		List<Friendship> friendships = service.getFriendshipBy(5); // hard-coded
+		FriendshipService_Impl service = new FriendshipService_Impl();
+		int id = Integer.parseInt(request.getParameter("member_id"));
+		List<Map<String, String>> friends = service.getAllFriends(id); 
 		
-		for (Friendship friendship : friendships) {
-			out.print(_gson.toJson(friendship));
-		}
+		out.println(gson.toJson(friends));
 
 	}
 	
-//	@Override
-//	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		doGet(request, response);
-//	}
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
 }

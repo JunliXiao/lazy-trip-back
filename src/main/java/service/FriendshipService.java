@@ -1,21 +1,27 @@
 package service;
 
 import java.util.List;
+import java.util.Map;
 
-import dao.FriendshipDao;
-import dao.FriendshipDao_Impl;
-import model.Friendship;
+public interface FriendshipService {
 
-public class FriendshipService {
+	Map<String, String> requestNewFriend(Integer requesterId, Integer addresseeId);
 	
-	private FriendshipDao<Friendship> dao;
+	Map<String, String> acceptFriendRequest(Integer requesterId, Integer addresseeId);
 	
-	public FriendshipService() {
-		dao = new FriendshipDao_Impl();
-	}
+	Map<String, String> cancelFriendRequest(Integer requesterId, Integer addresseeId);
 	
-	public List<Friendship> getFriendshipBy(Integer requester_id) {
-		return dao.getByRequester(requester_id);
-	}
-
+	Map<String, String> declineFriendRequest(Integer requesterId, Integer addresseeId);
+	
+	Map<String, String> blockFriendRequest(Integer specifierId, Integer otherId);
+	
+	Map<String, String> resetFriendRequest(Integer specifierId, Integer otherId);
+	
+	Map<String, String> unfriend(Integer specifierId, Integer otherId);
+	
+	List<Map<String, String>> getAllFriends(Integer memberId);
+	
+	List<Map<String, String>> getPendingRequests(Integer memberId);
+	
+	List<Map<String, String>> getReceivedPendingRequests(Integer memberId);
 }
