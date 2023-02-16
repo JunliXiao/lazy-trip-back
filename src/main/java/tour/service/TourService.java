@@ -1,0 +1,18 @@
+package tour.service;
+
+import java.util.List;
+
+import tour.model.TourVO;
+
+public interface TourService {
+    TourVO tourCreate(TourVO tourVO);
+
+    TourVO tourUpdate(TourVO tourVO);
+
+    String tourDelete(Integer tourId);
+
+    List<TourVO> tourQueryAll();
+
+    TourVO tourQueryOne(Integer tourId);
+}
+
