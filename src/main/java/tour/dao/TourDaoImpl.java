@@ -11,10 +11,18 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import common.HikariDataSource;
 import tour.model.TourVO;
 
 public class TourDaoImpl implements TourDao {
+	private static DataSource dataSource;
+	public TourDaoImpl() throws NamingException {
+		dataSource = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/example");
+	}
 
 
     private static final String INSERT_SQL = "insert into tour (tour_title, start_date, end_date, tour_img, member_id) values (?,?,?,?,?);";
@@ -27,7 +35,7 @@ public class TourDaoImpl implements TourDao {
     @Override
     public int insert(TourVO tourVO) {
         byte[] decodedBytes = null;
-        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
             ps.setString(1, tourVO.getTourTitle());
             Date StartDate = dateFormat.parse(tourVO.getStartDate());
             Date endDate = dateFormat.parse(tourVO.getEndDate());
