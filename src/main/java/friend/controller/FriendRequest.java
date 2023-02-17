@@ -10,15 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serial;
 
-@WebServlet("/friends/update")
+@WebServlet("/friends/request")
 public class FriendRequest extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
     Gson _gson = new Gson();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
         FriendshipService_Impl service = new FriendshipService_Impl();

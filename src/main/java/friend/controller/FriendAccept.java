@@ -3,22 +3,22 @@ package friend.controller;
 import com.google.gson.Gson;
 import friend.service.FriendshipService_Impl;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serial;
 
 @WebServlet("/friends/update/accept")
 public class FriendAccept extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
     Gson _gson = new Gson();
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
         FriendshipService_Impl service = new FriendshipService_Impl();
