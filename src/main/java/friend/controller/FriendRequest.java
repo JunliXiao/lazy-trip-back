@@ -19,13 +19,24 @@ public class FriendRequest extends HttpServlet {
     Gson _gson = new Gson();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         PrintWriter out = response.getWriter();
 
         FriendshipService_Impl service = new FriendshipService_Impl();
         int requester_id = Integer.parseInt(request.getParameter("requester_id"));
         int addressee_id = Integer.parseInt(request.getParameter("addressee_id"));
+
         out.println(_gson.toJson(service.requestNewFriend(requester_id, addressee_id)));
+    }
+
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
+
+        FriendshipService_Impl service = new FriendshipService_Impl();
+        int requester_id = Integer.parseInt(request.getParameter("requester_id"));
+        int addressee_id = Integer.parseInt(request.getParameter("addressee_id"));
+        String updateStatus = request.getParameter("update_status");
+
+        out.println(_gson.toJson(service.updateFriendRequestDirectional(requester_id, addressee_id, updateStatus)));
     }
 
 }

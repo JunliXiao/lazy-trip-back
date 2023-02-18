@@ -21,17 +21,14 @@ public class RequestList extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-//        response.setCharacterEncoding("UTF-8");
-//        response.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter out = response.getWriter();
 
         FriendshipService_Impl service = new FriendshipService_Impl();
         int id = Integer.parseInt(request.getParameter("member_id"));
-        List<Map<String, String>> friends = service.getPendingRequests(id);
+        String direction = request.getParameter("direction");
+        List<Map<String, String>> friends = service.getPendingRequests(id, direction);
 
         out.println(gson.toJson(friends));
-
     }
 
     @Override

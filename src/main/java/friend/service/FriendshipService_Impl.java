@@ -1,12 +1,12 @@
 package friend.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import friend.dao.FriendshipDao;
 import friend.dao.FriendshipDao_Impl;
 import friend.model.Friendship;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FriendshipService_Impl implements FriendshipService {
 
@@ -31,58 +31,31 @@ public class FriendshipService_Impl implements FriendshipService {
     }
 
     @Override
-    public Map<String, String> acceptFriendRequest(Integer requesterId, Integer addresseeId) {
+    public Map<String, String> updateFriendRequestDirectional(Integer requesterId, Integer addresseeId, String updateStatus) {
         Map<String, String> result = new HashMap<>();
         String str = "failure";
+        String statusCode = switch (updateStatus) {
+            case "accept" -> "A";
+            case "cancel" -> "C";
+            case "decline" -> "D";
+            default -> throw new IllegalStateException("Unexpected value");
+        };
 
         if (dao.getFriendshipStatus(requesterId, addresseeId).compareTo("R") != 0) {
             result.put("result", str);
             return result;
         }
 
-        if (dao.updateFriendship(requesterId, addresseeId, "A", addresseeId)) {
-            str = "success";
+        if (statusCode.equals("A") || statusCode.equals("C")) {
+            str = dao.updateFriendship(requesterId, addresseeId, statusCode, requesterId) ? "success" : "failure";
+        } else {
+            str = dao.updateFriendship(requesterId, addresseeId, statusCode, addresseeId) ? "success" : "failure";
         }
 
         result.put("result", str);
         return result;
     }
 
-    @Override
-    public Map<String, String> cancelFriendRequest(Integer requesterId, Integer addresseeId) {
-        Map<String, String> result = new HashMap<>();
-        String str = "failure";
-
-        if (dao.getFriendshipStatus(requesterId, addresseeId).compareTo("R") != 0) {
-            result.put("result", str);
-            return result;
-        }
-
-        if (dao.updateFriendship(requesterId, addresseeId, "C", requesterId)) {
-            str = "success";
-        }
-
-        result.put("result", str);
-        return result;
-    }
-
-    @Override
-    public Map<String, String> declineFriendRequest(Integer requesterId, Integer addresseeId) {
-        Map<String, String> result = new HashMap<>();
-        String str = "failure";
-
-        if (dao.getFriendshipStatus(requesterId, addresseeId).compareTo("R") != 0) {
-            result.put("result", str);
-            return result;
-        }
-
-        if (dao.updateFriendship(requesterId, addresseeId, "D", addresseeId)) {
-            str = "success";
-        }
-
-        result.put("result", str);
-        return result;
-    }
 
     @Override
     public Map<String, String> blockFriendRequest(Integer specifierId, Integer otherId) {
@@ -144,13 +117,14 @@ public class FriendshipService_Impl implements FriendshipService {
     }
 
     @Override
-    public List<Map<String, String>> getPendingRequests(Integer memberId) {
-        return dao.getFriendshipsAsRequesterSpecifier(memberId, "R", memberId);
-    }
+    public List<Map<String, String>> getPendingRequests(Integer memberId, String direction) {
 
-    @Override
-    public List<Map<String, String>> getReceivedPendingRequests(Integer memberId) {
-        return dao.getFriendshipsAsAddresseeSpecifier(memberId, "R", memberId);
+        if (direction.equals("sent")) {
+            return dao.getFriendshipsAsRequester(memberId, "R");
+        } else {
+            return dao.getFriendshipsAsAddressee(memberId, "R");
+        }
+
     }
 
 }

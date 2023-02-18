@@ -23,7 +23,6 @@ public class FriendList extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
         PrintWriter out = response.getWriter();
 
         FriendshipService_Impl service = new FriendshipService_Impl();
@@ -31,7 +30,6 @@ public class FriendList extends HttpServlet {
         List<Map<String, String>> friends = service.getAllFriends(id);
 
         out.println(gson.toJson(friends));
-
     }
 
     @Override
