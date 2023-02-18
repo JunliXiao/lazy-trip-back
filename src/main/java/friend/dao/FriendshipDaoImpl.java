@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FriendshipDao_Impl implements FriendshipDao<Friendship> {
+public class FriendshipDaoImpl implements FriendshipDao<Friendship> {
 
-    public FriendshipDao_Impl() {
+    public FriendshipDaoImpl() {
 
     }
 

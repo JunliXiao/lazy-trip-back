@@ -1,19 +1,19 @@
 package friend.service;
 
 import friend.dao.FriendshipDao;
-import friend.dao.FriendshipDao_Impl;
+import friend.dao.FriendshipDaoImpl;
 import friend.model.Friendship;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FriendshipService_Impl implements FriendshipService {
+public class FriendshipServiceImpl implements FriendshipService {
 
     private FriendshipDao<Friendship> dao;
 
-    public FriendshipService_Impl() {
-        dao = new FriendshipDao_Impl();
+    public FriendshipServiceImpl() {
+        dao = new FriendshipDaoImpl();
     }
 
     @Override
@@ -34,6 +34,8 @@ public class FriendshipService_Impl implements FriendshipService {
     public Map<String, String> updateFriendRequestDirectional(Integer requesterId, Integer addresseeId, String updateStatus) {
         Map<String, String> result = new HashMap<>();
         String str = "failure";
+
+        // 將更新狀態字串轉換成狀態代碼
         String statusCode = switch (updateStatus) {
             case "accept" -> "A";
             case "cancel" -> "C";
@@ -41,11 +43,13 @@ public class FriendshipService_Impl implements FriendshipService {
             default -> throw new IllegalStateException("Unexpected value");
         };
 
+        // 檢查目前申請關係為 R 申請中
         if (dao.getFriendshipStatus(requesterId, addresseeId).compareTo("R") != 0) {
             result.put("result", str);
             return result;
         }
 
+        // 接受或取消時，specifier 即為 requester；拒絕時，specifier 為 addressee
         if (statusCode.equals("A") || statusCode.equals("C")) {
             str = dao.updateFriendship(requesterId, addresseeId, statusCode, requesterId) ? "success" : "failure";
         } else {
