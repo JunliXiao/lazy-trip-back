@@ -5,7 +5,7 @@ import java.util.List;
 import tour.model.TourVO;
 
 public interface TourService {
-    TourVO tourCreate(TourVO tourVO);
+    int tourCreate(TourVO tourVO);
 
     TourVO tourUpdate(TourVO tourVO);
 

@@ -24,15 +24,16 @@ public class TourCreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // 前端將資料利用JSON格式傳送到controller，req接收下來，用java IO的方法getReader讀進來，把資料轉成我要的型別(GSON)
-    	resp.setHeader("Access-Control-Allow-Origin", "*");
         try {
             Gson gson = new Gson();
 
             req.setCharacterEncoding("UTF-8");
             TourVO tourVO = gson.fromJson(req.getReader(), TourVO.class);
             TourService service = new TourServiceImpl();
-            service.tourCreate(tourVO);
+            int result = service.tourCreate(tourVO);
+            tourVO.setTourId(result);
             resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(tourVO));
         } catch (NamingException e) {
             e.printStackTrace();

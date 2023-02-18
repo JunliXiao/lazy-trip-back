@@ -23,11 +23,11 @@ public class TourQueryAllServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
-//		TourVO tourVO = gson.fromJson(req.getReader(), TourVO.class);
         try {
             TourService service = new TourServiceImpl();
             final List<TourVO> resultLists = service.tourQueryAll();
             resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(resultLists));
             System.out.println(gson.toJson(resultLists));
         } catch (NamingException e) {

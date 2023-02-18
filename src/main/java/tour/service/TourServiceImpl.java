@@ -17,9 +17,9 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public TourVO tourCreate(TourVO tourVO) {
+    public int tourCreate(TourVO tourVO) {
         final int result = dao.insert(tourVO);
-        return result > 0 ? tourVO : null;
+        return result > 0 ? result : -1;
     }
 
     @Override
