@@ -23,7 +23,7 @@ public class AttractionDaoImpl implements AttractionDao {
 
     private static final String INSERT_SQL = "insert into attraction (attraction_title, location, introduction, attraction_img, latitude, longitude) values (?,?,?,?,?,?);";
     private static final String UPDATE_SQL = "update attraction set attraction_title=?, location=?, introduction=?, attraction_img=?, latitude=?, longitude=? where attraction_id=?;";
-    private static final String DELETE_SQL = "DELETE FROM attraction where attraction_id = ?";
+    private static final String DELETE_SQL = "delete from attraction where attraction_id = ?";
     private static final String GET_ALL_SQL = "select attraction_id, attraction_title, location, introduction, attraction_img, latitude, longitude from attraction order by attraction_id;";
     private static final String GET_ONE_SQL = "select attraction_title, location, introduction, attraction_img, latitude, longitude from attraction where attraction_id=?;";
 

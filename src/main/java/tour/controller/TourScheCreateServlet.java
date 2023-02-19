@@ -29,8 +29,10 @@ public class TourScheCreateServlet extends HttpServlet {
             req.setCharacterEncoding("UTF-8");
             TourScheduleVO tourScheduleVO = gson.fromJson(req.getReader(), TourScheduleVO.class);
             TourScheduleService service = new TourScheduleServiceImpl();
-            service.tourScheCreate(tourScheduleVO);
+            int result = service.tourScheCreate(tourScheduleVO);
+            tourScheduleVO.setTourId(result);
             resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(tourScheduleVO));
         } catch (NamingException e) {
             e.printStackTrace();

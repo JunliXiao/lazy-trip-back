@@ -21,8 +21,8 @@ public class TourQueryOneServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setCharacterEncoding("UTF-8");
         Gson gson = new Gson();
+        resp.setCharacterEncoding("UTF-8");
         String tourId = req.getParameter("tourId");
         try {
             TourService service = new TourServiceImpl();

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,26 +16,27 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import common.HikariDataSource;
 import tour.model.TourScheduleVO;
 
 public class TourScheduleDaoImpl implements TourScheduleDao {
-    private static DataSource dataSource;
+//    private static DataSource dataSource;
+//
+//    public TourScheduleDaoImpl() throws NamingException {
+//        dataSource = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/example");
+//    }
 
-    public TourScheduleDaoImpl() throws NamingException {
-        dataSource = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/example");
-    }
-
-    private static final String INSERT_SQL = "insert into tour_schedule (date, start_time, stay_time, memorandum, alias, tour_id) values (?,?,?,?,?,?);";
-    private static final String UPDATE_SQL = "update tour_schedule set date=?, start_time=?, stay_time=?, memorandum=?, alias=? where tour_schedule_id=? and tour_id=?;";
+    private static final String INSERT_SQL = "insert into tour_schedule (date, start_time, stay_time, memorandum, alias, attraction_id, tour_id) values (?,?,?,?,?,?,?);";
+    private static final String UPDATE_SQL = "update tour_schedule set date=?, start_time=?, stay_time=?, memorandum=?, alias=?, attraction_id=? where tour_schedule_id=? and tour_id=?;";
     private static final String DELETE_SQL = "delete from tour_schedule where tour_schedule_id = ?";
-    private static final String GET_ALL_SQL = "select tour_schedule_id, tour_id, date, start_time, stay_time, memorandum, alias from tour_schedule order by tour_schedule_id;";
-    private static final String GET_ONE_SQL = "select tour_id, date, start_time, stay_time, memorandum, alias from tour_schedule where tour_schedule_id=?;";
+    private static final String GET_ALL_SQL = "select tour_schedule_id, tour_id, attraction_id, date, start_time, stay_time, memorandum, alias from tour_schedule order by tour_schedule_id;";
+    private static final String GET_ONE_SQL = "select tour_schedule_id, tour_id, attraction_id, date, start_time, stay_time, memorandum, alias from tour_schedule where tour_schedule_id=?;";
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     @Override
     public int insert(TourScheduleVO tourScheduleVO) {
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
             Date Date = dateFormat.parse(tourScheduleVO.getDate());
             Time startTime = new Time(timeFormat.parse(tourScheduleVO.getStartTime()).getTime());
 
@@ -43,9 +45,18 @@ public class TourScheduleDaoImpl implements TourScheduleDao {
             ps.setInt(3, tourScheduleVO.getStayTime());
             ps.setString(4, tourScheduleVO.getMemorandum());
             ps.setString(5, tourScheduleVO.getAlias());
-            ps.setInt(6, tourScheduleVO.getTourId());
+            ps.setInt(6, tourScheduleVO.getAttractionId());
+            ps.setInt(7, tourScheduleVO.getTourId());
 
-            return ps.executeUpdate();
+            int insertRow = ps.executeUpdate();
+			if (insertRow > 0) {
+				ResultSet rs = ps.getGeneratedKeys();
+				if (rs.next()) {
+					int generatedKey = rs.getInt(1);
+					return generatedKey;
+				}
+			}
+			return -1;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -56,16 +67,19 @@ public class TourScheduleDaoImpl implements TourScheduleDao {
 
     @Override
     public int update(TourScheduleVO tourScheduleVO) {
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
             Date Date = dateFormat.parse(tourScheduleVO.getDate());
             Time startTime = new Time(timeFormat.parse(tourScheduleVO.getStartTime()).getTime());
+            
             ps.setObject(1, Date);
             ps.setObject(2, startTime);
-            ps.setObject(3, tourScheduleVO.getStayTime());
+            ps.setInt(3, tourScheduleVO.getStayTime());
             ps.setString(4, tourScheduleVO.getMemorandum());
             ps.setString(5, tourScheduleVO.getAlias());
-            ps.setInt(6, tourScheduleVO.getTourScheduleId());
-            ps.setInt(7, tourScheduleVO.getTourId());
+            ps.setInt(6, tourScheduleVO.getAttractionId());
+            ps.setInt(7, tourScheduleVO.getTourScheduleId());
+            ps.setInt(8, tourScheduleVO.getTourId());
+            
             return ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,7 +92,7 @@ public class TourScheduleDaoImpl implements TourScheduleDao {
 
     @Override
     public int delete(Integer tourScheduleId) {
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
 
             ps.setInt(1, tourScheduleId);
 
@@ -95,13 +109,14 @@ public class TourScheduleDaoImpl implements TourScheduleDao {
         TourScheduleVO tourScheduleVO = null;
         ResultSet rs = null;
 
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(GET_ALL_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(GET_ALL_SQL)) {
 
             rs = ps.executeQuery();
             while (rs.next()) {
                 tourScheduleVO = new TourScheduleVO();
                 tourScheduleVO.setTourScheduleId(rs.getInt("tour_schedule_id"));
                 tourScheduleVO.setTourId(rs.getInt("tour_id"));
+                tourScheduleVO.setAttractionId(rs.getInt("attraction_id"));
                 tourScheduleVO.setDate(String.valueOf(rs.getDate("date")));
                 String strTime = timeFormat.format(rs.getTime("start_time"));
                 tourScheduleVO.setStartTime(strTime);
@@ -121,11 +136,16 @@ public class TourScheduleDaoImpl implements TourScheduleDao {
         TourScheduleVO tourScheduleVO = null;
         ResultSet rs = null;
 
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(GET_ONE_SQL)) {
-            rs = ps.executeQuery();
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(GET_ONE_SQL)) {
+            
+        	ps.setInt(1, tourScheduleId);
+        	
+        	rs = ps.executeQuery();
             while (rs.next()) {
                 tourScheduleVO = new TourScheduleVO();
+                tourScheduleVO.setTourScheduleId(rs.getInt("tour_Schedule_id"));
                 tourScheduleVO.setTourId(rs.getInt("tour_id"));
+                tourScheduleVO.setAttractionId(rs.getInt("attraction_id"));
                 tourScheduleVO.setDate(String.valueOf(rs.getDate("date")));
                 String strTime = timeFormat.format(rs.getTime("start_time"));
                 tourScheduleVO.setStartTime(strTime);

@@ -24,11 +24,13 @@ public class TourScheUpdateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
+        req.setCharacterEncoding("UTF-8");
         TourScheduleVO tourScheduleVO = gson.fromJson(req.getReader(), TourScheduleVO.class);
         try {
             TourScheduleService service = new TourScheduleServiceImpl();
             final TourScheduleVO result = service.tourScheUpdate(tourScheduleVO);
             resp.setContentType("application/json");
+//            resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(result));
         } catch (NamingException e) {
             e.printStackTrace();

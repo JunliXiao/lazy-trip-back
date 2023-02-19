@@ -5,7 +5,7 @@ import java.util.List;
 import tour.model.TourScheduleVO;
 
 public interface TourScheduleService {
-    TourScheduleVO tourScheCreate(TourScheduleVO tourScheduleVO);
+    int tourScheCreate(TourScheduleVO tourScheduleVO);
 
     TourScheduleVO tourScheUpdate(TourScheduleVO tourScheduleVO);
 

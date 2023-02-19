@@ -7,7 +7,6 @@ import javax.naming.NamingException;
 import tour.dao.TourDao;
 import tour.dao.TourDaoImpl;
 import tour.model.TourVO;
-import tour.service.TourService;
 
 public class TourServiceImpl implements TourService {
     private TourDao dao;

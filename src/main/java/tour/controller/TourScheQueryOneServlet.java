@@ -22,11 +22,11 @@ public class TourScheQueryOneServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
+        resp.setCharacterEncoding("UTF-8");
         String tourScheduleId = req.getParameter("tourScheduleId");
         try {
             TourScheduleService service = new TourScheduleServiceImpl();
             final TourScheduleVO resultLists = service.tourScheQueryOne(Integer.valueOf(tourScheduleId));
-            System.out.println(resultLists.toString());
             resp.setContentType("application/json");
             resp.getWriter().print(gson.toJson(resultLists));
         } catch (NamingException e) {

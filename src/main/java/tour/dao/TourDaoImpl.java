@@ -12,10 +12,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
 import common.HikariDataSource;
 import tour.model.TourVO;
 

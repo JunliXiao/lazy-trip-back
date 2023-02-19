@@ -7,7 +7,6 @@ import javax.naming.NamingException;
 import tour.dao.TourScheduleDao;
 import tour.dao.TourScheduleDaoImpl;
 import tour.model.TourScheduleVO;
-import tour.service.TourScheduleService;
 
 public class TourScheduleServiceImpl implements TourScheduleService {
     private TourScheduleDao dao;
@@ -17,9 +16,9 @@ public class TourScheduleServiceImpl implements TourScheduleService {
     }
 
     @Override
-    public TourScheduleVO tourScheCreate(TourScheduleVO tourScheduleVO) {
+    public int tourScheCreate(TourScheduleVO tourScheduleVO) {
         final int result = dao.insert(tourScheduleVO);
-        return result > 0 ? tourScheduleVO : null;
+        return result > 0 ? result : -1;
     }
 
     @Override
