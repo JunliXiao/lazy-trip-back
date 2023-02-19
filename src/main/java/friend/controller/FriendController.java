@@ -1,7 +1,7 @@
 package friend.controller;
 
 import com.google.gson.Gson;
-import friend.service.FriendshipService_Impl;
+import friend.service.FriendshipServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,23 +15,25 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet("/friends")
-public class FriendList extends HttpServlet {
+public class FriendController extends HttpServlet {
 
     @Serial
     private static final long serialVersionUID = 1L;
     Gson gson = new Gson();
 
+    // 查詢好友
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
         PrintWriter out = response.getWriter();
 
-        FriendshipService_Impl service = new FriendshipService_Impl();
+        FriendshipServiceImpl service = new FriendshipServiceImpl();
+//        FriendMemberService service = new FriendMemberServiceImpl(new FriendMemberRepositoryImpl());
+
         int id = Integer.parseInt(request.getParameter("member_id"));
         List<Map<String, String>> friends = service.getAllFriends(id);
+//        List<Member> friends = service.getAllFriendMembers(id);
 
         out.println(gson.toJson(friends));
-
     }
 
     @Override

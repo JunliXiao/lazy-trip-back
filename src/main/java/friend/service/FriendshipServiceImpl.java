@@ -1,19 +1,19 @@
 package friend.service;
 
+import friend.dao.FriendshipDao;
+import friend.dao.FriendshipDaoImpl;
+import friend.model.Friendship;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import friend.dao.FriendshipDao;
-import friend.dao.FriendshipDao_Impl;
-import friend.model.Friendship;
-
-public class FriendshipService_Impl implements FriendshipService {
+public class FriendshipServiceImpl implements FriendshipService {
 
     private FriendshipDao<Friendship> dao;
 
-    public FriendshipService_Impl() {
-        dao = new FriendshipDao_Impl();
+    public FriendshipServiceImpl() {
+        dao = new FriendshipDaoImpl();
     }
 
     @Override
@@ -31,58 +31,35 @@ public class FriendshipService_Impl implements FriendshipService {
     }
 
     @Override
-    public Map<String, String> acceptFriendRequest(Integer requesterId, Integer addresseeId) {
+    public Map<String, String> updateFriendRequestDirectional(Integer requesterId, Integer addresseeId, String updateStatus) {
         Map<String, String> result = new HashMap<>();
         String str = "failure";
 
+        // 將更新狀態字串轉換成狀態代碼
+        String statusCode = switch (updateStatus) {
+            case "accept" -> "A";
+            case "cancel" -> "C";
+            case "decline" -> "D";
+            default -> throw new IllegalStateException("Unexpected value");
+        };
+
+        // 檢查目前申請關係為 R 申請中
         if (dao.getFriendshipStatus(requesterId, addresseeId).compareTo("R") != 0) {
             result.put("result", str);
             return result;
         }
 
-        if (dao.updateFriendship(requesterId, addresseeId, "A", addresseeId)) {
-            str = "success";
+        // 接受或取消時，specifier 即為 requester；拒絕時，specifier 為 addressee
+        if (statusCode.equals("A") || statusCode.equals("C")) {
+            str = dao.updateFriendship(requesterId, addresseeId, statusCode, requesterId) ? "success" : "failure";
+        } else {
+            str = dao.updateFriendship(requesterId, addresseeId, statusCode, addresseeId) ? "success" : "failure";
         }
 
         result.put("result", str);
         return result;
     }
 
-    @Override
-    public Map<String, String> cancelFriendRequest(Integer requesterId, Integer addresseeId) {
-        Map<String, String> result = new HashMap<>();
-        String str = "failure";
-
-        if (dao.getFriendshipStatus(requesterId, addresseeId).compareTo("R") != 0) {
-            result.put("result", str);
-            return result;
-        }
-
-        if (dao.updateFriendship(requesterId, addresseeId, "C", requesterId)) {
-            str = "success";
-        }
-
-        result.put("result", str);
-        return result;
-    }
-
-    @Override
-    public Map<String, String> declineFriendRequest(Integer requesterId, Integer addresseeId) {
-        Map<String, String> result = new HashMap<>();
-        String str = "failure";
-
-        if (dao.getFriendshipStatus(requesterId, addresseeId).compareTo("R") != 0) {
-            result.put("result", str);
-            return result;
-        }
-
-        if (dao.updateFriendship(requesterId, addresseeId, "D", addresseeId)) {
-            str = "success";
-        }
-
-        result.put("result", str);
-        return result;
-    }
 
     @Override
     public Map<String, String> blockFriendRequest(Integer specifierId, Integer otherId) {
@@ -144,13 +121,14 @@ public class FriendshipService_Impl implements FriendshipService {
     }
 
     @Override
-    public List<Map<String, String>> getPendingRequests(Integer memberId) {
-        return dao.getFriendshipsAsRequesterSpecifier(memberId, "R", memberId);
-    }
+    public List<Map<String, String>> getPendingRequests(Integer memberId, String direction) {
 
-    @Override
-    public List<Map<String, String>> getReceivedPendingRequests(Integer memberId) {
-        return dao.getFriendshipsAsAddresseeSpecifier(memberId, "R", memberId);
+        if (direction.equals("sent")) {
+            return dao.getFriendshipsAsRequester(memberId, "R");
+        } else {
+            return dao.getFriendshipsAsAddressee(memberId, "R");
+        }
+
     }
 
 }
