@@ -1,6 +1,6 @@
 package group.service;
 
-import group.dao.GroupDAO;
+import group.dao.GroupDAOImpl;
 import group.dao.GroupDAO_interface;
 import group.model.GroupVO;
 
@@ -8,7 +8,7 @@ public class GroupService {
 	private GroupDAO_interface dao;
 	
 	public GroupService() {
-		dao = new GroupDAO();
+		dao = new GroupDAOImpl();
 
 	}
 	
@@ -18,11 +18,14 @@ public class GroupService {
 		return result;
 	}
 	
-	public GroupVO GetOneGroupInfo(Integer groupid) {
+	public GroupVO getOneGroupInfo(Integer groupid) {
 		GroupVO groupvo =  dao.findByPrimaryKey(groupid);
 		return groupvo;
 	}
 	
+	public void updateGroupInfo(GroupVO groupVO) {
+		dao.update(groupVO);
+	}
 
 	
 }

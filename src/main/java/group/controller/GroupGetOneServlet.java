@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import group.model.GroupVO;
 import group.service.GroupService;
 
-@WebServlet("/GroupGetOne")
+@WebServlet("/onegroup")
 public class GroupGetOneServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req , HttpServletResponse res) throws ServletException, IOException {
 		doPost(req,res);
@@ -25,13 +25,37 @@ public class GroupGetOneServlet extends HttpServlet {
 		res.setContentType("text/html;charset=UTF-8");
 		
 		GroupVO groupVO =new GroupVO();
-        Integer p1 = Integer.parseInt(req.getParameter("groupid"));
+        Integer groupid = Integer.parseInt(req.getParameter("groupid"));
 		PrintWriter out = res.getWriter();
         GroupService service = new GroupService();
-        groupVO = service.GetOneGroupInfo(p1);
+        groupVO = service.getOneGroupInfo(groupid);
         String jsonStr = new Gson().toJson(groupVO);
 //		out.println("Hello from ServletGEEEET");
 //        out.println(p1);
 		out.println(jsonStr);
+	}
+	
+	public void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		req.setCharacterEncoding("UTF-8");
+		res.setContentType("text/html;charset=UTF-8");
+		GroupVO groupVO =new GroupVO();
+     
+		Integer groupId = Integer.parseInt(req.getParameter("groupid"));
+        String groupName = req.getParameter("groupname");
+        Integer groupMemberCount = Integer.parseInt(req.getParameter("groupmembercount"));
+        Integer ifjoingroupdirectly = Integer.parseInt(req.getParameter("ifjoingroupdirectly"));
+
+        groupVO.setGroupid(groupId);
+        groupVO.setGroupmembercount(groupMemberCount);
+        groupVO.setGroupname(groupName);
+        groupVO.setIfjoingroupdirectly(ifjoingroupdirectly);
+        GroupService service = new GroupService();
+        service.updateGroupInfo(groupVO);
+		PrintWriter out = res.getWriter();
+        String jsonStr = new Gson().toJson(groupVO);
+		out.println(jsonStr);
+
+		
+//		out.println("hahaha");
 	}
 }

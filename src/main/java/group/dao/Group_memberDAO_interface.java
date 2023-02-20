@@ -9,6 +9,7 @@ import group.model.Group_memberVO;
 public interface Group_memberDAO_interface {
 	public void insertNeedApprove(Group_memberVO groupmemberVO);
 	public void insertDirectly(Group_memberVO groupmemberVO);
+	public void insertWhenCreate(Group_memberVO groupmemberVO);
     public void update(Group_memberVO groupmemberVO);
     public void delete(Integer groupmember);
     public List<Group_memberVO> getAlltoAccept(Integer groupid);

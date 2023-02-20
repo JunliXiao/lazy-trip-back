@@ -13,9 +13,9 @@ import com.google.gson.Gson;
 
 import group.model.GroupVO;
 import group.service.GroupMemberService;
-import group.service.GroupService;
 
-@WebServlet("/GroupGetAll")
+
+@WebServlet("/allgroup")
 public class GroupGetAllServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req , HttpServletResponse res) throws ServletException, IOException {
 		doPost(req,res);
@@ -32,12 +32,18 @@ public class GroupGetAllServlet extends HttpServlet {
         
         GroupMemberService service = new GroupMemberService();
 		//因還未串接登入獲得memberid前端fetch先以1代替
+        
+        if(req.getParameter("memberid")!=null) {
         Integer p1 = Integer.valueOf(req.getParameter("memberid"));
-
         List<GroupVO> list = service.GetAllGroup(p1);
-		
         res.setContentType("application/json");
         res.getWriter().print(gson.toJson(list));
+        }
+//        else {
+//        	res.sendRedirect(req.getRequestURL());
+//        }
+
+		
         
 		}
 }

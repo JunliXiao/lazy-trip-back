@@ -14,11 +14,12 @@ import common.HikariDataSource;
 import group.model.GroupVO;
 import group.model.Group_memberVO;
 
-public class Group_memberDAO implements Group_memberDAO_interface {
+public class Group_memberDAOImpl implements Group_memberDAO_interface {
 	
 	private static DataSource ds = null;
 	
 	private static final String INSERT_STMT = "INSERT INTO lazy.group_member (  member_id , group_id , self_intro , special_need , g_m_status) values(?,?,?,?,?)";
+	private static final String INSERT_WHEN_CREATE_STMT ="INSERT INTO lazy.group_member (member_id , group_id , g_m_status ) values(?,?,?)";
 	private static final String UPDATE_STMT = "UPDATE lazy.group_member set g_m_status = ? where group_member= ? ";
 	private static final String DELETE_STMT = "DELETE from lazy.group_member where group_id = ? and member_id = ?";
 	private static final String GET_ALL_STMT = "SELECT * FROM lazy.group_member where group_id = ? and g_m_status = ?";
@@ -30,11 +31,31 @@ public class Group_memberDAO implements Group_memberDAO_interface {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void insertDirectly(Group_memberVO groupmemberVO) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	
+	@Override
+	public void insertWhenCreate(Group_memberVO groupmemberVO) {
+		// 創辦人創群組時使用此方法
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(INSERT_WHEN_CREATE_STMT)) {
+			pstmt.setInt(1, groupmemberVO.getMemberid());
+			pstmt.setInt(2, groupmemberVO.getGroupid());
+			pstmt.setInt(3, 1);
+			
+			pstmt.executeUpdate();
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	
 	}
 
 	@Override
@@ -91,5 +112,8 @@ public class Group_memberDAO implements Group_memberDAO_interface {
 		
 		return list;
 	}
+
+
+
 
 }

@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import common.HikariDataSource;
 import group.model.GroupVO;
 
-public class GroupDAO implements GroupDAO_interface {
+public class GroupDAOImpl implements GroupDAO_interface {
 
 	private static DataSource ds = null;
 
@@ -19,9 +19,9 @@ public class GroupDAO implements GroupDAO_interface {
 	private static final String INSERT_STMT = "INSERT INTO lazy.group (  group_member_count , group_name , member_id ,if_join_group_directly) values(?,?,?,?)";
 	private static final String GET_ALL_STMT = "SELECT group_id , tour_id , group_member_count , group_name , member_id FROM lazy.group"
 			+ " where member_id = ?" + " order by group_id";
-	private static final String GET_ONE_STMT = "SELECT group_id , tour_id , group_member_count , group_name , member_id FROM lazy.group where group_id = ?";
+	private static final String GET_ONE_STMT = "SELECT group_id , tour_id , group_member_count , group_name , member_id , if_join_group_directly FROM lazy.group where group_id = ?";
 	private static final String DELETE = "DELETE from lazy.group where group_id = ?";
-	private static final String UPDATE = "UPDATE lazy.group set group_member_count = ? , tour_id = ? ,group_name = ? where group_id= ?";
+	private static final String UPDATE_GROUP_SETTING_STMT = "UPDATE lazy.group set group_member_count = ?  ,group_name = ? ,if_join_group_directly = ? where group_id= ?";
 
 	@Override
 	public int insert(GroupVO groupVo) {
@@ -55,37 +55,17 @@ public class GroupDAO implements GroupDAO_interface {
 	@Override
 	public void update(GroupVO groupVo) {
 		// TODO Auto-generated method stub
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(UPDATE);
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(UPDATE_GROUP_SETTING_STMT)){
 
 			pstmt.setInt(1, groupVo.getGroupmembercount());
-			pstmt.setInt(2, groupVo.getTourid());
-			pstmt.setString(3, groupVo.getGroupname());
+			pstmt.setString(2, groupVo.getGroupname());
+			pstmt.setInt(3, groupVo.getIfjoingroupdirectly());
 			pstmt.setInt(4, groupVo.getGroupid());
 			pstmt.executeUpdate();
 
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. " + se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -144,6 +124,7 @@ public class GroupDAO implements GroupDAO_interface {
 				groupVO.setGroupmembercount(rs.getInt("group_member_count"));
 				groupVO.setGroupname(rs.getString("group_name"));
 				groupVO.setMemberid(rs.getInt("member_id"));
+				groupVO.setIfjoingroupdirectly(rs.getInt("if_join_group_directly"));
 
 			}
 

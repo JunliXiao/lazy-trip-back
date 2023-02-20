@@ -11,9 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import group.model.GroupVO;
+import group.model.Group_memberVO;
+import group.service.GroupMemberService;
 import group.service.GroupService;
 
-@WebServlet("/GroupAdd")
+@WebServlet("/newgroup")
 public class GroupAddServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req , HttpServletResponse res) throws ServletException, IOException {
 		doPost(req,res);
@@ -28,17 +30,32 @@ public class GroupAddServlet extends HttpServlet {
         Gson gson = new Gson();
 
 		GroupVO groupVO =new GroupVO();
-        String p1 = req.getParameter("groupname");
-        Integer p2 = Integer.valueOf(req.getParameter("groupmembercount"));
-        Integer p3 =Integer.valueOf(req.getParameter("memberid"));
-        Integer p4 =Integer.valueOf(req.getParameter("how_2_join"));
-        groupVO.setGroupname(p1);
-        groupVO.setGroupmembercount(p2);
-        groupVO.setMemberid(p3);
-        groupVO.setIfjoingroupdirectly(p4);
+		Group_memberVO groupmemberVO = new Group_memberVO();
+		//groupVO:創建時新增揪團
+		//groupmemberVO:創建時將創辦人加入groupmember
+        try {
+        	Integer gpCount = Integer.valueOf(req.getParameter("groupmembercount"));
+        	groupVO.setGroupmembercount(gpCount);
+        }catch(NumberFormatException e){
+//        	e.printStackTrace();
+        	res.sendRedirect(req.getRequestURL().toString());
+        }
+        Integer groupOwner =Integer.valueOf(req.getParameter("memberid"));
+        Integer howTojoin =Integer.valueOf(req.getParameter("how_2_join"));
+        if(req.getParameter("groupname").length()!=0) {
+        	String name = req.getParameter("groupname");
+        	groupVO.setGroupname(name);
+        }
+        groupVO.setMemberid(groupOwner);
+        groupVO.setIfjoingroupdirectly(howTojoin);
         
-        GroupService service = new GroupService();
-        int pk = service.addGroup(groupVO);
+        
+        GroupService groupService = new GroupService();
+        GroupMemberService groupMemberService = new GroupMemberService();
+        int pk = groupService.addGroup(groupVO);
+        groupmemberVO.setMemberid(groupOwner);
+        groupmemberVO.setGroupid(pk);
+        groupMemberService.InsertWhenCreate(groupmemberVO);
         groupVO.setGroupid(pk);
         res.setContentType("application/json");
         res.getWriter().print(gson.toJson(groupVO));
