@@ -2,6 +2,7 @@ package friend.dao;
 
 import common.HikariDataSource;
 import friend.model.Friendship;
+import member.vo.Member;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -108,6 +109,34 @@ public class FriendshipDaoImpl implements FriendshipDao<Friendship> {
         }
 
         return friends;
+    }
+    
+    @Override
+    public List<Member> getNonFriendships(Integer memberId) {
+    	List<Member> nonFriends = new ArrayList<>();
+    	String sql = "SELECT member_id, member_account, member_name FROM member\r\n"
+    			+ "	WHERE member_id NOT IN \r\n"
+    			+ "(SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ?\r\n"
+    			+ "	UNION\r\n"
+    			+ "SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ?);";
+    	
+    	try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, memberId);
+        	ps.setInt(2, memberId);
+        	ResultSet rs = ps.executeQuery();
+        	while (rs.next()) {
+                Member nonFriend = new Member();
+                nonFriend.setId(Integer.parseInt(rs.getString("member_id")));
+                nonFriend.setAccount(rs.getString("member_account"));
+                nonFriend.setName(rs.getString("member_name"));
+                nonFriends.add(nonFriend);
+            }
+        	
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+    	return nonFriends;
     }
 
     @Override

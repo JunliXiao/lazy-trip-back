@@ -3,6 +3,7 @@ package friend.service;
 import friend.dao.FriendshipDao;
 import friend.dao.FriendshipDaoImpl;
 import friend.model.Friendship;
+import member.vo.Member;
 
 import java.util.HashMap;
 import java.util.List;
@@ -115,6 +116,11 @@ public class FriendshipServiceImpl implements FriendshipService {
         return result;
     }
 
+    @Override
+    public List<Member> getAllSuggestions(Integer memberId) {
+    	return dao.getNonFriendships(memberId);
+    }
+    
     @Override
     public List<Map<String, String>> getAllFriends(Integer memberId) {
         return dao.getFriendships(memberId, "A");

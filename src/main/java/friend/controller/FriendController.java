@@ -1,6 +1,8 @@
 package friend.controller;
 
 import com.google.gson.Gson;
+
+import friend.service.FriendshipService;
 import friend.service.FriendshipServiceImpl;
 
 import javax.servlet.ServletException;
@@ -14,7 +16,7 @@ import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/friends")
+@WebServlet("/api/friends")
 public class FriendController extends HttpServlet {
 
     @Serial
@@ -26,7 +28,7 @@ public class FriendController extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
 
-        FriendshipServiceImpl service = new FriendshipServiceImpl();
+        FriendshipService service = new FriendshipServiceImpl();
 //        FriendMemberService service = new FriendMemberServiceImpl(new FriendMemberRepositoryImpl());
 
         int id = Integer.parseInt(request.getParameter("member_id"));

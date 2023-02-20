@@ -3,6 +3,8 @@ package friend.service;
 import java.util.List;
 import java.util.Map;
 
+import member.vo.Member;
+
 public interface FriendshipService {
 
     Map<String, String> requestNewFriend(Integer requesterId, Integer addresseeId);
@@ -14,6 +16,8 @@ public interface FriendshipService {
     Map<String, String> resetFriendRequest(Integer specifierId, Integer otherId);
 
     Map<String, String> unfriend(Integer specifierId, Integer otherId);
+    
+    List<Member> getAllSuggestions(Integer memberId);
 
     List<Map<String, String>> getAllFriends(Integer memberId);
 
