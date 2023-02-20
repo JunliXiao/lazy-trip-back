@@ -2,7 +2,7 @@ package friend.dao;
 
 import common.HikariDataSource;
 import friend.model.Friendship;
-import member.vo.Member;
+import member.model.Member;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

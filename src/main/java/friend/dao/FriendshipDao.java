@@ -3,7 +3,7 @@ package friend.dao;
 import java.util.List;
 import java.util.Map;
 
-import member.vo.Member;
+import member.model.Member;
 
 public interface FriendshipDao<Friendship> {
 

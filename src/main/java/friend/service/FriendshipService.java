@@ -3,7 +3,7 @@ package friend.service;
 import java.util.List;
 import java.util.Map;
 
-import member.vo.Member;
+import member.model.Member;
 
 public interface FriendshipService {
 
@@ -21,5 +21,5 @@ public interface FriendshipService {
 
     List<Map<String, String>> getAllFriends(Integer memberId);
 
-    List<Map<String, String>> getPendingRequests(Integer memberId, String direction);
+    List<Map<String, String>> getRequestsWithStatus(Integer memberId, String direction);
 }

@@ -3,11 +3,13 @@ package friend.service;
 import friend.dao.FriendshipDao;
 import friend.dao.FriendshipDaoImpl;
 import friend.model.Friendship;
-import member.vo.Member;
+import member.model.Member;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FriendshipServiceImpl implements FriendshipService {
 
@@ -127,13 +129,30 @@ public class FriendshipServiceImpl implements FriendshipService {
     }
 
     @Override
-    public List<Map<String, String>> getPendingRequests(Integer memberId, String direction) {
+    public List<Map<String, String>> getRequestsWithStatus(Integer memberId, String direction) {
+    	
+    	List<Map<String, String>> pendingRequests;
+    	List<Map<String, String>> resolvedRequests;
+    	List<Map<String, String>> combinedList;
 
         if (direction.equals("sent")) {
-            return dao.getFriendshipsAsRequester(memberId, "R");
+        	pendingRequests = dao.getFriendshipsAsRequester(memberId, "R");
+        	resolvedRequests = dao.getFriendshipsAsRequesterSpecifier(memberId, "C", memberId);
+        	pendingRequests.forEach(pr -> pr.put("request_status", "requested"));
+        	resolvedRequests.forEach(rr -> rr.put("request_status", "cancelled"));
+
         } else {
-            return dao.getFriendshipsAsAddressee(memberId, "R");
+        	pendingRequests = dao.getFriendshipsAsAddressee(memberId, "R");
+        	resolvedRequests = dao.getFriendshipsAsAddresseeSpecifier(memberId, "D", memberId);
+        	pendingRequests.forEach(pr -> pr.put("request_status", "requested"));
+        	resolvedRequests.forEach(rr -> rr.put("request_status", "declined"));
         }
+        
+    	combinedList = Stream.of(pendingRequests, resolvedRequests)
+    	        .flatMap(x -> x.stream())
+    	        .collect(Collectors.toList());
+        
+        return combinedList;
 
     }
 

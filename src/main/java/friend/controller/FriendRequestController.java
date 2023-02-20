@@ -1,6 +1,8 @@
 package friend.controller;
 
 import com.google.gson.Gson;
+
+import friend.service.FriendshipService;
 import friend.service.FriendshipServiceImpl;
 
 import javax.servlet.ServletException;
@@ -18,11 +20,11 @@ public class FriendRequestController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     Gson gson = new Gson();
 
-    // 新增邀請：邀請方為 requester，接受方 為 addressee
+    // 新增邀請：邀請方為 requester，接受方為 addressee
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
 
-        FriendshipServiceImpl service = new FriendshipServiceImpl();
+        FriendshipService service = new FriendshipServiceImpl();
         int requester_id = Integer.parseInt(request.getParameter("requester_id"));
         int addressee_id = Integer.parseInt(request.getParameter("addressee_id"));
 
@@ -33,7 +35,7 @@ public class FriendRequestController extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
 
-        FriendshipServiceImpl service = new FriendshipServiceImpl();
+        FriendshipService service = new FriendshipServiceImpl();
         int requester_id = Integer.parseInt(request.getParameter("requester_id"));
         int addressee_id = Integer.parseInt(request.getParameter("addressee_id"));
         String updateStatus = request.getParameter("update_status");
@@ -46,11 +48,11 @@ public class FriendRequestController extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
 
-        FriendshipServiceImpl service = new FriendshipServiceImpl();
+        FriendshipService service = new FriendshipServiceImpl();
         int id = Integer.parseInt(request.getParameter("member_id"));
         String direction = request.getParameter("direction");
 
-        out.println(gson.toJson(service.getPendingRequests(id, direction)));
+        out.println(gson.toJson(service.getRequestsWithStatus(id, direction)));
     }
 
 }

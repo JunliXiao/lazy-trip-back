@@ -1,4 +1,4 @@
-package com.article.model;
+package article.dao;
 
 import java.util.*;
 
