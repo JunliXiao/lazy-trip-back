@@ -1,7 +1,7 @@
 package friend.repository;
 
 import common.HikariDataSource;
-import member.vo.Member;
+import member.model.Member;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

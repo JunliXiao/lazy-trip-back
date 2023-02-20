@@ -12,8 +12,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import member.model.Member;
 import member.service.MemberServiceImpl;
-import member.vo.Member;
 
 
 

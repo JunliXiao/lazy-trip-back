@@ -1,8 +1,10 @@
-package member.vo;
+package member.model;
 
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+
+import com.google.gson.annotations.JsonAdapter;
 
 public class Member implements Serializable{
 	private static final long serialVersionUID =1L;

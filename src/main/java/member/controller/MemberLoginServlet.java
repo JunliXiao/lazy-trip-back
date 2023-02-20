@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import member.model.Member;
@@ -18,28 +17,35 @@ import member.service.MemberService;
 import member.service.MemberServiceImpl;
 
 
-@WebServlet("/lazy/save")
-public class MemberSaveServlet extends HttpServlet{
+@WebServlet("/lazy/login")
+public class MemberLoginServlet extends HttpServlet{
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		Gson gson = new Gson();
 		Member member = gson.fromJson(req.getReader(), Member.class);
+
 		try {
-			resp.setContentType("application/json");
-			JsonObject jsonObj = new JsonObject();
-			if(member.getId() == 0 || member.getId() == null) {
-				jsonObj.addProperty("message", "修改失敗");
-			}else {
-				MemberService service = new MemberServiceImpl();
-				String resultStr = service.save(member);
-				jsonObj.addProperty("successful", resultStr.equals("修改成功"));
-				jsonObj.addProperty("message", resultStr);
+			MemberService service = new MemberServiceImpl();
+			member = service.login(member);
+
+			if (member == null) {
+				JsonObject error = new JsonObject();
+			    error.addProperty("errorMessage", "�Τ�W�αK�X���~");
+			    resp.setContentType("application/json");
+			    resp.setCharacterEncoding("UTF-8");
+			    resp.getWriter().write(error.toString());
+			} else {
+				if (req.getSession(false) != null) {
+					req.changeSessionId(); // �����ͷs��Session ID
+				}
+				req.getSession().setAttribute("member", member);
+				req.getSession().setAttribute("login", true);
+				resp.sendRedirect("main.jsp");
 			}
-			resp.getWriter().append(jsonObj.toString());
+
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
 }

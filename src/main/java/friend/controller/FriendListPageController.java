@@ -3,7 +3,7 @@ package friend.controller;
 import friend.repository.FriendMemberRepositoryImpl;
 import friend.service.FriendMemberService;
 import friend.service.FriendMemberServiceImpl;
-import member.vo.Member;
+import member.model.Member;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;

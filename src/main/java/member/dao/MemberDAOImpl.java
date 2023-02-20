@@ -1,7 +1,7 @@
-package member.dao.impl;
+package member.dao;
+
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,26 +10,23 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+import common.HikariDataSource;
+import member.model.Member;
 
-import member.dao.MemberDao_interface;
-import member.vo.Member;
 
-public class MemberDaoImpl implements MemberDao_interface{
-	private DataSource ds;
-
-	public MemberDaoImpl() throws NamingException {
-		ds = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/lazy");
-	}
+public class MemberDAOImpl implements MemberDAO{
+//	private DataSource ds;
+//
+//	public MemberDAOImpl() throws NamingException {
+//		ds = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/lazy");
+//	}
 	
 	private static final String INSERT = "insert into member(member_account, member_password, member_username, member_gender, member_birth, member_accessnum) values(?, ?, ?, ?, ?, '1')";
 	@Override
 	public int insert(Member member) {
 		int generatedKey = -1;
 		try(
-				Connection con = ds.getConnection();
+				Connection con = HikariDataSource.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
 		){
 			pstmt.setString(1, member.getAccount());
@@ -54,13 +51,12 @@ public class MemberDaoImpl implements MemberDao_interface{
 
 	@Override
 	public int updateById(Member member) {
-		StringBuilder sql = new StringBuilder("update member set member_id= ?");
+		StringBuilder sql = new StringBuilder("update member set ");
 		final String ps = member.getPassword();
 		final String un = member.getUsername();
 		final String gender = member.getGender();
-		final Date birth = member.getBirthday();
 		if(ps != null && !ps.isEmpty()) {
-			sql.append(", member_password=?");
+			sql.append("member_password=?");
 		}
 		if(un != null && !un.isEmpty()) {
 			sql.append(", member_username=?");
@@ -68,16 +64,12 @@ public class MemberDaoImpl implements MemberDao_interface{
 		if(gender != null && !gender.isEmpty()) {
 			sql.append(", member_gender=?");
 		}
-		if(birth != null ) {
-			sql.append(", member_birthday=?");
-		}
-		sql.append(" where member_id = ?");
+		sql.append(", member_birth = ? where member_id = ?");
 		
-		try (	Connection con = ds.getConnection();
+		try (	Connection con = HikariDataSource.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql.toString());
 		){
-			pstmt.setInt(1, member.getId());	
-			int nxtSeq = 2;
+			int nxtSeq = 1;
 			if(ps != null && !ps.isEmpty()) {
 				pstmt.setString(nxtSeq++, ps);
 //				nxtSeq++;
@@ -88,10 +80,9 @@ public class MemberDaoImpl implements MemberDao_interface{
 			if(gender != null && !gender.isEmpty()) {
 				pstmt.setString(nxtSeq++, gender);
 			}
-			if(birth != null ) {
-				pstmt.setString(nxtSeq++, un);
-			}
+			pstmt.setDate(nxtSeq++, member.getBirthday());
 			pstmt.setInt(nxtSeq, member.getId());
+			
 			System.out.println(sql);
 			return pstmt.executeUpdate();
 			
@@ -106,7 +97,7 @@ public class MemberDaoImpl implements MemberDao_interface{
 	@Override
 	public Member find(Member member) {
 		try (
-			Connection con = ds.getConnection();
+			Connection con = HikariDataSource.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(LOGIN);
 		){
 			pstmt.setString(1, member.getAccount());
@@ -136,11 +127,11 @@ public class MemberDaoImpl implements MemberDao_interface{
 		return null;
 	}
 
-	final static String UPDATE_IMG_BYID = "update member set img = ? where member_id = ?;";
+	final static String UPDATE_IMG_BY_ID = "update member set member_img = ? where member_id = ?;";
 	@Override
 	public int updateImgById(Member member) {
-		try (	Connection conn = ds.getConnection(); 
-				PreparedStatement pstmt = conn.prepareStatement(UPDATE_IMG_BYID);
+		try (	Connection conn = HikariDataSource.getConnection(); 
+				PreparedStatement pstmt = conn.prepareStatement(UPDATE_IMG_BY_ID);
 		) {
 			pstmt.setBytes(1, member.getImg());
 			pstmt.setInt(2, member.getId());
@@ -157,13 +148,47 @@ public class MemberDaoImpl implements MemberDao_interface{
 		return null;
 	}
 
-	private static final String SELECT_ONE = "select * from member where member_id = ?";
+	private static final String SELECT_ONE_BY_ID = "select * from member where member_id = ?";
 	@Override
 	public Member selectById(Integer id) {
-		try(	Connection conn = ds.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(SELECT_ONE);
+		try(	Connection conn = HikariDataSource.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(SELECT_ONE_BY_ID);
 		) {
 			pstmt.setInt(1, id);
+			try(ResultSet rs = pstmt.executeQuery()){
+				if(rs.next()) {
+					Member member = new Member();
+					member.setId(rs.getInt("member_id"));
+					member.setAccount(rs.getString("member_account"));
+					member.setPassword(rs.getString("member_password"));
+					member.setName(rs.getString("member_name"));
+					member.setGender(rs.getString("member_gender"));
+					member.setUsername(rs.getString("member_username"));
+					member.setPhone(rs.getString("member_phone"));;
+					member.setBirthday(rs.getDate("member_birth"));
+					member.setReg_date(rs.getTimestamp("member_reg_date"));
+					member.setAddress(rs.getString("member_address"));
+					member.setIntro(rs.getString("member_intro"));
+					member.setImg(rs.getBytes("member_img"));
+					member.setBanner_img(rs.getBytes("member_banner_img"));
+					member.setAccessnum(rs.getString("member_accessnum"));
+					
+					return member;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private static final String SELECT_ONE_BY_ACCOUNT = "select * from member where member_account = ?";
+	@Override
+	public Member selectByAccount(String account) {
+		try(	Connection conn = HikariDataSource.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(SELECT_ONE_BY_ACCOUNT);
+		) {
+			pstmt.setString(1, account);
 			try(ResultSet rs = pstmt.executeQuery()){
 				if(rs.next()) {
 					Member member = new Member();
@@ -196,7 +221,7 @@ public class MemberDaoImpl implements MemberDao_interface{
 	public List<Member> getAll() {
 		List<Member> resultList = new ArrayList<Member>();
 		Member member;
-		try( 	Connection conn = ds.getConnection();
+		try( 	Connection conn = HikariDataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(GET_ALL_STMT);
 				ResultSet rs = pstmt.executeQuery();){
 			while(rs.next()) {
@@ -230,6 +255,8 @@ public class MemberDaoImpl implements MemberDao_interface{
 		}
 		return resultList;
 	}
+
+	
 
 
 }

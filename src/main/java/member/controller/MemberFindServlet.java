@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import member.model.Member;
 import member.service.MemberServiceImpl;
-import member.vo.Member;
 
 
 @WebServlet("/lazy/find")
@@ -39,7 +40,7 @@ public class MemberFindServlet extends HttpServlet{
 			req.setCharacterEncoding("UTF-8");
 			resp.setContentType("application/json;charset=UTF-8");
 			
-			Gson gson = new Gson();
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 			Writer writer = resp.getWriter();
 			writer.write(gson.toJson(member));
 			

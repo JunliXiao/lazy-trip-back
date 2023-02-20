@@ -1,7 +1,7 @@
 package friend.service;
 
 import friend.repository.FriendMemberRepository;
-import member.vo.Member;
+import member.model.Member;
 
 import java.util.List;
 
