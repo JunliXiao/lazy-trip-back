@@ -7,7 +7,6 @@ import javax.naming.NamingException;
 import tour.dao.AttractionDao;
 import tour.dao.AttractionDaoImpl;
 import tour.model.AttractionVO;
-import tour.service.AttractionService;
 
 public class AttractionServiceImpl implements AttractionService {
     private AttractionDao dao;
@@ -17,9 +16,9 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public AttractionVO attrCreate(AttractionVO attractionVO) {
+    public int attrCreate(AttractionVO attractionVO) {
         final int result = dao.insert(attractionVO);
-        return result > 0 ? attractionVO : null;
+        return result > 0 ? result : -1;
     }
 
     @Override

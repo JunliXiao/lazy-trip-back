@@ -30,7 +30,8 @@ public class AttractionCreateServlet extends HttpServlet {
             req.setCharacterEncoding("UTF-8");
             AttractionVO attractionVO = gson.fromJson(req.getReader(), AttractionVO.class);
             AttractionService service = new AttractionServiceImpl();
-            service.attrCreate(attractionVO);
+            int attractionPk = service.attrCreate(attractionVO);
+            attractionVO.setAttractionId(attractionPk);
             resp.setContentType("application/json");
             resp.getWriter().print(gson.toJson(attractionVO));
         } catch (NamingException e) {

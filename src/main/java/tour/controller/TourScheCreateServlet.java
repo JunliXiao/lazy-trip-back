@@ -32,7 +32,7 @@ public class TourScheCreateServlet extends HttpServlet {
             int result = service.tourScheCreate(tourScheduleVO);
             tourScheduleVO.setTourId(result);
             resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
+//            resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(tourScheduleVO));
         } catch (NamingException e) {
             e.printStackTrace();

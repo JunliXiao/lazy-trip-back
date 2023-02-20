@@ -26,10 +26,10 @@ public class TourQueryOneServlet extends HttpServlet {
         String tourId = req.getParameter("tourId");
         try {
             TourService service = new TourServiceImpl();
-            final TourVO resultLists = service.tourQueryOne(Integer.valueOf(tourId));
-            System.out.println(resultLists.toString());
+            final TourVO result = service.tourQueryOne(Integer.valueOf(tourId));
+            System.out.println(result.toString());
             resp.setContentType("application/json");
-            resp.getWriter().print(gson.toJson(resultLists));
+            resp.getWriter().print(gson.toJson(result));
         } catch (NamingException e) {
             e.printStackTrace();
         }

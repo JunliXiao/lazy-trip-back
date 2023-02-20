@@ -5,7 +5,7 @@ import java.util.List;
 import tour.model.AttractionVO;
 
 public interface AttractionService {
-    AttractionVO attrCreate(AttractionVO attractionVO);
+    int attrCreate(AttractionVO attractionVO);
 
     AttractionVO attrUpdate(AttractionVO attractionVO);
 

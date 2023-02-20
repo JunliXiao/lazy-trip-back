@@ -25,7 +25,7 @@ public class TourDaoImpl implements TourDao {
 	private static final String UPDATE_SQL = "update tour set tour_title=?, start_date=?, end_date=?, tour_img=? where tour_id=? and member_id=?;";
 	private static final String DELETE_SQL = "delete from tour where tour_id = ?";
 	private static final String GET_ALL_SQL = "select tour_id, tour_title, start_date, end_date, tour_img, member_id from tour order by tour_id;";
-	private static final String GET_ONE_SQL = "select tour_id, tour_title, start_date, end_date, tour_img from tour where member_id=?;";
+	private static final String GET_ONE_SQL = "select tour_id, tour_title, start_date, end_date, tour_img from tour where tour_id=?;";
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
@@ -130,14 +130,14 @@ public class TourDaoImpl implements TourDao {
 	}
 
 	@Override
-	public TourVO findByPrimaryKey(Integer memberId) {
+	public TourVO findByPrimaryKey(Integer tourId) {
 		TourVO tourVO = null;
 		ResultSet rs = null;
 
 		try (Connection conn = HikariDataSource.getConnection();
 				PreparedStatement ps = conn.prepareStatement(GET_ONE_SQL)) {
 
-			ps.setInt(1, memberId);
+			ps.setInt(1, tourId);
 
 			rs = ps.executeQuery();
 
