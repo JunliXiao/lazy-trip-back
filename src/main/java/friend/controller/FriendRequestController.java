@@ -11,16 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
-import java.util.List;
-import java.util.Map;
 
-@WebServlet("/friend-requests")
+@WebServlet("/api/friend-requests")
 public class FriendRequestController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
     Gson gson = new Gson();
 
-    // 新增申請：申請方為 requester，接受方 為 addressee
+    // 新增邀請：邀請方為 requester，接受方 為 addressee
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
 
@@ -31,7 +29,7 @@ public class FriendRequestController extends HttpServlet {
         out.println(gson.toJson(service.requestNewFriend(requester_id, addressee_id)));
     }
 
-    // 更新申請狀態：accept 接受、cancel 取消、decline 拒絕
+    // 更新邀請狀態：accept 接受、cancel 取消、decline 婉拒
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
 
@@ -43,7 +41,7 @@ public class FriendRequestController extends HttpServlet {
         out.println(gson.toJson(service.updateFriendRequestDirectional(requester_id, addressee_id, updateStatus)));
     }
 
-    // 查詢申請：direction 分為 sent 和 received 兩個方向
+    // 查詢邀請：direction 分為 sent 和 received 兩個方向
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
@@ -51,9 +49,8 @@ public class FriendRequestController extends HttpServlet {
         FriendshipServiceImpl service = new FriendshipServiceImpl();
         int id = Integer.parseInt(request.getParameter("member_id"));
         String direction = request.getParameter("direction");
-        List<Map<String, String>> friends = service.getPendingRequests(id, direction);
 
-        out.println(gson.toJson(friends));
+        out.println(gson.toJson(service.getPendingRequests(id, direction)));
     }
 
 }

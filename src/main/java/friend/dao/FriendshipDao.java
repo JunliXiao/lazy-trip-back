@@ -3,6 +3,8 @@ package friend.dao;
 import java.util.List;
 import java.util.Map;
 
+import member.vo.Member;
+
 public interface FriendshipDao<Friendship> {
 
     boolean addFriendship(Integer requesterId, Integer addresseeId);
@@ -12,6 +14,8 @@ public interface FriendshipDao<Friendship> {
     String getFriendshipStatus(Integer memberIdA, Integer memberIdB);
 
     List<Map<String, String>> getFriendships(Integer memberId, String statusCode);
+    
+    List<Member> getNonFriendships(Integer memberId);
 
     List<Map<String, String>> getFriendshipsAsRequester(Integer requesterId, String statusCode);
 
