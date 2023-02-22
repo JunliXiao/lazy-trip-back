@@ -5,5 +5,24 @@ import java.util.List;
 import member.model.Member;
 
 public interface FriendMemberService {
-    List<Member> getAllFriendMembers(Integer memberId);
+	
+	boolean createFriendRequest(Integer requesterId, Integer addresseeId);
+	
+	boolean acceptFriendRequest(Integer requesterId, Integer addresseeId);
+	
+	boolean blockFriendRequest(Integer requesterId, Integer addresseeId);
+	
+	boolean cancelFriendRequest(Integer requesterId, Integer addresseeId);
+	
+	boolean declineFrinedRequest(Integer requesterId, Integer addresseeId);
+	
+    List<Member> getFriends(Integer memberId);
+    
+    List<Member> getSentRequests(Integer memberId);
+    
+    List<Member> getReceivedRequests(Integer memberId);
+    
+    List<Member> getBlockedMembers(Integer memberId);
+    
+    List<Member> getFriendSuggestions(Integer memberId);
 }

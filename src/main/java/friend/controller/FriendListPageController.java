@@ -24,11 +24,11 @@ public class FriendListPageController extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        FriendMemberService service = new FriendMemberServiceImpl(new FriendMemberRepositoryImpl());
+        FriendMemberService service = new FriendMemberServiceImpl();
 
         int id = Integer.parseInt(request.getParameter("member_id"));
 
-        List<Member> friends = service.getAllFriendMembers(id);
+        List<Member> friends = service.getFriends(id);
 
         request.setAttribute("friends", friends);
         RequestDispatcher rd = getServletContext().getRequestDispatcher("/page/friend/friend_list.jsp");

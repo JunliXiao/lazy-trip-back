@@ -8,11 +8,62 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FriendMemberRepositoryImpl implements FriendMemberRepository {
+	
+	@Override
+	public boolean addFriendship(Integer requesterId, Integer addresseeId) {
+        boolean hasAdded = false;
+        String sql = "INSERT INTO friendship (`requester_id`, `addressee_id`, `status_code`) VALUES (?, ?, 'R');";
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, requesterId);
+            ps.setInt(2, addresseeId);
+            hasAdded = ps.executeUpdate() != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hasAdded;
+	}
+
+	@Override
+	public boolean updateFriendship(Integer requesterId, Integer addresseeId, String statusCode) {
+        boolean hasUpdated = false;
+        String sql = "UPDATE friendship SET status_code = ? WHERE requester_id = ? AND addressee_id = ?;";
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, statusCode);
+            ps.setInt(2, requesterId);
+            ps.setInt(3, addresseeId);
+            hasUpdated = ps.executeUpdate() != 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hasUpdated;
+	}
+
+	@Override
+	public boolean deleteFriendship(Integer requesterId, Integer addresseeId) {
+		boolean hasDeleted = false;
+		String sql = "DELETE FROM friendship WHERE requester_id = ? and addressee_id = ?);";
+        try (Connection connection = HikariDataSource.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+               ps.setInt(1, requesterId);
+               ps.setInt(2, addresseeId);
+               hasDeleted = ps.executeUpdate() != 0;
+
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+		return hasDeleted;
+	}
+	
     @Override
-    public List<Member> getFriendMembers(Integer memberId, String statusCode) {
+    public List<Member> getMembersByFriendship(Integer memberId, String statusCode) {
         List<Member> friends = new ArrayList<>();
         String sql = """
                 SELECT member_id, member_account, member_name FROM member\r
@@ -41,4 +92,68 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
 
         return friends;
     }
+
+    @Override
+	public List<Member> getMembersByRequest(Integer memberId, String direction) {
+        List<Member> friends = new ArrayList<>();
+        String sql = direction.equals("sent") 
+        		? """
+                SELECT member_id, member_account, member_name FROM member\r
+                	WHERE member_id IN \r
+                (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ? AND status_code = 'R');
+                """
+        		: """
+        		SELECT member_id, member_account, member_name FROM member\r
+                	WHERE member_id IN \r
+                (SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ? AND status_code = 'R');
+        		""";
+
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, memberId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Member friend = new Member();
+                friend.setId(Integer.parseInt(rs.getString("member_id")));
+                friend.setAccount(rs.getString("member_account"));
+                friend.setName(rs.getString("member_name"));
+                friends.add(friend);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return friends;
+	}
+    
+    
+	@Override
+	public List<Member> getMembersByNonFriendship(Integer memberId) {
+    	List<Member> nonFriends = new ArrayList<>();
+    	String sql = "SELECT member_id, member_account, member_name FROM member\r\n"
+    			+ "	WHERE member_id NOT IN \r\n"
+    			+ "(SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ?\r\n"
+    			+ "	UNION\r\n"
+    			+ "SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ?);";
+    	
+    	try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, memberId);
+        	ps.setInt(2, memberId);
+        	ResultSet rs = ps.executeQuery();
+        	while (rs.next()) {
+                Member nonFriend = new Member();
+                nonFriend.setId(Integer.parseInt(rs.getString("member_id")));
+                nonFriend.setAccount(rs.getString("member_account"));
+                nonFriend.setName(rs.getString("member_name"));
+                nonFriends.add(nonFriend);
+            }
+        	
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+    	return nonFriends;
+	}
+
+	
+
 }

@@ -2,6 +2,8 @@ package friend.controller;
 
 import com.google.gson.Gson;
 
+import friend.service.FriendMemberService;
+import friend.service.FriendMemberServiceImpl;
 import friend.service.FriendshipService;
 import friend.service.FriendshipServiceImpl;
 
@@ -14,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
 
-@WebServlet("/api/friend-requests")
+@WebServlet("/api/friend/request")
 public class FriendRequestController extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -24,35 +26,53 @@ public class FriendRequestController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
 
-        FriendshipService service = new FriendshipServiceImpl();
-        int requester_id = Integer.parseInt(request.getParameter("requester_id"));
-        int addressee_id = Integer.parseInt(request.getParameter("addressee_id"));
+        FriendMemberService service = new FriendMemberServiceImpl();
+        int requesterId = Integer.parseInt(request.getParameter("requester_id"));
+        int addresseeId = Integer.parseInt(request.getParameter("addressee_id"));
 
-        out.println(gson.toJson(service.requestNewFriend(requester_id, addressee_id)));
+        out.println(gson.toJson(service.createFriendRequest(requesterId, addresseeId)));
     }
 
-    // 更新邀請狀態：accept 接受、cancel 取消、decline 婉拒
+    // 按動作更新關係狀態：accept 接受、block 封鎖
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
+        String output;
 
-        FriendshipService service = new FriendshipServiceImpl();
-        int requester_id = Integer.parseInt(request.getParameter("requester_id"));
-        int addressee_id = Integer.parseInt(request.getParameter("addressee_id"));
-        String updateStatus = request.getParameter("update_status");
+        FriendMemberService service = new FriendMemberServiceImpl();
+        int requesterId = Integer.parseInt(request.getParameter("requester_id"));
+        int addresseeId = Integer.parseInt(request.getParameter("addressee_id"));
+        String action = request.getParameter("action");
+        
+        if (action.equals("accept")) {
+        	output = gson.toJson(service.acceptFriendRequest(requesterId, addresseeId));
+        } else if (action.equals("block")) {
+        	output = gson.toJson(service.blockFriendRequest(requesterId, addresseeId));
+        } else {
+        	output = "{error:Failed}";
+        }
 
-        out.println(gson.toJson(service.updateFriendRequestDirectional(requester_id, addressee_id, updateStatus)));
+        out.println(output);
     }
-
-    // 查詢邀請：direction 分為 sent 和 received 兩個方向
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    // 按方向查詢好友邀請對象：sent 送出、received 收到
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
-
-        FriendshipService service = new FriendshipServiceImpl();
+        String output;
+        
+        FriendMemberService service = new FriendMemberServiceImpl();
         int id = Integer.parseInt(request.getParameter("member_id"));
         String direction = request.getParameter("direction");
-
-        out.println(gson.toJson(service.getRequestsWithStatus(id, direction)));
+        
+        if (direction.equals("sent")) {
+        	output = gson.toJson(service.getSentRequests(id));
+        } else if (direction.equals("received")) {
+        	output = gson.toJson(service.getReceivedRequests(id));
+        } else {
+        	output = "{error:Failed}";
+        }
+        
+        out.println(output);
+    	
     }
 
 }
