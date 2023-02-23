@@ -17,7 +17,7 @@ import member.service.MemberServiceImpl;
 
 
 
-@WebServlet("/lazy/register")
+@WebServlet("/page/register")
 public class MemberRegisterServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 
@@ -27,6 +27,7 @@ public class MemberRegisterServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
+			req.setCharacterEncoding("UTF-8");
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 			Member member = gson.fromJson(req.getReader(), Member.class);
 			MemberServiceImpl service = new MemberServiceImpl();
@@ -34,7 +35,6 @@ public class MemberRegisterServlet extends HttpServlet{
 			
 //			System.out.println(resultStr);
 			
-			req.setCharacterEncoding("UTF-8");
 			resp.setContentType("application/json;charset=UTF-8");
 			JsonObject respBody = new JsonObject();
 			respBody.addProperty("successful", resultStr.equals("註冊成功"));

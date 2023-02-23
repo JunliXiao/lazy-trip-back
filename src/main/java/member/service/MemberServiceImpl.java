@@ -34,7 +34,7 @@ public class MemberServiceImpl implements MemberService{
 				errorMsgs.add("性別不能為空");
 			}
 			if(username == null || username.isEmpty()) {
-				errorMsgs.add("性別不能為空");
+				errorMsgs.add("暱稱不能為空");
 			}
 			
 			if(errorMsgs.isEmpty()) {
