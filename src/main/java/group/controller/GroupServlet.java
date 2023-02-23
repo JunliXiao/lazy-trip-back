@@ -3,6 +3,7 @@ package group.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,6 +34,7 @@ public class GroupServlet extends HttpServlet {
 
 			Gson gson = new Gson();
 			GroupMemberService service = new GroupMemberService();
+			//得到一位會員所加入的揪團
 			// 因還未串接登入獲得memberid前端fetch先以1代替
 			if (req.getParameter("memberid") != null) {
 				Integer p1 = Integer.valueOf(req.getParameter("memberid"));
@@ -97,7 +99,6 @@ public class GroupServlet extends HttpServlet {
 			String jsonStr = new Gson().toJson(tourvo);
 			out.println(jsonStr);
 		}
-		
 	}
 
 	public void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -123,6 +124,6 @@ public class GroupServlet extends HttpServlet {
 		String jsonStr = new Gson().toJson(groupVO);
 		out.println(jsonStr);
 		}
-
+		
 	}
 }

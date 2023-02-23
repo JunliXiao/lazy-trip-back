@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -139,7 +141,7 @@ public class GroupDAOImpl implements GroupDAO_interface {
 
 	@Override
 	public TourVO findTourNameByID(Integer tourid) {
-		TourVO tourVO =null;
+		TourVO tourVO = null;
 		ResultSet rs = null;
 		try (Connection connection = HikariDataSource.getConnection();
 				PreparedStatement pstmt = connection.prepareStatement(GET_TOURNAME_STMT)) {
@@ -158,9 +160,10 @@ public class GroupDAOImpl implements GroupDAO_interface {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
+
 		}
 		return tourVO;
 	}
+
 
 }
