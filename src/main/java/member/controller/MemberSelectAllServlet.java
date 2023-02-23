@@ -16,7 +16,7 @@ import com.google.gson.GsonBuilder;
 import member.model.Member;
 import member.service.MemberServiceImpl;
 
-@WebServlet("/lazy/selectAll")
+@WebServlet("/page/admin/selectAll")
 public class MemberSelectAllServlet extends HttpServlet {
 
 	@Override

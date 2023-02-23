@@ -16,7 +16,7 @@ import member.model.Member;
 import member.service.MemberService;
 import member.service.MemberServiceImpl;
 
-@WebServlet("/lazy/upload")
+@WebServlet("/page/member/upload")
 @MultipartConfig
 public class MemberUploadImg extends HttpServlet {
 	private static final long serialVersionUID = 1L;

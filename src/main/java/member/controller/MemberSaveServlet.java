@@ -18,7 +18,7 @@ import member.service.MemberService;
 import member.service.MemberServiceImpl;
 
 
-@WebServlet("/lazy/save")
+@WebServlet("/page/member/save")
 public class MemberSaveServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

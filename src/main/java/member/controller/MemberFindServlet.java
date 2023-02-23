@@ -18,7 +18,7 @@ import member.model.Member;
 import member.service.MemberServiceImpl;
 
 
-@WebServlet("/lazy/find")
+@WebServlet("/page/member/find")
 public class MemberFindServlet extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
