@@ -23,8 +23,10 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 	private static final String UPDATE_STMT = "UPDATE lazy.group_member set g_m_status = ? where group_member= ? ";
 	private static final String DELETE_STMT = "DELETE from lazy.group_member where group_id = ? and member_id = ?";
 	private static final String GET_ALL_STMT = "SELECT * FROM lazy.group_member where group_id = ? and g_m_status = ?";
-	private static final String GET_ALL_GROUP_STMT = "SELECT g.group_name , g.group_member_count , g.group_id FROM lazy.group_member m right join lazy.group g on g.group_id =m.group_id "
-			+ "where m.member_id = ?";
+	private static final String GET_ALL_GROUP_STMT = "SELECT g.group_name , g.group_member_count , g.group_id , count(*) "
+			+ "FROM lazy.group_member m right join lazy.group g on g.group_id =m.group_id "
+			+ "where m.member_id = ? "
+			+ "GROUP BY g.group_id ;";
 	
 	@Override
 	public void insertNeedApprove(Group_memberVO groupmemberVO) {
@@ -98,7 +100,7 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 				groupVO = new GroupVO();
 				groupVO.setGroupid(rs.getInt("g.group_id"));
 //				groupVO.setTourid(rs.getInt("tour_id"));
-				groupVO.setGroupmembercount(rs.getInt("g.group_member_count"));
+				groupVO.setGroupmembercount(rs.getInt("count(*)"));
 				groupVO.setGroupname(rs.getString("g.group_name"));
 //				groupVO.setMemberid(rs.getInt("member_id"));
 				list.add(groupVO);
