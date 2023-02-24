@@ -12,9 +12,7 @@ public interface FriendMemberService {
 	
 	boolean blockFriendRequest(Integer requesterId, Integer addresseeId);
 	
-	boolean cancelFriendRequest(Integer requesterId, Integer addresseeId);
-	
-	boolean declineFrinedRequest(Integer requesterId, Integer addresseeId);
+	boolean removeFriendRequest(Integer requesterId, Integer addresseeId);
 	
     List<Member> getFriends(Integer memberId);
     

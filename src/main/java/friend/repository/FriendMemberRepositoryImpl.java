@@ -49,7 +49,7 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
 	@Override
 	public boolean deleteFriendship(Integer requesterId, Integer addresseeId) {
 		boolean hasDeleted = false;
-		String sql = "DELETE FROM friendship WHERE requester_id = ? and addressee_id = ?);";
+		String sql = "DELETE FROM friendship WHERE requester_id = ? and addressee_id = ?;";
         try (Connection connection = HikariDataSource.getConnection();
                 PreparedStatement ps = connection.prepareStatement(sql)) {
                ps.setInt(1, requesterId);

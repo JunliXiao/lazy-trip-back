@@ -54,6 +54,19 @@ public class FriendRequestController extends HttpServlet {
         out.println(output);
     }
     
+    // 刪除好友邀請關係
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
+        String output;
+        
+        FriendMemberService service = new FriendMemberServiceImpl();
+        int requesterId = Integer.parseInt(request.getParameter("requester_id"));
+        int addresseeId = Integer.parseInt(request.getParameter("addressee_id"));
+        output = gson.toJson(service.removeFriendRequest(requesterId, addresseeId));
+        
+    	out.println(output);
+    }
+    
     // 按方向查詢好友邀請對象：sent 送出、received 收到
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();

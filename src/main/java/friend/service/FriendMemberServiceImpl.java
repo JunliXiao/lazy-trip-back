@@ -30,12 +30,7 @@ public class FriendMemberServiceImpl implements FriendMemberService {
 	}
 
 	@Override
-	public boolean cancelFriendRequest(Integer requesterId, Integer addresseeId) {
-		return repository.deleteFriendship(requesterId, addresseeId);
-	}
-
-	@Override
-	public boolean declineFrinedRequest(Integer requesterId, Integer addresseeId) {
+	public boolean removeFriendRequest(Integer requesterId, Integer addresseeId) {
 		return repository.deleteFriendship(requesterId, addresseeId);
 	}
     
