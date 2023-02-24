@@ -17,7 +17,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
     @Override
     public List<Chatroom> getChatroomsByMember(Integer memberId) {
-        return null;
+        return repository.getChatrooms(memberId);
     }
 
     @Override
