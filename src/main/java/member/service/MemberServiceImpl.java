@@ -1,5 +1,6 @@
 package member.service;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class MemberServiceImpl implements MemberService{
 				errorMsgs.add("性別不能為空");
 			}
 			if(username == null || username.isEmpty()) {
-				errorMsgs.add("性別不能為空");
+				errorMsgs.add("暱稱不能為空");
 			}
 			
 			if(errorMsgs.isEmpty()) {
@@ -66,21 +67,17 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public String save(Member member) {
-		final String account = member.getAccount();
 		final String username = member.getUsername();
-		final String password = member.getPassword();
 		final String gender = member.getGender();
-		if(account == null || account.isEmpty()) {
-			errorMsgs.add("帳號不能為空");
-		}
-		if(password == null || password.isEmpty()) {
-			errorMsgs.add("密碼不能為空");
-		}
+		final Date birth = member.getBirthday();
 		if(gender == null || gender.isEmpty()) {
 			errorMsgs.add("性別不能為空");
 		}
 		if(username == null || username.isEmpty()) {
-			errorMsgs.add("性別不能為空");
+			errorMsgs.add("暱稱不能為空");
+		}
+		if(birth == null) {
+			errorMsgs.add("生日不能為空");
 		}
 		if(errorMsgs.isEmpty()) {
 			dao.updateById(member);

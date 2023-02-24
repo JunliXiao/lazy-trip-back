@@ -1,8 +1,11 @@
 package group.service;
 
+import java.util.Map;
+
 import group.dao.GroupDAOImpl;
 import group.dao.GroupDAO_interface;
 import group.model.GroupVO;
+import tour.model.TourVO;
 
 public class GroupService {
 	private GroupDAO_interface dao;
@@ -27,5 +30,9 @@ public class GroupService {
 		dao.update(groupVO);
 	}
 
+	public TourVO getOneTourInfo(Integer tourid) {
+		return dao.findTourNameByID(tourid);
+	}
 	
+
 }

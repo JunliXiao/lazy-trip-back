@@ -5,16 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import common.HikariDataSource;
 import group.model.GroupVO;
+import tour.model.TourVO;
 
 public class GroupDAOImpl implements GroupDAO_interface {
 
 	private static DataSource ds = null;
-
 
 	private static final String INSERT_STMT = "INSERT INTO lazy.group (  group_member_count , group_name , member_id ,if_join_group_directly) values(?,?,?,?)";
 	private static final String GET_ALL_STMT = "SELECT group_id , tour_id , group_member_count , group_name , member_id FROM lazy.group"
@@ -22,6 +25,7 @@ public class GroupDAOImpl implements GroupDAO_interface {
 	private static final String GET_ONE_STMT = "SELECT group_id , tour_id , group_member_count , group_name , member_id , if_join_group_directly FROM lazy.group where group_id = ?";
 	private static final String DELETE = "DELETE from lazy.group where group_id = ?";
 	private static final String UPDATE_GROUP_SETTING_STMT = "UPDATE lazy.group set group_member_count = ?  ,group_name = ? ,if_join_group_directly = ? where group_id= ?";
+	private static final String GET_TOURNAME_STMT = "SELECT  tour_title , start_date ,end_date FROM lazy.tour t WHERE t.tour_id= ?";
 
 	@Override
 	public int insert(GroupVO groupVo) {
@@ -34,7 +38,7 @@ public class GroupDAOImpl implements GroupDAO_interface {
 			pstmt.setString(2, groupVo.getGroupname());
 			pstmt.setInt(3, groupVo.getMemberid());
 			pstmt.setInt(4, groupVo.getIfjoingroupdirectly());
-			
+
 			pstmt.executeUpdate();
 
 			try (ResultSet rs = pstmt.getGeneratedKeys()) {
@@ -56,7 +60,7 @@ public class GroupDAOImpl implements GroupDAO_interface {
 	public void update(GroupVO groupVo) {
 		// TODO Auto-generated method stub
 		try (Connection connection = HikariDataSource.getConnection();
-				PreparedStatement pstmt = connection.prepareStatement(UPDATE_GROUP_SETTING_STMT)){
+				PreparedStatement pstmt = connection.prepareStatement(UPDATE_GROUP_SETTING_STMT)) {
 
 			pstmt.setInt(1, groupVo.getGroupmembercount());
 			pstmt.setString(2, groupVo.getGroupname());
@@ -134,5 +138,32 @@ public class GroupDAOImpl implements GroupDAO_interface {
 
 		return groupVO;
 	}
+
+	@Override
+	public TourVO findTourNameByID(Integer tourid) {
+		TourVO tourVO = null;
+		ResultSet rs = null;
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(GET_TOURNAME_STMT)) {
+			pstmt.setInt(1, tourid);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				tourVO = new TourVO();
+				tourVO.setTourTitle(rs.getString("tour_title"));
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String startDate = sdf.format(rs.getDate("start_date"));
+				String endDate = sdf.format(rs.getDate("end_date"));
+				tourVO.setStartDate(startDate);
+				tourVO.setEndDate(endDate);
+				return tourVO;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		return tourVO;
+	}
+
 
 }

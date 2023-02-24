@@ -2,10 +2,12 @@ package member.dao;
 
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -20,6 +22,7 @@ public class MemberDAOImpl implements MemberDAO{
 //	public MemberDAOImpl() throws NamingException {
 //		ds = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/lazy");
 //	}
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private static final String INSERT = "insert into member(member_account, member_password, member_username, member_gender, member_birth, member_accessnum) values(?, ?, ?, ?, ?, '1')";
 	@Override
@@ -52,41 +55,61 @@ public class MemberDAOImpl implements MemberDAO{
 	@Override
 	public int updateById(Member member) {
 		StringBuilder sql = new StringBuilder("update member set ");
-		final String ps = member.getPassword();
+		final String name = member.getName();
+		final String phone = member.getPhone();
+		final String address = member.getAddress();
 		final String un = member.getUsername();
 		final String gender = member.getGender();
-		if(ps != null && !ps.isEmpty()) {
-			sql.append("member_password=?");
-		}
+		final Date birth = member.getBirthday();
 		if(un != null && !un.isEmpty()) {
-			sql.append(", member_username=?");
+			sql.append("member_username=?");
 		}
 		if(gender != null && !gender.isEmpty()) {
 			sql.append(", member_gender=?");
 		}
-		sql.append(", member_birth = ? where member_id = ?");
+		if(birth != null) {
+			sql.append(", member_birth=?");
+		}
+		if (name != null && !name.isEmpty()) {
+			sql.append(", member_name=?");
+		}
+		if (phone != null && !phone.isEmpty()) {
+			sql.append(", member_phone=?");
+		}
+		if (address != null && !address.isEmpty()) {
+			sql.append(", member_address=?");
+		}
 		
-		try (	Connection con = HikariDataSource.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql.toString());
-		){
+		sql.append(" where member_id = ?");
+
+		try (Connection con = HikariDataSource.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql.toString());) {
 			int nxtSeq = 1;
-			if(ps != null && !ps.isEmpty()) {
-				pstmt.setString(nxtSeq++, ps);
-//				nxtSeq++;
-			}
+			
 			if(un != null && !un.isEmpty()) {
 				pstmt.setString(nxtSeq++, un);
 			}
 			if(gender != null && !gender.isEmpty()) {
 				pstmt.setString(nxtSeq++, gender);
 			}
-			pstmt.setDate(nxtSeq++, member.getBirthday());
+			if(birth != null) {
+				pstmt.setDate(nxtSeq++, birth);
+			}
+			if (name != null && !name.isEmpty()) {
+				pstmt.setString(nxtSeq++, name);
+			}
+			if (phone != null && !phone.isEmpty()) {
+				pstmt.setString(nxtSeq++, phone);
+			}
+			if (address != null && !address.isEmpty()) {
+				pstmt.setString(nxtSeq++, address);
+			}
 			pstmt.setInt(nxtSeq, member.getId());
+
 			
 			System.out.println(sql);
 			return pstmt.executeUpdate();
-			
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
