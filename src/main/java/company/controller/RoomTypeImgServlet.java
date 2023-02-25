@@ -1,6 +1,9 @@
 package company.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,13 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import company.model.EquipmentVO;
-import company.service.EquipmentService;
+import company.model.RoomTypeImgVO;
+import company.service.RoomTypeImgService;
 
-@WebServlet("/equipmentServlet")
-public class EquipmentServlet extends HttpServlet {
+@WebServlet("/RoomtypeImgServlet")
+public class RoomTypeImgServlet extends HttpServlet {
 
-	private static final String EquipmentName = null;
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
@@ -38,9 +40,9 @@ public class EquipmentServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 
 			/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
-			String str = req.getParameter("equipmentID");
+			String str = req.getParameter("roomTypeImgID");
 			if (str == null || (str.trim()).length() == 0) {
-				errorMsgs.add("請輸入設備編號");
+				errorMsgs.add("請輸入房型圖片編號");
 			}
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
@@ -49,11 +51,11 @@ public class EquipmentServlet extends HttpServlet {
 				return;// 程式中斷
 			}
 
-			Integer equipmentID = null;
+			Integer roomTypeImgID = null;
 			try {
-				equipmentID = Integer.valueOf(str);
+				roomTypeImgID = Integer.valueOf(str);
 			} catch (Exception e) {
-				errorMsgs.add("設備編號格式不正確");
+				errorMsgs.add("房型圖片編號格式不正確");
 			}
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
@@ -63,9 +65,9 @@ public class EquipmentServlet extends HttpServlet {
 			}
 
 			/*************************** 2.開始查詢資料 *****************************************/
-			EquipmentService equipmentService = new EquipmentService();
-			EquipmentVO equipmentVO = equipmentService.getOneEquipment(equipmentID);
-			if (equipmentVO == null) {
+			RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
+			RoomTypeImgVO roomtypeImgVO = roomTypeImgService.getOneRoomTypeImg(roomTypeImgID);
+			if (roomtypeImgVO == null) {
 				errorMsgs.add("查無資料");
 			}
 			// Send the use back to the form, if there were errors
@@ -76,7 +78,7 @@ public class EquipmentServlet extends HttpServlet {
 			}
 
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
-			req.setAttribute("equipmentVO", equipmentVO); // 資料庫取出的empVO物件,存入req
+			req.setAttribute("roomTypeImgVO", roomtypeImgVO); // 資料庫取出的empVO物件,存入req
 			String url = "/company/listOneCompany.jsp";
 			RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 listOneEmp.jsp
 			successView.forward(req, res);
@@ -90,14 +92,17 @@ public class EquipmentServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 
 			/*************************** 1.接收請求參數 ****************************************/
-			Integer equipmentID = Integer.valueOf(req.getParameter("equipmentID"));
+			Integer roomTypeID = Integer.valueOf(req.getParameter("roomtypeID"));
 
 			/*************************** 2.開始查詢資料 ****************************************/
-			EquipmentService equipmentService = new EquipmentService();
-			EquipmentVO equipmentVO = equipmentService.getOneEquipment(equipmentID);
+			RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
+			
+			RoomTypeImgVO roomTypeImgVO = roomTypeImgService.getOneRoomTypeImg(roomTypeID);
+			
+						
 
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) ************/
-			req.setAttribute("equipmentVO", equipmentVO); // 資料庫取出的empVO物件,存入req
+			req.setAttribute("roomTypeImgVO", roomTypeImgVO); // 資料庫取出的empVO物件,存入req
 			String url = "/company/update_company_input.jsp";
 			RequestDispatcher successView = req.getRequestDispatcher(url);// 成功轉交 update_emp_input.jsp
 			successView.forward(req, res);
@@ -111,40 +116,59 @@ public class EquipmentServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 
 			/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
-			Integer equipmentID = Integer.valueOf(req.getParameter("equipmentID").trim());
+			Integer roomTypeImgID = Integer.valueOf(req.getParameter("roomTypeImgID"));
 
-			String equipmentName = req.getParameter("equipmentName");
-			String equipmentNameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{1,10}$";
-			if (equipmentName == null || equipmentName.trim().length() == 0) {
-				errorMsgs.add("設備名稱: 請勿空白");
-			} else if (!equipmentName.trim().matches(equipmentNameReg)) { // 以下練習正則(規)表示式(regular-expression)
-				errorMsgs.add("設備名稱: 只能是中、英文字母、數字和_ , 且長度必需在1到10之間");
-			}
+			Integer roomTypeID = Integer.valueOf(req.getParameter("roomTypeID"));
+			
+			String roomTypeImgString = req.getParameter("roomTypeImg");
+					
+		    // Open an input stream to the image file
+		    InputStream in = getServletContext().getResourceAsStream("/images/" + roomTypeImgString);
+		    
+		    // Copy the contents of the input stream to the output stream
+		    ByteArrayOutputStream out = new ByteArrayOutputStream();
+		    byte[] buffer = new byte[4096];
+		    int bytesRead = -1;
+		    while ((bytesRead = in.read(buffer)) != -1) {
+		      out.write(buffer, 0, bytesRead);
+		    }
+		    byte[] roomTypeImg = out.toByteArray();
+		    		    
+		    in.close();
+		    out.close();
+		  
+			
+//			String RoomtypeImgNameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{1,10}$";
+//			if (RoomtypeImgID == null || RoomTypeImgID.trim().length() == 0) {
+//				errorMsgs.add("設備名稱: 請勿空白");
+//			} else if (!RoomTypeImgID.trim().matches(RoomTypeImgIDReg)) { // 以下練習正則(規)表示式(regular-expression)
+//				errorMsgs.add("設備名稱: 只能是中、英文字母、數字和_ , 且長度必需在1到10之間");
+//			}
+//
+//			String RoomTypeImg = req.getParameter("RoomTypeImg").trim();
+//			if (RoomTypeImg == null || RoomTypeImg.trim().length() == 0) {
+//				errorMsgs.add("職位請勿空白");
+//			}
 
-			String equipmentDesc = req.getParameter("equipmentDesc").trim();
-			if (equipmentDesc == null || equipmentDesc.trim().length() == 0) {
-				errorMsgs.add("職位請勿空白");
-			}
-
-			EquipmentVO equipmentVO = new EquipmentVO();
-			equipmentVO.setEquipmentID(equipmentID);
-			equipmentVO.setEquipmentName(equipmentName);
-			equipmentVO.setEquipmentDesc(equipmentDesc);
+			
+			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
+			roomTypeImgVO.setRoomTypeID(roomTypeID);
+			roomTypeImgVO.setRoomTypeImg(roomTypeImg);
 
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
-				req.setAttribute("equipmentVO", equipmentVO); // 含有輸入格式錯誤的empVO物件,也存入req
+				req.setAttribute("RoomTypeImgVO", roomTypeImgVO); // 含有輸入格式錯誤的empVO物件,也存入req
 				RequestDispatcher failureView = req.getRequestDispatcher("/company/update_company_input.jsp");
 				failureView.forward(req, res);
 				return; // 程式中斷
 			}
 
 			/*************************** 2.開始修改資料 *****************************************/
-			EquipmentService equipmentService = new EquipmentService();
-			equipmentVO = equipmentService.updateEquipment(equipmentID, equipmentName, equipmentDesc);
+			RoomTypeImgService RoomtypeImgService = new RoomTypeImgService();
+			roomTypeImgVO = RoomtypeImgService.updateRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImg);
 
 			/*************************** 3.修改完成,準備轉交(Send the Success view) *************/
-			req.setAttribute("equipmentVO", equipmentVO); // 資料庫update成功後,正確的的empVO物件,存入req
+			req.setAttribute("RoomtypeImgVO", roomTypeImgVO); // 資料庫update成功後,正確的的empVO物件,存入req
 			String url = "/company/listOneCompany.jsp";
 			RequestDispatcher successView = req.getRequestDispatcher(url); // 修改成功後,轉交listOneEmp.jsp
 			successView.forward(req, res);
@@ -158,34 +182,46 @@ public class EquipmentServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 
 			/*********************** 1.接收請求參數 - 輸入格式的錯誤處理 *************************/
-			Integer equipmentID = Integer.valueOf(req.getParameter("equipmentID").trim());
+			Integer roomTypeID = Integer.valueOf(req.getParameter("RoomTypeID").trim());
 
-			String equipmentName = req.getParameter("equipmentName").trim();
-			if (equipmentName == null || equipmentName.trim().length() == 0) {
+			Integer roomTypeImgID = Integer.valueOf(req.getParameter("RoomTypeImgID").trim());
+			if (roomTypeImgID == null || roomTypeImgID == 0) {
 				errorMsgs.add("請勿空白");
 			}
 
-			String equipmentDesc = req.getParameter("equipmentDesc").trim();
-			if (equipmentDesc == null || equipmentDesc.trim().length() == 0) {
-				errorMsgs.add("請勿空白");
-			}
-
-			EquipmentVO equipmentVO = new EquipmentVO();
-			equipmentVO.setEquipmentID(123);
-			equipmentVO.setEquipmentName("安安");
-			equipmentVO.setEquipmentDesc("你好");
+			String roomTypeImgString = req.getParameter("roomTypeImg");
+			
+		    // Open an input stream to the image file
+		    InputStream in = getServletContext().getResourceAsStream("/images/" + roomTypeImgString);
+		    
+		    // Copy the contents of the input stream to the output stream
+		    ByteArrayOutputStream out = new ByteArrayOutputStream();
+		    byte[] buffer = new byte[4096];
+		    int bytesRead = -1;
+		    while ((bytesRead = in.read(buffer)) != -1) {
+		      out.write(buffer, 0, bytesRead);
+		    }
+		    byte[] roomTypeImg = out.toByteArray();
+		    		    
+		    in.close();
+		    out.close();
+		    
+			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
+			
+			roomTypeImgVO.setRoomTypeID(roomTypeID);
+			roomTypeImgVO.setRoomTypeImg(roomTypeImg);
 
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
-				req.setAttribute("equipmentVO", equipmentVO); // 含有輸入格式錯誤的empVO物件,也存入req
-				RequestDispatcher failureView = req.getRequestDispatcher("/equipment/addequipment.jsp");
+				req.setAttribute("RoomTypeImgVO", roomTypeImgVO); // 含有輸入格式錯誤的empVO物件,也存入req
+				RequestDispatcher failureView = req.getRequestDispatcher("/RoomtypeImg/addRoomtypeImg.jsp");
 				failureView.forward(req, res);
 				return;
 			}
 
 			/*************************** 2.開始新增資料 ***************************************/
-			EquipmentService equipmentSvc = new EquipmentService();
-			equipmentVO = equipmentSvc.addEquipment(equipmentID, equipmentName, equipmentDesc);
+			RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
+			roomTypeImgVO = roomTypeImgService.addRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImg);
 
 			/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 			String url = "/company/addCompany.jsp";
@@ -201,11 +237,11 @@ public class EquipmentServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 
 			/*************************** 1.接收請求參數 ***************************************/
-			Integer equipmentID = Integer.valueOf(req.getParameter("equipmentID"));
+			Integer RoomTypeImgID = Integer.valueOf(req.getParameter("RoomTypeImgID"));
 
 			/*************************** 2.開始刪除資料 ***************************************/
-			EquipmentService equipmentService = new EquipmentService();
-			equipmentService.deleteEquipment(equipmentID);
+			RoomTypeImgService RoomTypeImgService = new RoomTypeImgService();
+			RoomTypeImgService.deleteroomTypeImg(RoomTypeImgID);
 
 			/*************************** 3.刪除完成,準備轉交(Send the Success view) ***********/
 			String url = "/company/listAllCompany.jsp";
@@ -216,10 +252,10 @@ public class EquipmentServlet extends HttpServlet {
 		if ("1".equals(action)) {
 
 			Gson gson = new Gson();
-			EquipmentVO jsonObject = gson.fromJson(req.getReader(), EquipmentVO.class);
-			System.out.println(jsonObject.getEquipmentName());
-			EquipmentService service = new EquipmentService();
-			List<EquipmentVO> list = service.getAll();
+			RoomTypeImgVO jsonObject = gson.fromJson(req.getReader(), RoomTypeImgVO.class);
+			System.out.println(jsonObject.getRoomTypeImgID());
+			RoomTypeImgService service = new RoomTypeImgService();
+			List<RoomTypeImgVO> list = service.getAll();
 			res.setContentType("application/json");
 		    res.getWriter().write(gson.toJson(list));
 		}

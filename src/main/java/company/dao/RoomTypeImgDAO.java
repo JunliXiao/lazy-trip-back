@@ -9,35 +9,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.HikariDataSource;
-import company.model.EquipmentVO;
+import company.model.RoomTypeImgVO;
 
-public class EquipmentJDBCDAO implements EquipmentDAO_interface {
+public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 
 
 	private static final String INSERT_STMT = 
-			"INSERT INTO equipment (equipment_id,equipment_name,equipment_desc) VALUES (?, ?, ?)";
+			"INSERT INTO roomtype_img (roomtype_id,roomtype_img) VALUES (?, ?)";
 		private static final String GET_ALL_STMT = 
-			"SELECT equipment_id as equipmentID,equipment_name as equipmentName,equipment_desc as equipmentDesc FROM equipment order by equipment_id";
+			"SELECT roomtype_img_id as roomTypeImgID,roomtype_id as roomTypeID,roomtype_img as roomTypeImg FROM roomtype_img order by roomtype_id";
 		private static final String GET_ONE_STMT = 
-			"SELECT equipment_id as equipmentID,equipment_name as equipmentName,equipment_desc as equipmentDesc FROM equipment where equipment_id = ?";
+			"SELECT roomtype_img_id as roomTypeImgID,roomtype_id as roomTypeID,roomtype_img as roomTypeImg FROM roomtype_img FROM roomtype_img where roomtype_img_id = ?";
 		private static final String DELETE = 
-			"DELETE FROM equipment where equipment_id = ?";
+			"DELETE FROM roomtype_img where roomtype_img_id = ?";
 		private static final String UPDATE = 
-			"UPDATE equipment set equipment_name=?, equipment_desc=? where equipment_id = ?";
+			"UPDATE roomtype_img set roomtype_img=? where roomtype_img_id = ?";
+		
 	@Override
-	public void insert(EquipmentVO equipmentVO) {
+	public void insert(RoomTypeImgVO roomTypeImgVO) {
 
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			 con = HikariDataSource.getConnection();
-			pstmt = con.prepareStatement(INSERT_STMT);
-
-			pstmt.setInt(1, equipmentVO.getEquipmentID());
-			pstmt.setString(2, equipmentVO.getEquipmentName());
-			pstmt.setString(3, equipmentVO.getEquipmentDesc());
+			
+		try( Connection con = HikariDataSource.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(INSERT_STMT);) 
+		{
+		
+			pstmt.setInt(1, roomTypeImgVO.getRoomTypeImgID());
+			pstmt.setBytes(2, roomTypeImgVO.getRoomTypeImg());
 			
 			pstmt.executeUpdate();
 
@@ -46,27 +43,12 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 			throw new RuntimeException("A database error occured. "
 					+ se.getMessage());
 			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
-			}
-		}
+		} 
 
 	}
 
 	@Override
-	public void update(EquipmentVO equipmentVO) {
+	public void update(RoomTypeImgVO roomTypeImgVO) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -75,9 +57,9 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 			con = HikariDataSource.getConnection();
 			pstmt = con.prepareStatement(UPDATE);
 
-			pstmt.setString(1, equipmentVO.getEquipmentName());
-			pstmt.setString(2, equipmentVO.getEquipmentDesc());
-			pstmt.setInt(3, equipmentVO.getEquipmentID());
+			
+			pstmt.setInt(1, roomTypeImgVO.getRoomTypeImgID());
+			pstmt.setBytes(2, roomTypeImgVO.getRoomTypeImg());
 			
 			pstmt.executeUpdate();
 
@@ -106,7 +88,7 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 	}
 
 	@Override
-	public void delete(Integer equipmentID) {
+	public void delete(Integer roomTypeImgID) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -115,7 +97,7 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 			con = HikariDataSource.getConnection();
 			pstmt = con.prepareStatement(DELETE);
 
-			pstmt.setInt(1, equipmentID);
+			pstmt.setInt(1, roomTypeImgID);
 
 			pstmt.executeUpdate();
 			
@@ -143,9 +125,9 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 	}
 
 	@Override
-	public EquipmentVO findByPrimaryKey(Integer equipmentID) {
+	public RoomTypeImgVO findByRoomTypeID(Integer roomtTypeID) {
 
-		EquipmentVO equipmentVO = null;
+		RoomTypeImgVO roomTypeImgVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -155,16 +137,16 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 
 			pstmt = con.prepareStatement(GET_ONE_STMT);
 
-			pstmt.setInt(1, equipmentID);
+			pstmt.setInt(1, roomtTypeID);
 
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				// empVo 也稱為 Domain objects
-				equipmentVO = new EquipmentVO();
-				equipmentVO.setEquipmentID(rs.getInt("equipmentID"));
-				equipmentVO.setEquipmentName(rs.getString("equipmentName"));
-				equipmentVO.setEquipmentDesc(rs.getString("equipmentDesc"));
+				
+				roomTypeImgVO = new RoomTypeImgVO();
+				roomTypeImgVO.setRoomTypeImgID(rs.getInt("roomTypeImgID"));
+				roomTypeImgVO.setRoomTypeID(rs.getInt("roomTypeID"));
+				roomTypeImgVO.setRoomTypeImg(rs.getBytes("roomTypeImg"));
 				
 			}
 
@@ -196,13 +178,13 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 				}
 			}
 		}
-		return equipmentVO;
+		return roomTypeImgVO;
 	}
 
 	@Override
-	public List<EquipmentVO> getAll() {
-		List<EquipmentVO> list = new ArrayList<EquipmentVO>();
-		EquipmentVO equipmentVO = null;
+	public List<RoomTypeImgVO> getAll() {
+		List<RoomTypeImgVO> list = new ArrayList<RoomTypeImgVO>();
+		RoomTypeImgVO roomTypeImgVO = null;
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -216,11 +198,11 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 
 			while (rs.next()) {
 				// equipmentVO 也稱為 Domain objects
-				equipmentVO = new EquipmentVO();
-	equipmentVO.setEquipmentID(rs.getInt("equipmentID"));
-	equipmentVO.setEquipmentName(rs.getString("equipmentName"));
-	equipmentVO.setEquipmentDesc(rs.getString("equipmentDesc"));
-				list.add(equipmentVO); // Store the row in the list
+				roomTypeImgVO = new RoomTypeImgVO();
+				roomTypeImgVO.setRoomTypeImgID(rs.getInt("roomTypeImgID"));
+				roomTypeImgVO.setRoomTypeID(rs.getInt("roomTypeID"));
+				roomTypeImgVO.setRoomTypeImg(rs.getBytes("roomTypeImg"));
+				list.add(roomTypeImgVO); // Store the row in the list
 			}
 
 			// Handle any driver errors
@@ -253,7 +235,4 @@ public class EquipmentJDBCDAO implements EquipmentDAO_interface {
 		}
 		return list;
 	}
-
-	
-	
 }

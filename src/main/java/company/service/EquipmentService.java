@@ -3,7 +3,7 @@ package company.service;
 import java.util.List;
 
 import company.dao.EquipmentDAO_interface;
-import company.dao.EquipmentJDBCDAO;
+import company.dao.EquipmentDAO;
 import company.model.EquipmentVO;
 
 public class EquipmentService {
@@ -11,7 +11,7 @@ public class EquipmentService {
 	private EquipmentDAO_interface dao;
 
 	public EquipmentService() {
-		dao = new EquipmentJDBCDAO();
+		dao = new EquipmentDAO();
 	}
 
 	public EquipmentVO addEquipment(Integer equipmentID,String equipmentName, String equipmentDesc
