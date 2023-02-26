@@ -1,18 +1,16 @@
 package friend.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.google.gson.Gson;
+import friend.service.ChatMemberService;
+import friend.service.ChatMemberServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.gson.Gson;
-
-import friend.service.ChatMemberService;
-import friend.service.ChatMemberServiceImpl;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 @WebServlet("/api/chat")
 public class ChatroomController extends HttpServlet {
@@ -28,8 +26,8 @@ public class ChatroomController extends HttpServlet {
         ChatMemberService service = new ChatMemberServiceImpl();
         Integer id = Integer.parseInt(request.getParameter("member_id"));
         
-        output = gson.toJson(service.getChatroomsByMember(id));
-		out.println(output);
+        output = gson.toJson(service.getChatroomsByOneMember(id));
+        out.println(output);
 	}
 
 }

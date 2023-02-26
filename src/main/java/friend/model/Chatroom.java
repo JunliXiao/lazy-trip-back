@@ -1,12 +1,10 @@
 package friend.model;
 
-import java.sql.Timestamp;
-
 public class Chatroom {
 
     private Integer id;
     private String name;
-    private Timestamp createdAt;
+    private Long createdAtUnix;
 
     public Chatroom() {
 
@@ -28,11 +26,11 @@ public class Chatroom {
         this.name = name;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
+    public Long getCreatedAtUnix() {
+        return createdAtUnix;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAtUnix(Long createdAtUnix) {
+        this.createdAtUnix = createdAtUnix;
     }
 }

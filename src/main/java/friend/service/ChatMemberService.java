@@ -8,7 +8,9 @@ import java.util.List;
 public interface ChatMemberService {
 
 
-    List<Chatroom> getChatroomsByMember(Integer memberId);
+    List<Chatroom> getChatroomsByOneMember(Integer memberId);
+
+    List<Chatroom> getChatroomsByMultipleMembers(List<Integer> memberId);
 
     List<Member> getMembersByChatroom(Integer chatroomId);
 

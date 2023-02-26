@@ -32,7 +32,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
     public List<Chatroom> getChatrooms(Integer memberId) {
         List<Chatroom> chatrooms = new ArrayList<>();
         String sql = """
-                SELECT ch.chatroom_id, ch.chatroom_name, ch.created_at FROM chatroom_member cm
+                SELECT ch.chatroom_id, ch.chatroom_name, UNIX_TIMESTAMP(ch.created_at) created_at_unix FROM chatroom_member cm
                 \tJOIN chatroom ch ON ch.chatroom_id = cm.chatroom_id
                 WHERE member_id = ?;
                 """;
@@ -46,7 +46,8 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
                 Chatroom chatroom = new Chatroom();
                 chatroom.setId(rs.getInt("chatroom_id"));
                 chatroom.setName(rs.getString("chatroom_name"));
-//                chatroom.setCreatedAt();
+//                System.out.println(rs.getLong("created_at_unix"));
+                chatroom.setCreatedAtUnix(rs.getLong("created_at_unix"));
                 chatrooms.add(chatroom);
             }
 

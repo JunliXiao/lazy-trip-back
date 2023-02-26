@@ -1,5 +1,8 @@
 package common;
 
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,11 +14,17 @@ import java.io.PrintWriter;
 @WebServlet("/hello")
 public class Hello extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static JedisPool pool = JedisPoolUtil.getJedisPool();
 
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
-        out.println("common.Hello from Servlet");
+        String output;
+
+        Jedis jedis = pool.getResource();
+        output = jedis.get("mykey");
+
+        out.println(output);
     }
 
     protected void doPost(HttpServletRequest request,
