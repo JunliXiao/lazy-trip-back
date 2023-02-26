@@ -121,7 +121,6 @@ public class AttractionDaoImpl implements AttractionDao {
 
             while (rs.next()) {
                 attractionVO = new AttractionVO();
-                attractionVO.setAttractionId(rs.getInt("attraction_id"));
                 attractionVO.setAttractionTitle(rs.getString("attraction_title"));
                 attractionVO.setLocation(rs.getString("location"));
                 attractionVO.setIntroduction(rs.getString("introduction"));

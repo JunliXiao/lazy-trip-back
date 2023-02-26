@@ -24,7 +24,7 @@ public class TourScheduleDaoImpl implements TourScheduleDao {
 //    }
 
 	private static final String INSERT_SQL = "insert into tour_schedule (date, start_time, stay_time, end_time, car_route_time, attraction_id, tour_id) values (?,?,?,?,?,?,?);";
-	private static final String UPDATE_SQL = "update tour_schedule set date=?, start_time=?, stay_time=?, attraction_id=? where tour_schedule_id=? and tour_id=?;";
+	private static final String UPDATE_SQL = "update tour_schedule set date=?, start_time=?, stay_time=?, end_time=?, car_route_time=?, attraction_id=? where tour_schedule_id=?;";
 	private static final String DELETE_SQL = "delete from tour_schedule where tour_schedule_id = ?";
 	private static final String GET_ALL_SQL = "select tour_schedule_id, tour_id, attraction_id, date, start_time, stay_time from tour_schedule order by tour_schedule_id;";
 	private static final String GET_ONE_SQL = "select tour_schedule_id, ts.attraction_id, date, start_time, stay_time, end_time, car_route_time, attraction_title, location, attraction_img, longitude, latitude from tour_schedule ts join attraction a1 on ts.attraction_id = a1.attraction_id where tour_id = ?;";
@@ -50,7 +50,7 @@ public class TourScheduleDaoImpl implements TourScheduleDao {
 				ps.addBatch();
 			}
 
-			int[] counts = ps.executeBatch();
+			ps.executeBatch();
 			ResultSet rs = ps.getGeneratedKeys();
 			List<Integer> generatedKeys = new ArrayList<>();
 			while (rs.next()) {
@@ -71,14 +71,16 @@ public class TourScheduleDaoImpl implements TourScheduleDao {
 				PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
 			Date Date = dateFormat.parse(tourScheduleVO.getDate());
 			Time startTime = new Time(timeFormat.parse(tourScheduleVO.getStartTime()).getTime());
+			Time endTime = new Time(timeFormat.parse(tourScheduleVO.getEndTime()).getTime());
 
 			ps.setObject(1, Date);
 			ps.setObject(2, startTime);
 			ps.setInt(3, tourScheduleVO.getStayTime());
-			ps.setInt(4, tourScheduleVO.getAttractionId());
-			ps.setInt(5, tourScheduleVO.getTourScheduleId());
-			ps.setInt(6, tourScheduleVO.getTourId());
-
+			ps.setObject(4, endTime);
+			ps.setString(5, tourScheduleVO.getCarRouteTime());
+			ps.setInt(6, tourScheduleVO.getAttractionId());
+			ps.setInt(7, tourScheduleVO.getTourScheduleId());
+			
 			return ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

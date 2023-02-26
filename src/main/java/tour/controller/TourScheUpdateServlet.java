@@ -30,7 +30,6 @@ public class TourScheUpdateServlet extends HttpServlet {
             TourScheduleService service = new TourScheduleServiceImpl();
             final TourScheduleVO result = service.tourScheUpdate(tourScheduleVO);
             resp.setContentType("application/json");
-//            resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(result));
         } catch (NamingException e) {
             e.printStackTrace();
