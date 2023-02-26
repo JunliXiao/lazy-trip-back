@@ -5,7 +5,7 @@ import java.util.List;
 import tour.model.TourScheduleVO;
 
 public interface TourScheduleDao {
-    public int insert(TourScheduleVO tourScheduleVO);
+    public List<Integer> insert(List<TourScheduleVO> lists);
 
     public int update(TourScheduleVO tourScheduleVO);
 
@@ -13,5 +13,5 @@ public interface TourScheduleDao {
 
     public List<TourScheduleVO> getAll();
 
-    public TourScheduleVO findByPrimaryKey(Integer tourScheduleId);
+    public List<TourScheduleVO> findByPrimaryKey(Integer tourId);
 }

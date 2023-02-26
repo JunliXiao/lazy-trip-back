@@ -11,30 +11,28 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
+import common.HikariDataSource;
 import tour.model.TourComVO;
 
 public class TourComDaoImpl implements TourComDao {
-    private static DataSource dataSource;
-
-    public TourComDaoImpl() throws NamingException {
-        dataSource = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/example");
-    }
+//    private static DataSource dataSource;
+//
+//    public TourComDaoImpl() throws NamingException {
+//        dataSource = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/example");
+//    }
 
     private static final String INSERT_SQL = "insert into tour_company (tour_title, start_date, end_date, tour_img, cost, tour_person, company_id) values (?,?,?,?,?,?,?);";
     private static final String UPDATE_SQL = "update tour_company set tour_title=?, start_date=?, end_date=?, tour_img=?, cost=?, tour_person=? where c_tour_id=? and company_id=?;";
     private static final String DELETE_SQL = "delete from tour_company where c_tour_id = ?";
     private static final String GET_ALL_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id from tour_company order by c_tour_id;";
     private static final String GET_ONE_SQL = "select tour_title, start_date, end_date, tour_img, cost, tour_person, company_id form tour_company where c_tour_id=?;";
+    private static final String SQL = "select * from tour_company where";
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public int insert(TourComVO tourComVO) {
         byte[] decodedBytes = null;
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
             ps.setString(1, tourComVO.getTourTitle());
             Date StartDate = dateFormat.parse(tourComVO.getStartDate());
             Date endDate = dateFormat.parse(tourComVO.getEndDate());
@@ -57,7 +55,7 @@ public class TourComDaoImpl implements TourComDao {
     @Override
     public int update(TourComVO tourComVO) {
         byte[] decodedBytes = null;
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
             ps.setString(1, tourComVO.getTourTitle());
             Date StartDate = dateFormat.parse(tourComVO.getStartDate());
             Date endDate = dateFormat.parse(tourComVO.getEndDate());
@@ -80,7 +78,7 @@ public class TourComDaoImpl implements TourComDao {
 
     @Override
     public int delete(Integer tourComId) {
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(DELETE_SQL)) {
 
             ps.setInt(1, tourComId);
 
@@ -97,7 +95,7 @@ public class TourComDaoImpl implements TourComDao {
         TourComVO tourComVO = null;
         ResultSet rs = null;
 
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(GET_ALL_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(GET_ALL_SQL)) {
 
             rs = ps.executeQuery();
 
@@ -122,7 +120,7 @@ public class TourComDaoImpl implements TourComDao {
         TourComVO tourComVO = null;
         ResultSet rs = null;
 
-        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(GET_ONE_SQL)) {
+        try (Connection conn = HikariDataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(GET_ONE_SQL)) {
 
             ps.setInt(1, tourComId);
 
@@ -141,5 +139,12 @@ public class TourComDaoImpl implements TourComDao {
         }
         return tourComVO;
 
+    }
+    
+    public int query(TourComVO tourComVO) {
+    	StringBuilder sql = new StringBuilder();
+    	sql.append("select * from user where");
+		return 0;
+    	
     }
 }

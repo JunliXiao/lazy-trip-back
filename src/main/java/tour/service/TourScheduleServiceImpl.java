@@ -9,40 +9,41 @@ import tour.dao.TourScheduleDaoImpl;
 import tour.model.TourScheduleVO;
 
 public class TourScheduleServiceImpl implements TourScheduleService {
-    private TourScheduleDao dao;
+	private TourScheduleDao dao;
 
-    public TourScheduleServiceImpl() throws NamingException {
-        dao = new TourScheduleDaoImpl();
-    }
+	public TourScheduleServiceImpl() throws NamingException {
+		dao = new TourScheduleDaoImpl();
+	}
 
-    @Override
-    public int tourScheCreate(TourScheduleVO tourScheduleVO) {
-        final int result = dao.insert(tourScheduleVO);
-        return result > 0 ? result : -1;
-    }
+	@Override
+	public List<Integer> tourScheCreate(List<TourScheduleVO> lists) {
+		System.out.println(lists);
+		final List<Integer> result = dao.insert(lists);
+		return result != null ? result : null;
+	}
 
-    @Override
-    public TourScheduleVO tourScheUpdate(TourScheduleVO tourScheduleVO) {
-        final int result = dao.update(tourScheduleVO);
-        return result > 0 ? tourScheduleVO : null;
-    }
+	@Override
+	public TourScheduleVO tourScheUpdate(TourScheduleVO tourScheduleVO) {
+		final int result = dao.update(tourScheduleVO);
+		return result > 0 ? tourScheduleVO : null;
+	}
 
-    @Override
-    public String tourScheDelete(Integer tourScheduleId) {
-        final int result = dao.delete(tourScheduleId);
-        return result > 0 ? "刪除成功" : null;
-    }
+	@Override
+	public String tourScheDelete(Integer tourScheduleId) {
+		final int result = dao.delete(tourScheduleId);
+		return result > 0 ? "刪除成功" : null;
+	}
 
-    @Override
-    public List<TourScheduleVO> tourScheQueryAll() {
-        final List<TourScheduleVO> resultLists = dao.getAll();
-        return resultLists;
-    }
+	@Override
+	public List<TourScheduleVO> tourScheQueryAll() {
+		final List<TourScheduleVO> resultLists = dao.getAll();
+		return resultLists;
+	}
 
-    @Override
-    public TourScheduleVO tourScheQueryOne(Integer tourScheduleId) {
-        final TourScheduleVO result = dao.findByPrimaryKey(tourScheduleId);
-        return result;
-    }
+	@Override
+	public List<TourScheduleVO> tourScheQueryOne(Integer tourId) {
+		final List<TourScheduleVO> resultLists = dao.findByPrimaryKey(tourId);
+		return resultLists;
+	}
 
 }

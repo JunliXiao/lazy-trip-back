@@ -1,6 +1,7 @@
 package tour.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import tour.model.TourScheduleVO;
 import tour.service.TourScheduleService;
@@ -27,13 +29,12 @@ public class TourScheCreateServlet extends HttpServlet {
         try {
             Gson gson = new Gson();
             req.setCharacterEncoding("UTF-8");
-            TourScheduleVO tourScheduleVO = gson.fromJson(req.getReader(), TourScheduleVO.class);
+            final List<TourScheduleVO> lists = gson.fromJson(req.getReader(), new TypeToken<List<TourScheduleVO>>(){}.getType());
+            System.out.println(lists.toString());
             TourScheduleService service = new TourScheduleServiceImpl();
-            int result = service.tourScheCreate(tourScheduleVO);
-            tourScheduleVO.setTourId(result);
+            List<Integer> result = service.tourScheCreate(lists);
             resp.setContentType("application/json");
-//            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().print(gson.toJson(tourScheduleVO));
+            resp.getWriter().print(gson.toJson(result));
         } catch (NamingException e) {
             e.printStackTrace();
         }

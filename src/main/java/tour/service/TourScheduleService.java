@@ -5,7 +5,7 @@ import java.util.List;
 import tour.model.TourScheduleVO;
 
 public interface TourScheduleService {
-    int tourScheCreate(TourScheduleVO tourScheduleVO);
+	List<Integer> tourScheCreate(List<TourScheduleVO> lists);
 
     TourScheduleVO tourScheUpdate(TourScheduleVO tourScheduleVO);
 
@@ -13,5 +13,5 @@ public interface TourScheduleService {
 
     List<TourScheduleVO> tourScheQueryAll();
 
-    TourScheduleVO tourScheQueryOne(Integer tourScheduleId);
+    List<TourScheduleVO> tourScheQueryOne(Integer tourId);
 }

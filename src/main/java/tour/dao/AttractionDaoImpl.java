@@ -6,15 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 import common.HikariDataSource;
 import tour.model.AttractionVO;
+
+
 
 public class AttractionDaoImpl implements AttractionDao {
 //    private static DataSource dataSource;

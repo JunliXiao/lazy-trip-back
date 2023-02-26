@@ -2,15 +2,14 @@ package tour.model;
 
 public class TourScheduleVO {
     private Integer tourScheduleId;
-    private Integer tourId;
+	private Integer tourId;
     private Integer attractionId;
     private String date;
     private String startTime;
     private Integer stayTime;
-    private String memorandum;
-    private String alias;
+    private AttractionVO attractionVO;
 
-    public TourScheduleVO() {
+	public TourScheduleVO() {
     }
 
     public Integer getTourScheduleId() {
@@ -60,22 +59,19 @@ public class TourScheduleVO {
     public void setStayTime(Integer stayTime) {
         this.stayTime = stayTime;
     }
+    public AttractionVO getAttractionVO() {
+		return attractionVO;
+	}
 
-    public String getMemorandum() {
-        return memorandum;
-    }
-
-    public void setMemorandum(String memorandum) {
-        this.memorandum = memorandum;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
+	public void setAttractionVO(AttractionVO attractionVO) {
+		this.attractionVO = attractionVO;
+	}
+    @Override
+	public String toString() {
+		return "TourScheduleVO [tourScheduleId=" + tourScheduleId + ", tourId=" + tourId + ", attractionId="
+				+ attractionId + ", date=" + date + ", startTime=" + startTime + ", stayTime=" + stayTime + "]";
+	}
+  
 
 }
 
