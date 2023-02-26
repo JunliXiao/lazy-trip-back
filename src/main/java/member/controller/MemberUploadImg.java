@@ -2,6 +2,7 @@ package member.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
+import com.google.gson.Gson;
 
 import member.model.Member;
 import member.service.MemberService;
@@ -28,17 +31,18 @@ public class MemberUploadImg extends HttpServlet {
 	}
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String id = req.getParameter("id");
-		Part part = req.getPart("avatar");
-		System.out.println(id +", " + part);
+		req.setCharacterEncoding("UTF-8");
+		Gson gson = new Gson();
+		Member member = gson.fromJson(req.getReader(), Member.class);
 		
-		if(id != null && !id.isEmpty() && part.getSize() != 0) {
-			InputStream is =  part.getInputStream();
-			final byte[] avatar = is.readAllBytes();
+		String id = member.getId().toString();
+		String base64 = member.getImgBase64Str();
+//		System.out.println(id);
+//		System.out.println(member.getImgBase64Str());
+		if(id != null && !id.isEmpty() && base64 != null && !base64.isEmpty()) {
+			byte[] avatar = Base64.getDecoder().decode(base64);
 			try {
 				MemberService service = new MemberServiceImpl();
-				Member member = new Member();
-				member.setId(Integer.parseInt(id));
 				member.setImg(avatar);
 				service.changeImgById(member);
 			} catch (NamingException e) {
