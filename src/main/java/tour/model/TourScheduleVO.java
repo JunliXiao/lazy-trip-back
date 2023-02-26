@@ -7,6 +7,8 @@ public class TourScheduleVO {
     private String date;
     private String startTime;
     private Integer stayTime;
+    private String endTime;
+	private String carRouteTime;
     private AttractionVO attractionVO;
 
 	public TourScheduleVO() {
@@ -59,19 +61,32 @@ public class TourScheduleVO {
     public void setStayTime(Integer stayTime) {
         this.stayTime = stayTime;
     }
+    public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getCarRouteTime() {
+		return carRouteTime;
+	}
+
+	public void setCarRouteTime(String carRouteTime) {
+		this.carRouteTime = carRouteTime;
+	}
     public AttractionVO getAttractionVO() {
 		return attractionVO;
 	}
-
 	public void setAttractionVO(AttractionVO attractionVO) {
 		this.attractionVO = attractionVO;
 	}
-    @Override
+	@Override
 	public String toString() {
 		return "TourScheduleVO [tourScheduleId=" + tourScheduleId + ", tourId=" + tourId + ", attractionId="
-				+ attractionId + ", date=" + date + ", startTime=" + startTime + ", stayTime=" + stayTime + "]";
+				+ attractionId + ", date=" + date + ", startTime=" + startTime + ", stayTime=" + stayTime + ", endTime="
+				+ endTime + ", carRouteTime=" + carRouteTime + "]";
 	}
-  
-
 }
 
