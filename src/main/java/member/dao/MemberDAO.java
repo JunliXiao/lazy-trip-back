@@ -8,6 +8,7 @@ public interface MemberDAO {
 
 	public int insert(Member member);
 	public int updateById(Member member);
+	public int updateintroById(Member member);
 	public int updateImgById(Member member);
 	public Member find(Member member);
 	public Member selectById(Integer id);

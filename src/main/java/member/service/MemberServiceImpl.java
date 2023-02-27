@@ -73,14 +73,28 @@ public class MemberServiceImpl implements MemberService{
 		if(gender == null || gender.isEmpty()) {
 			errorMsgs.add("性別不能為空");
 		}
-		if(username == null || username.isEmpty()) {
-			errorMsgs.add("暱稱不能為空");
-		}
+//		if(username == null || username.isEmpty()) {
+//			errorMsgs.add("暱稱不能為空");
+//		}
 		if(birth == null) {
 			errorMsgs.add("生日不能為空");
 		}
 		if(errorMsgs.isEmpty()) {
 			dao.updateById(member);
+			return "修改成功";
+		}else {
+			return errorMsgs.toString();
+		}
+	}
+	
+	@Override
+	public String saveintro(Member member) {
+		final String username = member.getUsername();
+		if(username == null || username.isEmpty()) {
+			errorMsgs.add("暱稱不能為空");
+		}
+		if(errorMsgs.isEmpty()) {
+			dao.updateintroById(member);
 			return "修改成功";
 		}else {
 			return errorMsgs.toString();
@@ -120,6 +134,8 @@ public class MemberServiceImpl implements MemberService{
 	public List<Member> findAll() {
 		return dao.getAll();
 	}
+
+	
 
 	
 

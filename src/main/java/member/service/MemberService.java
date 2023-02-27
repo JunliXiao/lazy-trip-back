@@ -8,6 +8,7 @@ public interface MemberService {
 	public String register(Member member);
 	public Member login(Member member);
 	public String save(Member member);
+	public String saveintro(Member member);
 	public byte[] findAvatrById(Integer id);
 	public Member findById(Integer id);
 	public Member findByAccount(String account);

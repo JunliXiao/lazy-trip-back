@@ -57,27 +57,20 @@ public class MemberDAOImpl implements MemberDAO{
 		StringBuilder sql = new StringBuilder("update member set ");
 		final String name = member.getName();
 		final String phone = member.getPhone();
-		final String address = member.getAddress();
-		final String un = member.getUsername();
 		final String gender = member.getGender();
 		final Date birth = member.getBirthday();
-		if(un != null && !un.isEmpty()) {
-			sql.append("member_username=?");
+		if(birth != null) {
+			sql.append("member_birth=?");
 		}
 		if(gender != null && !gender.isEmpty()) {
 			sql.append(", member_gender=?");
 		}
-		if(birth != null) {
-			sql.append(", member_birth=?");
-		}
+		
 		if (name != null && !name.isEmpty()) {
 			sql.append(", member_name=?");
 		}
 		if (phone != null && !phone.isEmpty()) {
 			sql.append(", member_phone=?");
-		}
-		if (address != null && !address.isEmpty()) {
-			sql.append(", member_address=?");
 		}
 		
 		sql.append(" where member_id = ?");
@@ -86,23 +79,17 @@ public class MemberDAOImpl implements MemberDAO{
 				PreparedStatement pstmt = con.prepareStatement(sql.toString());) {
 			int nxtSeq = 1;
 			
-			if(un != null && !un.isEmpty()) {
-				pstmt.setString(nxtSeq++, un);
+			if(birth != null) {
+				pstmt.setDate(nxtSeq++, birth);
 			}
 			if(gender != null && !gender.isEmpty()) {
 				pstmt.setString(nxtSeq++, gender);
-			}
-			if(birth != null) {
-				pstmt.setDate(nxtSeq++, birth);
 			}
 			if (name != null && !name.isEmpty()) {
 				pstmt.setString(nxtSeq++, name);
 			}
 			if (phone != null && !phone.isEmpty()) {
 				pstmt.setString(nxtSeq++, phone);
-			}
-			if (address != null && !address.isEmpty()) {
-				pstmt.setString(nxtSeq++, address);
 			}
 			pstmt.setInt(nxtSeq, member.getId());
 
@@ -277,6 +264,50 @@ public class MemberDAOImpl implements MemberDAO{
 			e.printStackTrace();
 		}
 		return resultList;
+	}
+
+	@Override
+	public int updateintroById(Member member) {
+		StringBuilder sql = new StringBuilder("update member set ");
+		final String un = member.getUsername();
+		final String address = member.getAddress();
+		final String intro = member.getIntro();
+		if(un != null && !un.isEmpty()) {
+			sql.append("member_username=?");
+		}
+		if(address != null && !address.isEmpty()) {
+			sql.append(", member_address=?");
+		}
+		
+		if (intro != null && !intro.isEmpty()) {
+			sql.append(", member_intro=?");
+		}
+		
+		sql.append(" where member_id = ?");
+
+		try (Connection con = HikariDataSource.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql.toString());) {
+			int nxtSeq = 1;
+			
+			if(un != null && !un.isEmpty()) {
+				pstmt.setString(nxtSeq++, un);
+			}
+			if(address != null && !address.isEmpty()) {
+				pstmt.setString(nxtSeq++, address);
+			}
+			if (intro != null && !intro.isEmpty()) {
+				pstmt.setString(nxtSeq++, intro);
+			}
+			pstmt.setInt(nxtSeq, member.getId());
+
+			
+			System.out.println(sql);
+			return pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	
