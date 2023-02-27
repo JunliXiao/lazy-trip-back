@@ -1,18 +1,13 @@
 package tour.dao;
 
-import java.util.List;
+import java.util.Set;
 
 import tour.model.TourTagVO;
-import tour.model.TourVO;
 
 public interface TourTagDao {
-	int insert(TourTagVO tourTagVO);
-
-    int update(TourTagVO tourTagVO);
-
-    int delete(Integer tourTagId);
-
-    List<TourTagVO> getAll();
-
-    TourVO findByPrimaryKey(Integer tourTagId);
+	int saveTourTag(TourTagVO tourTagVO);
+	TourTagVO updateTourTag(TourTagVO tourTagVO);
+	int deleteTourTag(TourTagVO tourTagVO);
+    Set<String> getTourTagByMemberId(TourTagVO tourTagVO);
+    Set<String> getTourByTourTagTitle(TourTagVO tourTagVO);
 }

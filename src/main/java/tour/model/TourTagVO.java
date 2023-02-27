@@ -2,31 +2,44 @@ package tour.model;
 
 import java.io.Serializable;
 
-public class TourTagVO implements Serializable{
+public class TourTagVO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	private Integer tourTagId;
-	private String tourTagTitle;
 
-	public TourTagVO () {
-		
+	private String tourTagTitle;
+	private Integer tourId;
+	private Integer memberId;
+
+	public TourTagVO() {
+
 	}
-	
-	public Integer getTourTagId() {
-		return tourTagId;
-	}
-	public void setTourTagId(Integer tourTagId) {
-		this.tourTagId = tourTagId;
-	}
+
 	public String getTourTagTitle() {
 		return tourTagTitle;
 	}
+
 	public void setTourTagTitle(String tourTagTitle) {
 		this.tourTagTitle = tourTagTitle;
 	}
-	
+
+	public Integer getTourId() {
+		return tourId;
+	}
+
+	public void setTourId(Integer tourId) {
+		this.tourId = tourId;
+	}
+
+	public Integer getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
+	}
+
 	@Override
 	public String toString() {
-		return "TourTagVO [tourTagId=" + tourTagId + ", tourTagTitle=" + tourTagTitle + "]";
+		return "TourTagVO [tourTagTitle=" + tourTagTitle + ", tourId=" + tourId + ", memberId=" + memberId + "]";
 	}
+
 }
