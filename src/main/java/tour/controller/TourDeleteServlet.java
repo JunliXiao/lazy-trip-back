@@ -24,8 +24,8 @@ public class TourDeleteServlet extends HttpServlet {
         try {
             TourService service = new TourServiceImpl();
             final String resultStr = service.tourDelete(Integer.valueOf(tourId));
-            resp.setContentType("application/json");
             Gson gson = new Gson();
+            resp.setContentType("application/json");
             resp.getWriter().print(gson.toJson(resultStr));
         } catch (NamingException e) {
             e.printStackTrace();

@@ -9,9 +9,11 @@ public interface TourTagService {
 
 //    TourVO tourTagUpdate(TourTagVO tourTagVO);
 //
-//    String tourTagDelete(Integer tourTagId);
+    String tourTagOnTourDelete(TourTagVO tourTagVO);
 
-    Set<String> tourTagQueryAll(TourTagVO tourTagVO);
+    String tourTagDelete(TourTagVO tourTagVO);
+    
+    Set<String> tourQueryByMemberId(TourTagVO tourTagVO);
 
 //    TourTagVO tourTagQueryOne(Integer tourTagId);
 }

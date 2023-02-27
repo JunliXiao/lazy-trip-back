@@ -15,21 +15,26 @@ import tour.model.TourTagVO;
 import tour.service.TourTagService;
 import tour.service.TourTagServiceImpl;
 
-@WebServlet("/tourTagCreate")
-public class tourTagCreateServlet extends HttpServlet{
+@WebServlet("/tourTagOnTourDelete")
+public class TourTagOnTourDeleteServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String tourId = req.getParameter("tourId");
+		String memberId = req.getParameter("memberId");
+		String tourTagTitle = req.getParameter("tourTagTitle");
 		try {
-			Gson gson = new Gson();
-			req.setCharacterEncoding("UTF-8");
-			TourTagVO tourTagVO = gson.fromJson(req.getReader(), TourTagVO.class);
 			TourTagService service = new TourTagServiceImpl();
-			int result = service.tourTagCreate(tourTagVO);
+			TourTagVO tourTagVO = new TourTagVO();
+			tourTagVO.setTourId(Integer.valueOf(tourId));
+			tourTagVO.setMemberId(Integer.valueOf(memberId));
+			tourTagVO.setTourTagTitle(tourTagTitle);
+			String resultStr = service.tourTagOnTourDelete(tourTagVO);
 			System.out.println(tourTagVO.toString());
+			Gson gson = new Gson();
 			resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().print(gson.toJson(result));
+            resp.getWriter().print(gson.toJson(resultStr));
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}

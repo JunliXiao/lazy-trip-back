@@ -27,17 +27,24 @@ public class TourTagServiceImpl implements TourTagService {
 //        return result > 0 ? tourVO : null;
 //    }
 //
-//    @Override
-//    public String tourDelete(Integer tourId) {
-//        final int result = dao.delete(tourId);
-//        return result > 0 ? "刪除成功" : null;
-//    }
+    @Override
+    public String tourTagOnTourDelete(TourTagVO tourTagVO) {
+        final int result = dao.deleteTourTagOnTour(tourTagVO);
+        return result > 0 ? "刪除成功" : null;
+    }
+    
+    @Override
+    public String tourTagDelete(TourTagVO tourTagVO) {
+    	final int result = dao.deleteTourTag(tourTagVO);
+        return result > 0 ? "刪除成功" : null;
+    }
 
     @Override
-    public Set<String> tourTagQueryAll(TourTagVO tourTagVO) {
-        final Set<String> resultLists = dao.getTourTagByMemberId(tourTagVO);
-        return resultLists;
+    public Set<String> tourQueryByMemberId(TourTagVO tourTagVO) {
+        final Set<String> resultSet = dao.getTourTagByMemberId(tourTagVO);
+        return resultSet;
     }
+
 
 //    @Override
 //    public TourVO tourQueryOne(Integer tourId) {
