@@ -14,6 +14,10 @@ public interface TourTagService {
     String tourTagDelete(TourTagVO tourTagVO);
     
     Set<String> tourQueryByMemberId(TourTagVO tourTagVO);
+    
+    Set<String> tourQueryByMember(TourTagVO tourTagVO);
+    
+    Set<String> tourQueryByTourTagTitle(TourTagVO tourTagVO);
 
 //    TourTagVO tourTagQueryOne(Integer tourTagId);
 }
