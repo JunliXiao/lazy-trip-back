@@ -13,29 +13,26 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
 
-@WebServlet("/api/friend")
-public class FriendController extends HttpServlet {
+@WebServlet("/api/relation")
+public class RelationController extends HttpServlet {
 
     @Serial
     private static final long serialVersionUID = 1L;
     Gson gson = new Gson();
 
-    // 按類型查詢會員：friend 好友、好友建議 suggestion、已封鎖會員 blocked
+    // 查詢 [本人 specifier] 和 [對方 other] 兩者間是否已建立關係、關係為何
+    // isRelated: false 無關係，可邀請成為好友
+    // isRelated: true 有關係
+    // ---- type: 封鎖對方、邀請對方、對方邀請、彼此好友
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         String output;
 
         FriendMemberService service = new FriendMemberServiceImpl();
-        int id = Integer.parseInt(request.getParameter("member_id"));
-        String queryType = request.getParameter("query_type");
-
-        output = switch (queryType) {
-            case "friend" -> gson.toJson(service.getFriends(id));
-            case "suggestion" -> gson.toJson(service.getFriendSuggestions(id));
-            case "blocked" -> gson.toJson(service.getBlockedMembers(id));
-            default -> "{error:Failed}";
-        };
+        int specifierId = Integer.parseInt(request.getParameter("specifier_id"));
+        int otherId = Integer.parseInt(request.getParameter("other_id"));
+        output = gson.toJson(service.checkFriendshipBetween(specifierId, otherId));
 
         out.println(output);
     }

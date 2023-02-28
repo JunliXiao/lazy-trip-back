@@ -16,6 +16,11 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     }
 
     @Override
+    public boolean createChatroom(List<Integer> membersId) {
+        return repository.addChatroom(membersId);
+    }
+
+    @Override
     public List<Chatroom> getChatroomsByOneMember(Integer memberId) {
         return repository.getChatrooms(memberId);
     }
