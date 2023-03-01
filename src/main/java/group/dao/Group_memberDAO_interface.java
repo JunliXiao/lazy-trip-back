@@ -5,17 +5,18 @@ import java.util.List;
 
 import group.model.GroupVO;
 import group.model.Group_memberVO;
+import member.model.Member;
 
 public interface Group_memberDAO_interface {
 	public void insertNeedApprove(Group_memberVO groupmemberVO);
 	public void insertDirectly(Group_memberVO groupmemberVO);
 	public void insertWhenCreate(Group_memberVO groupmemberVO);
     public void update(Group_memberVO groupmemberVO);
-    public void delete(Integer groupmember);
+    public void delete(List<Integer> list);
     public List<Group_memberVO> getAlltoAccept(Integer groupid);
     public List<Group_memberVO> getAllDeleted(Integer groupid);
     public List<GroupVO> getAllGroupByMemberid(Integer memberid);
-//    public List<MemeberVO> getAllMember(Group_memberVO groupmemberVO);
+    public List<Member> getAllMember(Integer groupid);
     
     //insertNeedApprove為審核加入申請時
     //insert直接加入時新加入一筆

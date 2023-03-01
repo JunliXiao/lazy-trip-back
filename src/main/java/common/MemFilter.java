@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import member.model.Member;
 
-@WebFilter(urlPatterns={ "/page/member/main.html"})
+@WebFilter(urlPatterns={ "/page/member/main.html" , "/page/group/group_htmls/*"})
 public class MemFilter implements Filter{
 
 	@Override
