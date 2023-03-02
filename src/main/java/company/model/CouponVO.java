@@ -1,18 +1,20 @@
 package company.model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class CouponVO implements java.io.Serializable{
 
 	private Integer couponID;
 	private Integer companyID;
 	private String couponText;
-	private Date couponEndTime;
-	private Date couponStartTime;
+	private LocalDateTime couponStartTime;
+	private LocalDateTime couponEndTime;
 	private Boolean couponStatus;
-	private Float couponDiscount;
+	private Double couponDiscount;
 	private Integer couponQuantity;
 	private Integer couponUsedQuantity;
+	
 	public Integer getCouponID() {
 		return couponID;
 	}
@@ -31,17 +33,19 @@ public class CouponVO implements java.io.Serializable{
 	public void setCouponText(String couponText) {
 		this.couponText = couponText;
 	}
-	public Date getCouponEndTime() {
-		return couponEndTime;
-	}
-	public void setCouponEndTime(Date couponEndTime) {
-		this.couponEndTime = couponEndTime;
-	}
-	public Date getCouponStartTime() {
+	
+	
+	public LocalDateTime getCouponStartTime() {
 		return couponStartTime;
 	}
-	public void setCouponStartTime(Date couponStartTime) {
+	public void setCouponStartTime(LocalDateTime couponStartTime) {
 		this.couponStartTime = couponStartTime;
+	}
+	public LocalDateTime getCouponEndTime() {
+		return couponEndTime;
+	}
+	public void setCouponEndTime(LocalDateTime couponEndTime) {
+		this.couponEndTime = couponEndTime;
 	}
 	public Boolean getCouponStatus() {
 		return couponStatus;
@@ -49,10 +53,11 @@ public class CouponVO implements java.io.Serializable{
 	public void setCouponStatus(Boolean couponStatus) {
 		this.couponStatus = couponStatus;
 	}
-	public Float getCouponDiscount() {
+	
+	public Double getCouponDiscount() {
 		return couponDiscount;
 	}
-	public void setCouponDiscount(Float couponDiscount) {
+	public void setCouponDiscount(Double couponDiscount) {
 		this.couponDiscount = couponDiscount;
 	}
 	public Integer getCouponQuantity() {

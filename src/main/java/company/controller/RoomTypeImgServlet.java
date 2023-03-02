@@ -128,20 +128,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 			
 			String roomTypeImgString = req.getParameter("roomTypeImg");
 					
-		    // Open an input stream to the image file
-		    InputStream in = getServletContext().getResourceAsStream("/images/" + roomTypeImgString);
-		    
-		    // Copy the contents of the input stream to the output stream
-		    ByteArrayOutputStream out = new ByteArrayOutputStream();
-		    byte[] buffer = new byte[4096];
-		    int bytesRead = -1;
-		    while ((bytesRead = in.read(buffer)) != -1) {
-		      out.write(buffer, 0, bytesRead);
-		    }
-		    byte[] roomTypeImg = out.toByteArray();
-		    		    
-		    in.close();
-		    out.close();
+		   
 		  
 			
 //			String RoomtypeImgNameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{1,10}$";
@@ -159,7 +146,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 			
 			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
 			roomTypeImgVO.setRoomTypeID(roomTypeID);
-			roomTypeImgVO.setRoomTypeImg(roomTypeImg);
+			roomTypeImgVO.setRoomTypeImg(roomTypeImgString);
 
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
@@ -171,7 +158,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			/*************************** 2.開始修改資料 *****************************************/
 			RoomTypeImgService RoomtypeImgService = new RoomTypeImgService();
-			roomTypeImgVO = RoomtypeImgService.updateRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImg);
+			roomTypeImgVO = RoomtypeImgService.updateRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImgString);
 
 			/*************************** 3.修改完成,準備轉交(Send the Success view) *************/
 			req.setAttribute("RoomtypeImgVO", roomTypeImgVO); // 資料庫update成功後,正確的的empVO物件,存入req
@@ -200,25 +187,12 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			String roomTypeImgString = req.getParameter("roomTypeImg");
 			
-		    // Open an input stream to the image file
-		    InputStream in = getServletContext().getResourceAsStream("/images/" + roomTypeImgString);
-		    
-		    // Copy the contents of the input stream to the output stream
-		    ByteArrayOutputStream out = new ByteArrayOutputStream();
-		    byte[] buffer = new byte[4096];
-		    int bytesRead = -1;
-		    while ((bytesRead = in.read(buffer)) != -1) {
-		      out.write(buffer, 0, bytesRead);
-		    }
-		    byte[] roomTypeImg = out.toByteArray();
-		    		    
-		    in.close();
-		    out.close();
+		   
 		    
 			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
 			
 			roomTypeImgVO.setRoomTypeID(roomTypeID);
-			roomTypeImgVO.setRoomTypeImg(roomTypeImg);
+			roomTypeImgVO.setRoomTypeImg(roomTypeImgString);
 
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
@@ -230,7 +204,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			/*************************** 2.開始新增資料 ***************************************/
 			RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
-			roomTypeImgVO = roomTypeImgService.addRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImg);
+			roomTypeImgVO = roomTypeImgService.addRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImgString);
 
 			/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 			String url = "/company/addCompany.jsp";

@@ -14,7 +14,7 @@ public class RoomTypeImgService {
 		dao = new RoomTypeImgDAO();
 	}
 
-	public RoomTypeImgVO addRoomTypeImg(Integer roomTypeImgID,Integer roomTypeID, byte[] roomTypeImg
+	public RoomTypeImgVO addRoomTypeImg(Integer roomTypeImgID,Integer roomTypeID, String roomTypeImg
 			) {
 
 		RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
@@ -27,7 +27,7 @@ public class RoomTypeImgService {
 		return roomTypeImgVO;
 	}
 
-	public RoomTypeImgVO updateRoomTypeImg(Integer roomTypeImgID,Integer roomTypeID, byte[] roomTypeImg
+	public RoomTypeImgVO updateRoomTypeImg(Integer roomTypeImgID,Integer roomTypeID, String roomTypeImg
 ) {
 
 		RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();

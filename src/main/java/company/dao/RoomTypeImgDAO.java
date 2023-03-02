@@ -34,7 +34,7 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 		{
 		
 			pstmt.setInt(1, roomTypeImgVO.getRoomTypeImgID());
-			pstmt.setBytes(2, roomTypeImgVO.getRoomTypeImg());
+			pstmt.setString(2, roomTypeImgVO.getRoomTypeImg());
 			
 			pstmt.executeUpdate();
 
@@ -59,7 +59,7 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 
 			
 			pstmt.setInt(1, roomTypeImgVO.getRoomTypeImgID());
-			pstmt.setBytes(2, roomTypeImgVO.getRoomTypeImg());
+			pstmt.setString(2, roomTypeImgVO.getRoomTypeImg());
 			
 			pstmt.executeUpdate();
 
@@ -146,7 +146,7 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 				roomTypeImgVO = new RoomTypeImgVO();
 				roomTypeImgVO.setRoomTypeImgID(rs.getInt("roomTypeImgID"));
 				roomTypeImgVO.setRoomTypeID(rs.getInt("roomTypeID"));
-				roomTypeImgVO.setRoomTypeImg(rs.getBytes("roomTypeImg"));
+				roomTypeImgVO.setRoomTypeImg(rs.getString("roomTypeImg"));
 				
 			}
 
@@ -201,7 +201,7 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 				roomTypeImgVO = new RoomTypeImgVO();
 				roomTypeImgVO.setRoomTypeImgID(rs.getInt("roomTypeImgID"));
 				roomTypeImgVO.setRoomTypeID(rs.getInt("roomTypeID"));
-				roomTypeImgVO.setRoomTypeImg(rs.getBytes("roomTypeImg"));
+				roomTypeImgVO.setRoomTypeImg(rs.getString("roomTypeImg"));
 				list.add(roomTypeImgVO); // Store the row in the list
 			}
 
