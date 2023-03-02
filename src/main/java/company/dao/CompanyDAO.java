@@ -164,7 +164,7 @@ public class CompanyDAO implements CompanyDAO_interface {
 	@Override
 	public CompanyVO findByPrimaryKey(Integer companyID) {
 
-		CompanyVO companyVO = null;
+		CompanyVO companyVO = new CompanyVO();
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

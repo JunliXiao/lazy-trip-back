@@ -40,7 +40,7 @@ public class RoomTypeImgService {
 		return roomTypeImgVO;
 	}
 
-	public void deleteroomTypeImg(Integer roomTypeImgID) {
+	public void deleteRoomTypeImg(Integer roomTypeImgID) {
 		dao.delete(roomTypeImgID);
 	}
 

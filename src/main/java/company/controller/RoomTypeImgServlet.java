@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import company.model.RoomTypeImgVO;
 import company.service.RoomTypeImgService;
 
-@WebServlet("/RoomtypeImgServlet")
+@WebServlet("/RoomTypeImgServlet")
 public class RoomTypeImgServlet extends HttpServlet {
 
 
@@ -80,8 +80,11 @@ public class RoomTypeImgServlet extends HttpServlet {
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
 			req.setAttribute("roomTypeImgVO", roomtypeImgVO); // 資料庫取出的empVO物件,存入req
 			String url = "/company/listOneCompany.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 listOneEmp.jsp
-			successView.forward(req, res);
+			Gson gson = new Gson();
+			 res.setContentType("application/json");
+			 
+	            res.getWriter().print(gson.toJson(roomTypeImgID));
+			
 		}
 
 		if ("getOne_For_Update".equals(action)) { // 來自listAllEmp.jsp的請求
@@ -104,8 +107,11 @@ public class RoomTypeImgServlet extends HttpServlet {
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) ************/
 			req.setAttribute("roomTypeImgVO", roomTypeImgVO); // 資料庫取出的empVO物件,存入req
 			String url = "/company/update_company_input.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url);// 成功轉交 update_emp_input.jsp
-			successView.forward(req, res);
+			Gson gson = new Gson();
+			 res.setContentType("application/json");
+			 
+	            res.getWriter().print(gson.toJson(roomTypeImgVO));
+			
 		}
 
 		if ("update".equals(action)) { // 來自update_comapny_input.jsp的請求
@@ -170,8 +176,11 @@ public class RoomTypeImgServlet extends HttpServlet {
 			/*************************** 3.修改完成,準備轉交(Send the Success view) *************/
 			req.setAttribute("RoomtypeImgVO", roomTypeImgVO); // 資料庫update成功後,正確的的empVO物件,存入req
 			String url = "/company/listOneCompany.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url); // 修改成功後,轉交listOneEmp.jsp
-			successView.forward(req, res);
+			Gson gson = new Gson();
+			 res.setContentType("application/json");
+			 
+	            res.getWriter().print(gson.toJson(roomTypeImgVO));
+			
 		}
 
 		if ("insert".equals(action)) { // 來自addEmp.jsp的請求
@@ -241,23 +250,17 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			/*************************** 2.開始刪除資料 ***************************************/
 			RoomTypeImgService RoomTypeImgService = new RoomTypeImgService();
-			RoomTypeImgService.deleteroomTypeImg(RoomTypeImgID);
+			RoomTypeImgService.deleteRoomTypeImg(RoomTypeImgID);
 
 			/*************************** 3.刪除完成,準備轉交(Send the Success view) ***********/
 			String url = "/company/listAllCompany.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url);// 刪除成功後,轉交回送出刪除的來源網頁
-			successView.forward(req, res);
-		}
-
-		if ("1".equals(action)) {
-
 			Gson gson = new Gson();
-			RoomTypeImgVO jsonObject = gson.fromJson(req.getReader(), RoomTypeImgVO.class);
-			System.out.println(jsonObject.getRoomTypeImgID());
-			RoomTypeImgService service = new RoomTypeImgService();
-			List<RoomTypeImgVO> list = service.getAll();
-			res.setContentType("application/json");
-		    res.getWriter().write(gson.toJson(list));
+			 res.setContentType("application/json");
+			 
+	            res.getWriter().print(gson.toJson(RoomTypeImgID));
+			
 		}
+
+		
 	}
 }
