@@ -7,6 +7,7 @@ import group.dao.Group_memberDAOImpl;
 import group.dao.Group_memberDAO_interface;
 import group.model.GroupVO;
 import group.model.Group_memberVO;
+import member.model.Member;
 
 public class GroupMemberService {
 	private Group_memberDAO_interface dao;
@@ -22,8 +23,15 @@ public class GroupMemberService {
 	
 	public List<GroupVO> GetAllGroup(Integer memberid){
 		
-		List<GroupVO> list = dao.getAllGroupByMemberid(memberid);
-		
-		return list;
+		return dao.getAllGroupByMemberid(memberid);
 	}
+	
+	public List<Member> getAllMember(Integer groupid){
+		return 	dao.getAllMember(groupid);	
+	}
+	
+	public void delGroupMem(List<Integer> list) {
+		dao.delete(list);
+	}
+	
 }

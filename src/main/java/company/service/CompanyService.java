@@ -5,6 +5,7 @@ import java.util.List;
 import company.dao.CompanyDAO;
 import company.dao.CompanyDAO_interface;
 import company.model.CompanyVO;
+import company.model.RoomTypeVO;
 
 public class CompanyService {
 
@@ -69,13 +70,8 @@ public class CompanyService {
 		return dao.findByPrimaryKey(companyID);
 	}
 
-	public List<CompanyVO> getAll() {
-		return dao.getAll();
+	public List<CompanyVO> getAllByCompanyID(Integer companyID) {
+		return dao.getAllByCompanyID(companyID);
 	}
-	
-//	public List<CompanyVO> testGetOne(Integer companyID) {
-//		return dao.testGetOne(companyID);
-//	}
-	
 	
 }

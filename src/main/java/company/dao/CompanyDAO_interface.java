@@ -3,6 +3,7 @@ package company.dao;
 import java.util.List;
 
 import company.model.CompanyVO;
+import company.model.RoomTypeVO;
 
 public interface CompanyDAO_interface {
 	public void insert(CompanyVO companyVO);
@@ -15,4 +16,6 @@ public interface CompanyDAO_interface {
 
 	public List<CompanyVO> getAll();
 	// 萬用複合查詢(傳入參數型態Map)(回傳 List)
+
+	public List<CompanyVO> getAllByCompanyID(Integer companyID);
 }

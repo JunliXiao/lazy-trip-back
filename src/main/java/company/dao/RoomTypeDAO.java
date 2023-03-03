@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.HikariDataSource;
+import company.model.CompanyVO;
 import company.model.RoomTypeVO;
 
 
@@ -18,12 +19,12 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 	""";
 	private static final String GET_ALL_STMT = """
 	SELECT roomtype_id as roomTypeID,company_id as companyID,roomtype_name as roomTypeName, 
-	roomtype_person as roomTypePerson,roomtype_quantity as roomTypeQuantity 
+	roomtype_person as roomTypePerson,roomtype_quantity as roomTypeQuantity,roomtype_price as roomTypePrice 
 	FROM roomtype order by roomtype_id;
 	""";
 	private static final String GET_ONE_STMT = """
 	SELECT roomtype_id as roomTypeID,company_id as companyID,roomtype_name as roomTypeName, 
-	roomtype_person as roomTypePerson,roomtype_quantity as roomTypeQuantity FROM roomtype 
+	roomtype_person as roomTypePerson,roomtype_quantity as roomTypeQuantity,roomtype_price as roomTypePrice FROM roomtype 
 	where roomtype_id = ?;
 	""";
 	private static final String DELETE = "DELETE FROM roomtype where roomtype_id = ?";
@@ -31,8 +32,11 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 	UPDATE roomtype set roomtype_id=?, company_id=?,roomtype_name=?,roomtype_persone=?,
 	roomtype_quantity=?,roomtype_price=? where roomtype_id = ?
 	""";
-	
-		private static final String testGetOne = "SELECT * FROM roomtype LIMIT 10;";
+	private static final String GET_ALL_BY_COMPANYID = """
+			SELECT roomtype_id as roomTypeID,company_id as companyID,roomtype_name as roomTypeName, 
+			roomtype_person as roomTypePerson,roomtype_quantity as roomTypeQuantity,roomtype_price as roomTypePrice 
+			FROM roomtype where company_id = ? order by roomtype_id;
+			""";
 	
 	
 	@Override
@@ -169,11 +173,12 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 		try {
 
 			con = HikariDataSource.getConnection();
-			pstmt = con.prepareStatement(GET_ONE_STMT);
+			pstmt = con.prepareStatement(GET_ONE_STMT);//取得sql語法
+			
 
-			pstmt.setInt(1, roomTypeID);
+			pstmt.setInt(1, roomTypeID); //把問號取代現在的key
 
-			rs = pstmt.executeQuery();
+			rs = pstmt.executeQuery();//執行sql語法
 
 			while (rs.next()) {
 				// roomtypeVO 也稱為 Domain objects
@@ -277,23 +282,26 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 	}
 
 	
-	public List<RoomTypeVO> testGetOne(Integer roomTypeID) {
+	
+	@Override
+	public List<RoomTypeVO> getAllByCompanyID(Integer companyID) {
+		List<RoomTypeVO> list = new ArrayList<RoomTypeVO>();
+//		RoomTypeVO roomTypeVO = null;
 
-		List<RoomTypeVO> roomType = new ArrayList<>();
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
 		try {
+
 			con = HikariDataSource.getConnection();
-			pstmt = con.prepareStatement(testGetOne);
-
-//			pstmt.setInt(1, roomtypeID);
-
+			pstmt = con.prepareStatement(GET_ALL_BY_COMPANYID);
+			pstmt.setInt(1, companyID);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				// roomtypeVO 也稱為 Domain objects
+				// EquipmentVO 也稱為 Domain objects
+
 				RoomTypeVO roomTypeVO = new RoomTypeVO();
 				roomTypeVO.setRoomTypeID(rs.getInt("roomTypeID"));
 				roomTypeVO.setCompanyID(rs.getInt("companyID"));
@@ -301,8 +309,7 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 				roomTypeVO.setRoomTypeName(rs.getString("roomTypeName"));
 				roomTypeVO.setRoomTypeQuantity(rs.getInt("roomTypeQuantity"));
 				roomTypeVO.setRoomTypePrice(rs.getInt("roomTypePrice"));
-				roomType.add(roomTypeVO);
-
+				list.add(roomTypeVO); // Store the row in the list
 			}
 
 			// Handle any driver errors
@@ -332,9 +339,8 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 				}
 			}
 		}
-		return roomType;
+		return list;
 	}
 
-	
 	
 }

@@ -53,7 +53,10 @@ public class RoomTypeService {
 		return dao.findByPrimaryKey(roomTypeID);
 	}
 
-	public List<RoomTypeVO> getAll() {
-		return dao.getAll();
+	
+	public List<RoomTypeVO> getAllByCompanyID(Integer companyID) {
+		return dao.getAllByCompanyID(companyID);
 	}
+	
+	
 }

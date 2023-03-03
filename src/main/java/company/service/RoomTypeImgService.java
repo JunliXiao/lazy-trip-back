@@ -14,7 +14,7 @@ public class RoomTypeImgService {
 		dao = new RoomTypeImgDAO();
 	}
 
-	public RoomTypeImgVO addRoomTypeImg(Integer roomTypeImgID,Integer roomTypeID, byte[] roomTypeImg
+	public RoomTypeImgVO addRoomTypeImg(Integer roomTypeImgID,Integer roomTypeID, String roomTypeImg
 			) {
 
 		RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
@@ -27,7 +27,7 @@ public class RoomTypeImgService {
 		return roomTypeImgVO;
 	}
 
-	public RoomTypeImgVO updateRoomTypeImg(Integer roomTypeImgID,Integer roomTypeID, byte[] roomTypeImg
+	public RoomTypeImgVO updateRoomTypeImg(Integer roomTypeImgID,Integer roomTypeID, String roomTypeImg
 ) {
 
 		RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
@@ -40,7 +40,7 @@ public class RoomTypeImgService {
 		return roomTypeImgVO;
 	}
 
-	public void deleteroomTypeImg(Integer roomTypeImgID) {
+	public void deleteRoomTypeImg(Integer roomTypeImgID) {
 		dao.delete(roomTypeImgID);
 	}
 
@@ -48,8 +48,8 @@ public class RoomTypeImgService {
 		return dao.findByRoomTypeID(roomTypeID);
 	}
 
-	public List<RoomTypeImgVO> getAll() {
-		return dao.getAll();
+	public List<RoomTypeImgVO> getAllByRoomTypeImgID(Integer roomTypeImgID) {
+		return dao.getAllByRoomTypeImgID(roomTypeImgID);
 	}
 	
 	

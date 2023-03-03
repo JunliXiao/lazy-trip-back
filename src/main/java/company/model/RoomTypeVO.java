@@ -7,7 +7,14 @@ public class RoomTypeVO {
 	private Integer roomTypePerson;
 	private Integer roomTypeQuantity;
 	private Integer roomTypePrice;
+	private RoomTypeImgVO roomTypeImgVO;
 	
+	public RoomTypeImgVO getRoomTypeImgVO() {
+		return roomTypeImgVO;
+	}
+	public void setRoomTypeImgVO(RoomTypeImgVO roomTypeImgVO) {
+		this.roomTypeImgVO = roomTypeImgVO;
+	}
 	public Integer getRoomTypePrice() {
 		return roomTypePrice;
 	}

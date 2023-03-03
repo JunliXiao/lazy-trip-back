@@ -3,13 +3,15 @@ package company.model;
 public class RoomTypeImgVO implements java.io.Serializable {
 	private Integer roomTypeImgID;
 	private Integer roomTypeID;
-	private byte[] roomTypeImg;
+	private String roomTypeImg;
 
-	public byte[] getRoomTypeImg() {
+	
+
+	public String getRoomTypeImg() {
 		return roomTypeImg;
 	}
 
-	public void setRoomTypeImg(byte[] roomTypeImg) {
+	public void setRoomTypeImg(String roomTypeImg) {
 		this.roomTypeImg = roomTypeImg;
 	}
 
