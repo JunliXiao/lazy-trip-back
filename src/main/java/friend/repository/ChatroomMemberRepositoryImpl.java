@@ -42,7 +42,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             int[] insertResults = ps2.executeBatch();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("無法將該名會員加入聊天室");
         }
         return hasAdded;
     }
@@ -78,7 +78,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             ps.setInt(2, memberId);
             hasDeleted = ps.executeUpdate() != 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("無法從聊天室移除該名成員");
         }
         return hasDeleted;
     }
@@ -107,7 +107,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("目前資料庫有異狀，無法取得所有聊天室");
         }
 
         return chatrooms;
@@ -136,7 +136,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("目前資料庫有異狀，無法取得聊天室成員");
         }
         return members;
     }
