@@ -24,6 +24,10 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 			"DELETE FROM roomtype_img where roomtype_img_id = ?";
 		private static final String UPDATE = 
 			"UPDATE roomtype_img set roomtype_img=? where roomtype_img_id = ?";
+		private static final String GET_ALL_BY_ROOMTYPEIMGID = """
+				SELECT SELECT roomtype_img_id as roomTypeImgID,roomtype_id as roomTypeID,roomtype_img as roomTypeImg 
+				FROM roomtype_img  where roomtype_img_id = ? order by roomtype_id;
+				""";
 		
 	@Override
 	public void insert(RoomTypeImgVO roomTypeImgVO) {
@@ -182,7 +186,7 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 	}
 
 	@Override
-	public List<RoomTypeImgVO> getAll() {
+	public List<RoomTypeImgVO> getAllByRoomTypeImgID(Integer roomTypeImgID) {
 		List<RoomTypeImgVO> list = new ArrayList<RoomTypeImgVO>();
 		RoomTypeImgVO roomTypeImgVO = null;
 
@@ -193,11 +197,11 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 		try {
 			con = HikariDataSource.getConnection();
 
-			pstmt = con.prepareStatement(GET_ALL_STMT);
+			pstmt = con.prepareStatement(GET_ALL_BY_ROOMTYPEIMGID);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				// equipmentVO 也稱為 Domain objects
+				
 				roomTypeImgVO = new RoomTypeImgVO();
 				roomTypeImgVO.setRoomTypeImgID(rs.getInt("roomTypeImgID"));
 				roomTypeImgVO.setRoomTypeID(rs.getInt("roomTypeID"));
@@ -235,4 +239,6 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 		}
 		return list;
 	}
+	
+	
 }

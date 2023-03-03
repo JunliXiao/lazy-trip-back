@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import company.model.CompanyVO;
+import company.model.RoomTypeVO;
 import company.service.CompanyService;
+import company.service.RoomTypeService;
 
-@WebServlet("/CompanyServlet")
+@WebServlet("/company")
 public class CompanyServlet extends HttpServlet {
 
 	private static final String CompanyUserName = null;
@@ -81,12 +83,11 @@ public class CompanyServlet extends HttpServlet {
 
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
 			req.setAttribute("companyVO", companyVO); // 資料庫取出的empVO物件,存入req
-			String url = "/company/table company test.jsp";
+//			String url = "/company/table company test.jsp";
 //			RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 listOneEmp.jsp
 //			successView.forward(req, res);
 			Gson gson = new Gson();
 			res.setContentType("application/json");
-
 			res.getWriter().print(gson.toJson(companyVO));
 
 		}
@@ -264,5 +265,64 @@ public class CompanyServlet extends HttpServlet {
 			res.getWriter().print(gson.toJson(companyID));
 		}
 
+		if ("getAllByCompanyID".equals(action)) { // 來自前端的請求
+
+			List<String> errorMsgs = new LinkedList<String>();
+			// Store this set in the request scope, in case we need to
+			// send the ErrorPage view.
+			req.setAttribute("errorMsgs", errorMsgs);
+
+			/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
+			String str = req.getParameter("companyID");
+
+//			if (str == null || (str.trim()).length() == 0) {
+//				errorMsgs.add("請輸入房型編號");
+//			}
+//			// Send the use back to the form, if there were errors
+//			if (!errorMsgs.isEmpty()) {
+//				RequestDispatcher failureView = req.getRequestDispatcher("/roomType/select_page.jsp");
+//				failureView.forward(req, res);
+//				return;// 程式中斷
+//			}
+//
+			Integer companyID = null;
+
+			try {
+				companyID = Integer.valueOf(str);
+			} catch (Exception e) {
+				errorMsgs.add("房型編號格式不正確");
+			}
+			// Send the use back to the form, if there were errors
+			if (!errorMsgs.isEmpty()) {
+				RequestDispatcher failureView = req.getRequestDispatcher("/company/select_page.jsp");
+				failureView.forward(req, res);
+				return;// 程式中斷
+			}
+
+			/*************************** 2.開始查詢資料 *****************************************/
+			CompanyService companyService = new CompanyService();
+
+			List<CompanyVO> companyVOList = companyService.getAllByCompanyID(companyID);
+
+			if (companyVOList == null) {
+				errorMsgs.add("查無資料");
+			}
+			// Send the use back to the form, if there were errors
+			if (!errorMsgs.isEmpty()) {
+				RequestDispatcher failureView = req.getRequestDispatcher("/roomType/table roomType test.jsp");
+				failureView.forward(req, res);
+				return;// 程式中斷
+			}
+
+			/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
+			req.setAttribute("CompanyVOList", companyVOList); // 資料庫取出的companyVOList物件,存入req
+			String url = "/roomType/table roomType test.jsp";
+			Gson gson = new Gson();
+			res.setContentType("application/json");
+			res.getWriter().print(gson.toJson(companyVOList));
+		}
+	
+		
+		
 	}
 }

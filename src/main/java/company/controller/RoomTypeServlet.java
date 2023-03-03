@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import company.model.RoomTypeVO;
 import company.service.RoomTypeService;
 
-@WebServlet("/RoomTypeServlet") 
+@WebServlet("/roomtypeservlet") 
 public class RoomTypeServlet extends HttpServlet{
 
 
@@ -232,7 +232,64 @@ public class RoomTypeServlet extends HttpServlet{
 				res.setContentType("application/json");
 				res.getWriter().print(gson.toJson(roomTypeID));
 			}
-		
+			
+			
+			if ("getAllByCompanyID".equals(action)) { // 來自前端的請求
+
+				List<String> errorMsgs = new LinkedList<String>();
+				// Store this set in the request scope, in case we need to
+				// send the ErrorPage view.
+				req.setAttribute("errorMsgs", errorMsgs);
+
+				/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
+				String str = req.getParameter("companyID");
+
+//				if (str == null || (str.trim()).length() == 0) {
+//					errorMsgs.add("請輸入房型編號");
+//				}
+//				// Send the use back to the form, if there were errors
+//				if (!errorMsgs.isEmpty()) {
+//					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/select_page.jsp");
+//					failureView.forward(req, res);
+//					return;// 程式中斷
+//				}
+	//
+				Integer companyID = null;
+
+				try {
+					companyID = Integer.valueOf(str);
+				} catch (Exception e) {
+					errorMsgs.add("房型編號格式不正確");
+				}
+				// Send the use back to the form, if there were errors
+				if (!errorMsgs.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/select_page.jsp");
+					failureView.forward(req, res);
+					return;// 程式中斷
+				}
+
+				/*************************** 2.開始查詢資料 *****************************************/
+				RoomTypeService roomTypeService = new RoomTypeService();
+
+				List<RoomTypeVO> roomTypeVOList = roomTypeService.getAllByCompanyID(companyID);
+
+				if (roomTypeVOList == null) {
+					errorMsgs.add("查無資料");
+				}
+				// Send the use back to the form, if there were errors
+				if (!errorMsgs.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/table roomType test.jsp");
+					failureView.forward(req, res);
+					return;// 程式中斷
+				}
+
+				/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
+				req.setAttribute("RoomTypeVOList", roomTypeVOList); // 資料庫取出的roomTypeVOList物件,存入req
+				String url = "/roomType/table roomType test.jsp";
+				Gson gson = new Gson();
+				res.setContentType("application/json");
+				res.getWriter().print(gson.toJson(roomTypeVOList));
+			}
 		
 		}
 }

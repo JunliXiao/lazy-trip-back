@@ -48,8 +48,8 @@ public class RoomTypeImgService {
 		return dao.findByRoomTypeID(roomTypeID);
 	}
 
-	public List<RoomTypeImgVO> getAll() {
-		return dao.getAll();
+	public List<RoomTypeImgVO> getAllByRoomTypeImgID(Integer roomTypeImgID) {
+		return dao.getAllByRoomTypeImgID(roomTypeImgID);
 	}
 	
 	

@@ -17,4 +17,7 @@ public interface RoomTypeDAO_interface {
 	public List<RoomTypeVO> getAll();
 	// 萬用複合查詢(傳入參數型態Map)(回傳 List)
 
+
+	List<RoomTypeVO> getAllByCompanyID(Integer companyID);
+
 }

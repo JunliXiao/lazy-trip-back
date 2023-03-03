@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import company.model.RoomTypeImgVO;
 import company.service.RoomTypeImgService;
 
-@WebServlet("/RoomTypeImgServlet")
+@WebServlet("/roomtypeimgservlet")
 public class RoomTypeImgServlet extends HttpServlet {
 
 

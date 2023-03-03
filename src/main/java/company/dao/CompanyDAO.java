@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 
 import common.HikariDataSource;
 import company.model.CompanyVO;
+import company.model.RoomTypeVO;
 
 public class CompanyDAO implements CompanyDAO_interface {
 
@@ -22,9 +23,12 @@ public class CompanyDAO implements CompanyDAO_interface {
 	private static final String GET_ONE_STMT = "SELECT company_id as companyID,company_username as companyUserName,company_password as companyPassword, taxid as taxID,company_name as companyName,introduction, address_county as addressCounty,address_area as addressArea, address_street as addressStreet, latitude, longitude,company_img as companyImg FROM company where company_id = ?";
 	private static final String DELETE = "DELETE FROM company where company_id = ?";
 	private static final String UPDATE = "UPDATE company set company_username=?, company_password=?,taxid=?,company_name=?,introduction=?,address_county=?,address_area=?,address_street=?,latitude=?,longitude=?,company_img=? where company_id = ?";
-	
-	private static final String testGetOne = "SELECT * FROM company LIMIT 10;";
-	
+	private static final String GET_ALL_BY_COMPANYID = """
+			SELECT SELECT company_id as companyID,company_username as companyUserName,company_password as companyPassword,
+			 taxid as taxID,company_name as companyName,introduction, address_county as addressCounty,
+			 address_area as addressArea, address_street as addressStreet, latitude, longitude,company_img as companyImg 
+			 FROM company where company_id = ? order by company_id";
+			""";
 	
 	@Override
 	public void insert(CompanyVO companyVO) {
@@ -229,6 +233,7 @@ public class CompanyDAO implements CompanyDAO_interface {
 	@Override
 	public List<CompanyVO> getAll() {
 		List<CompanyVO> list = new ArrayList<CompanyVO>();
+		
 		CompanyVO companyVO = null;
 
 		Connection con = null;
@@ -242,7 +247,7 @@ public class CompanyDAO implements CompanyDAO_interface {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				// EquipmentVO 也稱為 Domain objects
+				
 
 				companyVO.setCompanyID(rs.getInt("companyID"));
 				companyVO.setCompanyUserName(rs.getString("companyUserName"));
@@ -291,71 +296,69 @@ public class CompanyDAO implements CompanyDAO_interface {
 	}
 
 	
-//	public List<CompanyVO> testGetOne(Integer companyID) {
-//
-//		List<CompanyVO> companies = new ArrayList<>();
-//		Connection con = null;
-//		PreparedStatement pstmt = null;
-//		ResultSet rs = null;
-//
-//		try {
-//			con = HikariDataSource.getConnection();
-//			pstmt = con.prepareStatement(testGetOne);
-//
-//			pstmt.setInt(1, companyID);
-//
-//			rs = pstmt.executeQuery();
-//
-//			while (rs.next()) {
-//				// companyVO 也稱為 Domain objects
-//				CompanyVO companyVO = new CompanyVO();
-//				companyVO.setCompanyID(rs.getInt("company_id"));
-//				companyVO.setCompanyUserName(rs.getString("company_username"));
-//				companyVO.setCompanyPassword(rs.getString("company_password"));
-//				companyVO.setTaxID(rs.getString("taxid"));
-//				companyVO.setCompanyName(rs.getString("company_name"));
-//				companyVO.setIntroduction(rs.getString("introduction"));
-//				companyVO.setAddressCounty(rs.getString("address_county"));
-//				companyVO.setAddressArea(rs.getString("address_area"));
-//				companyVO.setAddressStreet(rs.getString("address_street"));
-//				companyVO.setLatitude(rs.getDouble("latitude"));
-//				companyVO.setLongitude(rs.getDouble("longitude"));
-//				companyVO.setCompanyImg(rs.getString("company_img"));
-//				companies.add(companyVO);
-//
-//			}
-//
-//			// Handle any driver errors
-//		} catch (SQLException se) {
-//			throw new RuntimeException("A database error occured. " + se.getMessage());
-//			// Clean up JDBC resources
-//		} finally {
-//			if (rs != null) {
-//				try {
-//					rs.close();
-//				} catch (SQLException se) {
-//					se.printStackTrace(System.err);
-//				}
-//			}
-//			if (pstmt != null) {
-//				try {
-//					pstmt.close();
-//				} catch (SQLException se) {
-//					se.printStackTrace(System.err);
-//				}
-//			}
-//			if (con != null) {
-//				try {
-//					con.close();
-//				} catch (Exception e) {
-//					e.printStackTrace(System.err);
-//				}
-//			}
-//		}
-//		return companies;
-//	}
-	
-	
-	
+	@Override
+	public List<CompanyVO> getAllByCompanyID(Integer companyID) {
+		List<CompanyVO> list = new ArrayList<CompanyVO>();
+//		CompanyVO companyVO = null;
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+
+			con = HikariDataSource.getConnection();
+			pstmt = con.prepareStatement(GET_ALL_BY_COMPANYID);
+			pstmt.setInt(1, companyID);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				
+
+				CompanyVO companyVO = new CompanyVO();
+				companyVO.setCompanyID(rs.getInt("companyID"));
+				companyVO.setCompanyUserName(rs.getString("companyUserName"));
+				companyVO.setCompanyPassword(rs.getString("companyPassword"));
+				companyVO.setTaxID(rs.getString("taxID"));
+				companyVO.setCompanyName(rs.getString("companyName"));
+				companyVO.setIntroduction(rs.getString("introduction"));
+				companyVO.setAddressCounty(rs.getString("addressCounty"));
+				companyVO.setAddressArea(rs.getString("addressArea"));
+				companyVO.setAddressStreet(rs.getString("addressStreet"));
+				companyVO.setLatitude(rs.getDouble("latitude"));
+				companyVO.setLongitude(rs.getDouble("longitude"));
+				companyVO.setCompanyImg(rs.getString("companyImg"));
+				list.add(companyVO); // Store the row in the list
+			}
+
+			// Handle any driver errors
+		} catch (SQLException se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return list;
+	}
 	
 }
