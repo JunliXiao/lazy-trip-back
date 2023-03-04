@@ -16,16 +16,18 @@ import tour.model.TourVO;
 import tour.service.TourService;
 import tour.service.TourServiceImpl;
 
-@WebServlet("/tourQueryAll")
+@WebServlet("/tourQueryOne")
 public class TourQueryAllServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
+        String memberId = req.getParameter("memberId");
         try {
+        	
             TourService service = new TourServiceImpl();
-            final List<TourVO> resultLists = service.tourQueryAll();
+            final List<TourVO> resultLists = service.tourQueryAll(Integer.valueOf(memberId));
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(resultLists));

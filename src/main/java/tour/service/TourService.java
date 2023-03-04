@@ -11,8 +11,8 @@ public interface TourService {
 
     String tourDelete(Integer tourId);
 
-    List<TourVO> tourQueryAll();
+    List<TourVO> tourQueryAll(Integer memberId);
 
-    TourVO tourQueryOne(Integer tourId);
+    List<TourVO> tourTitleQuery(String queryStr);
 }
 

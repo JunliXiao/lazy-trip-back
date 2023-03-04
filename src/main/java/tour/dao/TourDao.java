@@ -11,7 +11,7 @@ public interface TourDao {
 
     int delete(Integer tourId);
 
-    List<TourVO> getAll();
+    List<TourVO> getAll(Integer memberId);
 
-    TourVO findByPrimaryKey(Integer tourId);
+    List<TourVO> findByTourTitle(String queryStr);
 }

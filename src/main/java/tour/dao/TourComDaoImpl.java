@@ -11,22 +11,28 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import common.HikariDataSource;
 import tour.model.TourComVO;
 
 public class TourComDaoImpl implements TourComDao {
-//    private static DataSource dataSource;
-//
-//    public TourComDaoImpl() throws NamingException {
-//        dataSource = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/example");
-//    }
+	private SessionFactory sessionFactory;
+	public TourComDaoImpl(SessionFactory sessionFactory) {
+		super();
+		this.sessionFactory = sessionFactory;
+	}
+	
+	public Session getSession() {
+		return this.sessionFactory.getCurrentSession();
+	}
 
     private static final String INSERT_SQL = "insert into tour_company (tour_title, start_date, end_date, tour_img, cost, tour_person, company_id) values (?,?,?,?,?,?,?);";
     private static final String UPDATE_SQL = "update tour_company set tour_title=?, start_date=?, end_date=?, tour_img=?, cost=?, tour_person=? where c_tour_id=? and company_id=?;";
     private static final String DELETE_SQL = "delete from tour_company where c_tour_id = ?";
     private static final String GET_ALL_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id from tour_company order by c_tour_id;";
     private static final String GET_ONE_SQL = "select tour_title, start_date, end_date, tour_img, cost, tour_person, company_id form tour_company where c_tour_id=?;";
-    private static final String SQL = "select * from tour_company where";
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override

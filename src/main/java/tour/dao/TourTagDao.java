@@ -8,7 +8,7 @@ public interface TourTagDao {
 	int saveTourTag(TourTagVO tourTagVO);
 	int deleteTourTagOnTour(TourTagVO tourTagVO);
 	int deleteTourTag(TourTagVO tourTagVO);
-    Set<String> getTourTagByMemberId(TourTagVO tourTagVO);
+    Set<String> getTourTagByTourId(TourTagVO tourTagVO);
     Set<String> getTourByTourTagTitle(TourTagVO tourTagVO);
     Set<String> getTourTagByMember(TourTagVO tourTagVO);
     
