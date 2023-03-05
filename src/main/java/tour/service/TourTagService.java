@@ -19,6 +19,8 @@ public interface TourTagService {
     Set<String> tourQueryByTourId(TourTagVO tourTagVO);
     
     Set<String> tourQueryByTourTagTitle(TourTagVO tourTagVO);
+    
+    Set<String> tourTagQuery(TourTagVO tourTagVO);
 
 //    TourTagVO tourTagQueryOne(Integer tourTagId);
 }

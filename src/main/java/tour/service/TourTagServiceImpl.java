@@ -51,4 +51,10 @@ public class TourTagServiceImpl implements TourTagService {
 		final Set<String> resultSet = dao.getTourTagByTourId(tourTagVO);
 		return resultSet;
 	}
+
+	@Override
+	public Set<String> tourTagQuery(TourTagVO tourTagVO) {
+		final Set<String> resultSet = dao.getTourTagByQueryStr(tourTagVO);
+		return resultSet;
+	}
 }

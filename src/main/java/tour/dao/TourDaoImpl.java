@@ -25,6 +25,7 @@ public class TourDaoImpl implements TourDao {
 	private static final String UPDATE_SQL = "update tour set tour_title=?, start_date=?, end_date=?, tour_img=? where tour_id=? and member_id=?;";
 	private static final String DELETE_SQL = "update tour set status=? where tour_id = ?";
 	private static final String GET_ALL_SQL = "select tour_id, tour_title, start_date, end_date, tour_img, member_id, status from tour where member_id=?;";
+	private static final String GET_ONE_SQL = "select tour_id, tour_title, start_date, end_date, tour_img from tour where tour_id=?;";
 	private static final String GET_TOUR_SQL = "select tour_id, tour_title, start_date, end_date, tour_img, status from tour where tour_title like ?;";
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -172,6 +173,37 @@ public class TourDaoImpl implements TourDao {
 			e.printStackTrace();
 		}
 		return list;
+
+	}
+	
+	@Override
+	public TourVO getTourByTourId(Integer tourId) {
+		TourVO tourVO = null;
+		ResultSet rs = null;
+
+		try (Connection conn = HikariDataSource.getConnection();
+				PreparedStatement ps = conn.prepareStatement(GET_ONE_SQL)) {
+
+			ps.setInt(1, tourId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				tourVO = new TourVO();
+				tourVO.setTourId(rs.getInt("tour_id"));
+				tourVO.setTourTitle(rs.getString("tour_title"));
+				tourVO.setStartDate(String.valueOf(rs.getDate("start_date")));
+				tourVO.setEndDate(String.valueOf(rs.getDate("end_date")));
+				byte[] imageBytes = rs.getBytes("tour_img");
+				if (imageBytes != null) {
+					String encodedImage = Base64.getEncoder().encodeToString(imageBytes);
+					tourVO.setTourImg(encodedImage);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tourVO;
 
 	}
 }

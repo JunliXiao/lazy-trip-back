@@ -44,4 +44,12 @@ public class TourServiceImpl implements TourService {
         final List<TourVO> result = dao.findByTourTitle(queryStr);
         return result;
     }
+    
+    @Override
+    public TourVO getTourInfoByTourId(Integer tourId) {
+        final TourVO result = dao.getTourByTourId(tourId);
+        return result;
+    }
+    
+    
 }

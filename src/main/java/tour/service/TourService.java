@@ -14,5 +14,7 @@ public interface TourService {
     List<TourVO> tourQueryAll(Integer memberId);
 
     List<TourVO> tourTitleQuery(String queryStr);
+    
+    TourVO getTourInfoByTourId(Integer tourId);
 }
 

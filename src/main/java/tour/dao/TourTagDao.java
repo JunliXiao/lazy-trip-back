@@ -11,6 +11,7 @@ public interface TourTagDao {
     Set<String> getTourTagByTourId(TourTagVO tourTagVO);
     Set<String> getTourByTourTagTitle(TourTagVO tourTagVO);
     Set<String> getTourTagByMember(TourTagVO tourTagVO);
+    Set<String> getTourTagByQueryStr(TourTagVO tourTagVO);
     
 //    TourTagVO updateTourTag(TourTagVO tourTagVO);
 }

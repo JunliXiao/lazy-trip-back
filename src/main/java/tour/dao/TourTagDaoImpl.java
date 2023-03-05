@@ -1,13 +1,7 @@
 package tour.dao;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
 
 import common.JedisPoolUtil;
 import redis.clients.jedis.Jedis;
@@ -37,16 +31,16 @@ public class TourTagDaoImpl implements TourTagDao {
 				jedis.sadd(memberTourKey, tourTagVO.getTourTagTitle());
 				
 				// 每個tag在哪些主行程內
-//				String tagTitleKey = new StringBuilder("tag")
-//						.append(":")
-//						.append(tourTagVO.getTourTagTitle())
-//						.append(":")
-//						.append("member")
-//						.append(":")
-//						.append(tourTagVO.getMemberId().toString())
-//						.append(":")
-//						.append("tour").toString();
-//				jedis.sadd(tagTitleKey, tourTagVO.getTourId().toString());
+				String tagTitleKey = new StringBuilder("tag")
+						.append(":")
+						.append(tourTagVO.getTourTagTitle())
+						.append(":")
+						.append("member")
+						.append(":")
+						.append(tourTagVO.getMemberId().toString())
+						.append(":")
+						.append("tour").toString();
+				jedis.sadd(tagTitleKey, tourTagVO.getTourId().toString());
 			} else {
 				// 每個會員新增哪些標籤
 				String memberKey = new StringBuilder("member")
@@ -130,8 +124,33 @@ public class TourTagDaoImpl implements TourTagDao {
 			jedis = pool.getResource();
 			jedis.select(9);
 			allTourTag = jedis.smembers(key);
-			System.out.println(allTourTag.toString());
 			return allTourTag;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			jedis.close();
+		}
+	}
+	@Override
+	public Set<String> getTourTagByQueryStr(TourTagVO tourTagVO) {
+		Jedis jedis = null;
+		Set<String> queryTourTag = new HashSet<>();
+		try {
+			String key = new StringBuilder("member")
+					.append(":")
+					.append(tourTagVO.getMemberId().toString())
+					.append(":")
+					.append("tag").toString();
+			jedis = pool.getResource();
+			jedis.select(9);
+			Set<String> members = jedis.smembers(key);
+			for(String member : members) {
+				if(member.contains(tourTagVO.getTourTagTitle().toString())) {
+					queryTourTag.add(member);
+				}
+			}
+			return queryTourTag;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -153,7 +172,6 @@ public class TourTagDaoImpl implements TourTagDao {
 					.append(tourTagVO.getTourId().toString())
 					.append(":")
 					.append("tag").toString();
-			System.out.println(memberTourKey);
 			jedis = pool.getResource();
 			jedis.select(9);
 			jedis.srem(memberTourKey, tourTagVO.getTourTagTitle());
@@ -186,6 +204,7 @@ public class TourTagDaoImpl implements TourTagDao {
 			jedis.close();
 		}
 	}
+	
 	
 
 }
