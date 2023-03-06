@@ -1,6 +1,8 @@
 package friend.controller;
 
 import friend.model.ChatMessage;
+import friend.model.ChatMessageWrapper;
+import friend.model.Chatroom;
 import friend.service.ChatMemberService;
 import friend.service.ChatMemberServiceImpl;
 import friend.service.ChatMessageService;
@@ -18,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
-@ServerEndpoint(value = "/socket/{memberId}",
+@ServerEndpoint(value = "/chat-ws/{memberId}",
         decoders = friend.util.ChatMessageDecoder.class,
         encoders = friend.util.ChatMessageEncoder.class)
 public class ChatServer {
@@ -30,55 +32,134 @@ public class ChatServer {
     ChatMemberService chatMemberService = new ChatMemberServiceImpl();
 
     Integer memberId;
-    Integer chatroomId;
-    Set<Integer> chatroomMembersId;
 
     @OnOpen
     public void onOpen(@PathParam("memberId") Integer memberId, Session memberSession) throws IOException {
-        // 初始化連線對話資訊
+
+        // 會員上線
         this.memberId = memberId;
-        this.chatroomId = Integer.parseInt(memberSession.getRequestParameterMap().get("chatroom_id").get(0));
-        this.chatroomMembersId =
-                chatMemberService
-                        .getMembersByChatroom(chatroomId)
-                        .stream()
-                        .map(Member::getId)
-                        .collect(Collectors.toSet());
-        // 排除非此聊天室的會員
-        if (!chatroomMembersId.contains(memberId)) throw new RuntimeException("會員不屬於此聊天室！");
-        // 新增為上線會員及其連線對話
         sessionsMap.put(memberId, memberSession);
 
-        // 回傳歷史訊息
-        List<ChatMessage> chatHistory = chatMessageService.retrieveHistoryMessages(chatroomId);
-        memberSession.getAsyncRemote().sendObject(chatHistory);
+        // 上線訊息
+        ChatMessageWrapper onlineNotification = new ChatMessageWrapper("online", memberId);
+
+        // 會員的所有聊天室
+        List<Integer> chatroomsId =
+                chatMemberService
+                        .getChatroomsByOneMember(memberId)
+                        .stream()
+                        .map(Chatroom::getId)
+                        .toList();
+
+        // 會員所有聊天室的全部成員，上線者，其和會員的共同聊天室
+        Map<Session, List<Integer>> membersSessionAndChatroomsId =
+                chatroomsId
+                        .stream()
+                        .map(chatroomId -> chatMemberService.getMembersByChatroom(chatroomId))
+                        .flatMap(List::stream)
+                        .map(Member::getId)
+                        .distinct()
+                        .filter(chatMemberId -> sessionsMap.containsKey(chatMemberId))
+                        .collect(Collectors.toMap(
+                                id -> sessionsMap.get(id),
+                                id -> chatMemberService
+                                        .getChatroomsByOneMember(id)
+                                        .stream()
+                                        .map(Chatroom::getId)
+                                        .filter(chatroomsId::contains)
+                                        .toList()
+                        ));
+
+        // 將上線訊息通知所有上線中聊天室成員
+        membersSessionAndChatroomsId.forEach((key, value) -> {
+            onlineNotification.setMessageContent(value);
+            if (key.isOpen()) key.getAsyncRemote().sendObject(onlineNotification);
+        });
 
         System.out.println("All members online: " + sessionsMap.keySet());
     }
 
     @OnMessage
-    public void onMessage(Session memberSession, ChatMessage message) {
-//            chatMessageService.saveMessage(message);
-        broadcast(message, chatroomMembersId);
+    public void onMessage(Session memberSession, ChatMessageWrapper wrapper) {
+        String action = wrapper.getMessageType();
+        Integer chatroomId = wrapper.getChatroomId();
+
+        if (action.equals("retrieve-history")) {
+            List<ChatMessage> chatHistory = chatMessageService.retrieveHistoryMessages(chatroomId);
+            memberSession.getAsyncRemote().sendObject(new ChatMessageWrapper("reload-history", chatHistory));
+        } else if (action.equals("new-message")) {
+            Set<Integer> chatroomMembersId =
+                    chatMemberService
+                            .getMembersByChatroom(chatroomId)
+                            .stream()
+                            .map(Member::getId)
+                            .collect(Collectors.toSet());
+            chatMessageService.saveMessage((ChatMessage) wrapper.getMessageContent());
+            broadcast(wrapper, chatroomMembersId);
+        }
+
     }
 
     @OnError
     public void onError(Session memberSession, Throwable e) {
-        if (memberSession.isOpen()) memberSession.getAsyncRemote().sendObject(e);
+        if (memberSession.isOpen()) {
+            memberSession.getAsyncRemote().sendObject(new ChatMessageWrapper("error", e));
+        }
         e.printStackTrace();
     }
 
     @OnClose
     public void onClose(Session memberSession, CloseReason reason) {
+        // 會員下線
         sessionsMap.remove(memberId, memberSession);
         System.out.println("Connection with member ID " + memberId + " closed");
+
+        // 下線訊息
+        ChatMessageWrapper offlineNotification = new ChatMessageWrapper("offline", memberId);
+
+        // 會員的所有聊天室
+        List<Integer> chatroomsId =
+                chatMemberService
+                        .getChatroomsByOneMember(memberId)
+                        .stream()
+                        .map(Chatroom::getId)
+                        .toList();
+
+        // 會員所有聊天室的全部成員，上線者，其和會員的共同聊天室
+        Map<Session, List<Integer>> membersSessionAndChatroomsId =
+                chatroomsId
+                        .stream()
+                        .map(chatroomId -> chatMemberService.getMembersByChatroom(chatroomId))
+                        .flatMap(List::stream)
+                        .map(Member::getId)
+                        .distinct()
+                        .filter(chatMemberId -> sessionsMap.containsKey(chatMemberId))
+                        .collect(Collectors.toMap(
+                                id -> sessionsMap.get(id),
+                                id -> chatMemberService
+                                        .getChatroomsByOneMember(id)
+                                        .stream()
+                                        .map(Chatroom::getId)
+                                        .filter(chatroomsId::contains)
+                                        .toList()
+                        ));
+
+        // 將下線訊息通知所有上線中聊天室成員
+        membersSessionAndChatroomsId.forEach((key, value) -> {
+            offlineNotification.setMessageContent(value);
+            if (key.isOpen()) key.getAsyncRemote().sendObject(offlineNotification);
+        });
+
     }
 
-    private static void broadcast(ChatMessage message, Set<Integer> chatroomMembersId) {
-        chatroomMembersId
+    private static void broadcast(ChatMessageWrapper wrapper, Set<Integer> receiversId) {
+        receiversId
                 .stream()
                 .filter(chatMemberId -> sessionsMap.containsKey(chatMemberId))
                 .map(chatMemberId -> sessionsMap.get(chatMemberId))
-                .forEach(chatMemberSession -> chatMemberSession.getAsyncRemote().sendObject(message));
+                .forEach(chatMemberSession -> {
+                    if (chatMemberSession.isOpen()) chatMemberSession.getAsyncRemote().sendObject(wrapper);
+                });
     }
+
 }
