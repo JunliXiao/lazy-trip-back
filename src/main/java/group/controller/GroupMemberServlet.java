@@ -38,6 +38,25 @@ public class GroupMemberServlet extends HttpServlet {
 			member.setPassword("***");
 		}
 
+		// 邀請朋友
+		if ("inviteFriend".equals(action)) {
+			Gson gson = new Gson();
+			List<Integer> list = new ArrayList<Integer>();
+			Enumeration<String> e = req.getParameterNames();
+			while (e.hasMoreElements()) {
+				String param = e.nextElement();
+				String value = req.getParameter(param);
+				if (param.equals("groupid")) {
+					list.add(0, Integer.parseInt(value));
+				} else if (!param.equals("action") && !param.equals("groupid")) {
+					list.add(Integer.parseInt(value));
+				}
+			}
+			service.inviteFriend(list);
+//			res.setContentType("application/json");
+//			res.getWriter().print(gson.toJson(list));
+		}
+		
 		// 取得當前揪團所有隸屬成員
 		if ("getGroupMems".equals(action)) {
 			Gson gson = new Gson();
@@ -89,6 +108,10 @@ public class GroupMemberServlet extends HttpServlet {
 			List list = service.getAllInvite(memberid);
 			res.setContentType("application/json");
 			res.getWriter().print(gson.toJson(list));
+		}
+		
+		if("acceptInvite".equals("action")) {
+			
 		}
 	}
 }

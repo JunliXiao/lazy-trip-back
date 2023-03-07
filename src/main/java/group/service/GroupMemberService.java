@@ -10,7 +10,7 @@ import member.model.Member;
 
 public class GroupMemberService {
 	private Group_memberDAO_interface dao;
-
+	
 	public GroupMemberService() {
 		dao = new Group_memberDAOImpl();
 

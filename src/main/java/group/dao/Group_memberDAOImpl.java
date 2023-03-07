@@ -30,9 +30,10 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 			+ "(select group_id from lazy.group_member where member_id = ?  and g_m_status = 1 ) "
 			+ "and m.g_m_status = 1  group by m.group_id ;";
 
-	private static final String GET_ALL_INVITE = "SELECT m.group_member, IFNULL(tour.tour_title, '沒有行程') AS tour_title, g.group_member_count, g.group_name, g.if_join_group_directly "
-			+ "FROM lazy.group_member m INNER " + "JOIN lazy.group g ON m.group_id = g.group_id "
-			+ "LEFT JOIN lazy.tour tour ON g.tour_id = tour.tour_id WHERE m.member_id = ? AND m.g_m_status = 3;";
+	private static final String GET_ALL_INVITE = "SELECT m.group_member, IFNULL(tour.tour_title, '沒有行程') AS tour_title, g.group_member_count"
+			+ ", g.group_name, g.if_join_group_directly ,IFNULL(m.self_intro, '無') as self_intro ,IFNULL(m.special_need, '無') as special_need "
+			+ "FROM lazy.group_member m INNER JOIN lazy.group g ON m.group_id = g.group_id "
+			+ "LEFT JOIN lazy.tour tour ON g.tour_id = tour.tour_id WHERE m.member_id = ? AND m.g_m_status <> 1;";
 
 	@Override
 	public void insertNeedApprove(Group_memberVO groupmemberVO) {
@@ -105,6 +106,8 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 				tourVO = new TourVO();
 
 				groupMemberVO.setGroupmember(rs.getInt("group_member"));
+				groupMemberVO.setSelfintro("self_intro");
+				groupMemberVO.setSpecialneed("special_need");
 				groupVO.setGroupmembercount(rs.getInt("group_member_count"));
 				groupVO.setGroupname(rs.getString("group_name"));
 				groupVO.setIfjoingroupdirectly(rs.getInt("if_join_group_directly"));

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import group.model.GroupVO;
 import group.model.Group_memberVO;
@@ -23,7 +24,9 @@ import tour.model.TourVO;
 
 @WebServlet("/group")
 public class GroupServlet extends HttpServlet {
-
+	// Service
+	GroupService service = new GroupService();
+	
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
 	}
@@ -32,15 +35,15 @@ public class GroupServlet extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 		res.setContentType("text/html;charset=UTF-8");
 		String action = req.getParameter("action");
+		JsonObject error = new JsonObject();
+
 		HttpSession session = req.getSession();
 		Member member = (Member) session.getAttribute("member");
 
-		// Service
-		GroupService service = new GroupService();
 
-		if (member != null) {
-			member.setPassword("***");
-		}
+//		if (member != null) {
+//			member.setPassword("***");
+//		}
 		// 加入返回登入頁面或出錯頁面
 //		else {
 //			
@@ -48,7 +51,10 @@ public class GroupServlet extends HttpServlet {
 
 		if ("getUsingMember".equals(action)) {
 			PrintWriter out = res.getWriter();
-			out.println(new Gson().toJson(member));
+			String jsonStr1 = new Gson().toJson(member);
+			System.out.println(jsonStr1);
+			out.println(jsonStr1);
+			return;
 		}
 
 		if ("getOneGroup".equals(action)) {
@@ -63,8 +69,9 @@ public class GroupServlet extends HttpServlet {
 //			String jsonStr1 = new Gson().toJson(groupVO);
 			String jsonStr1 = new Gson().toJson(list);
 //			System.out.println(jsonStr1);
+			System.out.println(jsonStr1);
 			out.println(jsonStr1);
-
+			return;
 		}
 
 		if ("addOneGroup".equals(action)) {
@@ -75,27 +82,40 @@ public class GroupServlet extends HttpServlet {
 			// groupmemberVO:創建時將創辦人加入groupmember
 			try {
 				Integer gpCount = Integer.valueOf(req.getParameter("groupmembercount"));
-				groupVO.setGroupmembercount(gpCount);
+				if (gpCount >= 0 && gpCount != null) {
+					groupVO.setGroupmembercount(gpCount);
+				}
 			} catch (NumberFormatException e) {
-//		        	e.printStackTrace();
-				res.sendRedirect(req.getRequestURL().toString());
+				e.printStackTrace();
+//				res.sendRedirect(req.getRequestURL().toString());
 			}
 			Integer groupOwner = Integer.valueOf(member.getId());
 			Integer howTojoin = Integer.valueOf(req.getParameter("how_2_join"));
-			if (req.getParameter("groupname").trim().length() != 0) {
-				String name = req.getParameter("groupname");
-				groupVO.setGroupname(name);
-			}
-			groupVO.setMemberid(groupOwner);
-			groupVO.setIfjoingroupdirectly(howTojoin);
+			String name = req.getParameter("groupname");
 
-			int pk = service.addGroup(groupVO);
-			groupmemberVO.setMemberid(groupOwner);
-			groupmemberVO.setGroupid(pk);
-			service.InsertWhenCreate(groupmemberVO);
-			groupVO.setGroupid(pk);
-			res.setContentType("application/json");
-			res.getWriter().print(gson.toJson(groupVO));
+			if (name.trim().length() != 0 && name != null && groupOwner != null && howTojoin != null && howTojoin > 0
+					&& howTojoin < 3) {
+
+				groupVO.setGroupname(name);
+				groupVO.setMemberid(groupOwner);
+				groupVO.setIfjoingroupdirectly(howTojoin);
+
+				int pk = service.addGroup(groupVO);
+				groupmemberVO.setMemberid(groupOwner);
+				groupmemberVO.setGroupid(pk);
+				service.InsertWhenCreate(groupmemberVO);
+				groupVO.setGroupid(pk);
+				res.setContentType("application/json");
+				res.getWriter().print(gson.toJson(groupVO));
+				return;
+			} else {
+				error.addProperty("errorMessage", "請輸入正確資訊");
+				PrintWriter out = res.getWriter();
+				out.println(new Gson().toJson(error));
+				return;
+
+			}
+			
 		}
 
 		// 取得揪團當前的行程名稱
@@ -107,6 +127,13 @@ public class GroupServlet extends HttpServlet {
 			tourvo = service.getOneTourInfo(tourid);
 			String jsonStr = new Gson().toJson(tourvo);
 			out.println(jsonStr);
+			return;
+		}
+		if(action.equals("") || action.trim().length() == 0 ||!action.isEmpty()) {
+			error.addProperty("errorMessage", "Unknown Action");
+			PrintWriter out = res.getWriter();
+			out.println(new Gson().toJson(error));
+			return;
 		}
 	}
 
@@ -114,6 +141,7 @@ public class GroupServlet extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 		res.setContentType("text/html;charset=UTF-8");
 		String action = req.getParameter("action");
+		JsonObject error = new JsonObject();
 		GroupService service = new GroupService();
 		// 修改揪團資訊
 		if ("groupSetting".equals(action)) {
@@ -131,8 +159,14 @@ public class GroupServlet extends HttpServlet {
 			PrintWriter out = res.getWriter();
 			String jsonStr = new Gson().toJson(groupVO);
 			out.println(jsonStr);
+			return;
 		}
-
+		if(action.equals("") || action.trim().length() == 0 ||!action.isEmpty()) {
+			error.addProperty("errorMessage", "Unknown Action");
+			PrintWriter out = res.getWriter();
+			out.println(new Gson().toJson(error));
+			return;
+		}
 	}
 
 //	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
