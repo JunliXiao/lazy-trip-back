@@ -15,17 +15,15 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
-import group.model.DiscussionVO;
 import group.model.GroupVO;
 import group.model.Group_memberVO;
-import group.service.DiscussionService;
-import group.service.GroupMemberService;
 import group.service.GroupService;
 import member.model.Member;
 import tour.model.TourVO;
 
 @WebServlet("/group")
 public class GroupServlet extends HttpServlet {
+
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
 	}
@@ -36,27 +34,28 @@ public class GroupServlet extends HttpServlet {
 		String action = req.getParameter("action");
 		HttpSession session = req.getSession();
 		Member member = (Member) session.getAttribute("member");
-		if ("getAllGroups".equals(action)) {
 
-			Gson gson = new Gson();
-			GroupMemberService service = new GroupMemberService();
-			
-			//得到一位會員所加入的揪團
-			// 因還未串接登入獲得memberid前端fetch先以1代替
-			if (member.getId() != null) {
-				Integer p1 = Integer.valueOf(member.getId());
-				List<GroupVO> list = service.GetAllGroup(member.getId());
-//				System.out.println(list);
-				res.setContentType("application/json");
-				res.getWriter().print(gson.toJson(list));
-			}
+		// Service
+		GroupService service = new GroupService();
+
+		if (member != null) {
+			member.setPassword("***");
 		}
+		// 加入返回登入頁面或出錯頁面
+//		else {
+//			
+//		}
+
+		if ("getUsingMember".equals(action)) {
+			PrintWriter out = res.getWriter();
+			out.println(new Gson().toJson(member));
+		}
+
 		if ("getOneGroup".equals(action)) {
 			// 進入main頁面顯示揪團資訊
 			GroupVO groupVO = new GroupVO();
 			Integer groupid = Integer.parseInt(req.getParameter("groupid"));
 			PrintWriter out = res.getWriter();
-			GroupService service = new GroupService();
 			groupVO = service.getOneGroupInfo(groupid);
 			List list = new ArrayList();
 			list.add(groupVO);
@@ -66,155 +65,81 @@ public class GroupServlet extends HttpServlet {
 //			System.out.println(jsonStr1);
 			out.println(jsonStr1);
 
+		}
 
-		}
-		
 		if ("addOneGroup".equals(action)) {
-			  Gson gson = new Gson();
-				GroupVO groupVO =new GroupVO();
-				Group_memberVO groupmemberVO = new Group_memberVO();
-				//groupVO:創建時新增揪團
-				//groupmemberVO:創建時將創辦人加入groupmember
-		        try {
-		        	Integer gpCount = Integer.valueOf(req.getParameter("groupmembercount"));
-		        	groupVO.setGroupmembercount(gpCount);
-		        }catch(NumberFormatException e){
+			Gson gson = new Gson();
+			GroupVO groupVO = new GroupVO();
+			Group_memberVO groupmemberVO = new Group_memberVO();
+			// groupVO:創建時新增揪團
+			// groupmemberVO:創建時將創辦人加入groupmember
+			try {
+				Integer gpCount = Integer.valueOf(req.getParameter("groupmembercount"));
+				groupVO.setGroupmembercount(gpCount);
+			} catch (NumberFormatException e) {
 //		        	e.printStackTrace();
-		        	res.sendRedirect(req.getRequestURL().toString());
-		        }
-		        Integer groupOwner =Integer.valueOf(member.getId());
-		        Integer howTojoin =Integer.valueOf(req.getParameter("how_2_join"));
-		        if(req.getParameter("groupname").trim().length()!=0) {
-		        	String name = req.getParameter("groupname");
-		        	groupVO.setGroupname(name);
-		        }
-		        groupVO.setMemberid(groupOwner);
-		        groupVO.setIfjoingroupdirectly(howTojoin);
-		        
-		        
-		        GroupService groupService = new GroupService();
-		        GroupMemberService groupMemberService = new GroupMemberService();
-		        int pk = groupService.addGroup(groupVO);
-		        groupmemberVO.setMemberid(groupOwner);
-		        groupmemberVO.setGroupid(pk);
-		        groupMemberService.InsertWhenCreate(groupmemberVO);
-		        groupVO.setGroupid(pk);
-		        res.setContentType("application/json");
-		        res.getWriter().print(gson.toJson(groupVO));
+				res.sendRedirect(req.getRequestURL().toString());
+			}
+			Integer groupOwner = Integer.valueOf(member.getId());
+			Integer howTojoin = Integer.valueOf(req.getParameter("how_2_join"));
+			if (req.getParameter("groupname").trim().length() != 0) {
+				String name = req.getParameter("groupname");
+				groupVO.setGroupname(name);
+			}
+			groupVO.setMemberid(groupOwner);
+			groupVO.setIfjoingroupdirectly(howTojoin);
+
+			int pk = service.addGroup(groupVO);
+			groupmemberVO.setMemberid(groupOwner);
+			groupmemberVO.setGroupid(pk);
+			service.InsertWhenCreate(groupmemberVO);
+			groupVO.setGroupid(pk);
+			res.setContentType("application/json");
+			res.getWriter().print(gson.toJson(groupVO));
 		}
-		
-		//取得揪團當前的行程名稱
+
+		// 取得揪團當前的行程名稱
 		if ("getTourInfo".equals(action)) {
 			// 進入main頁面顯示揪團資訊
 			Integer tourid = Integer.parseInt(req.getParameter("tourid"));
 			PrintWriter out = res.getWriter();
-			GroupService service = new GroupService();
 			TourVO tourvo = new TourVO();
 			tourvo = service.getOneTourInfo(tourid);
 			String jsonStr = new Gson().toJson(tourvo);
 			out.println(jsonStr);
 		}
-		
-		//取得當前揪團所有成員
-		if("getGroupMems".equals(action)) {
-			Gson gson = new Gson();
-			Integer groupid = Integer.parseInt(req.getParameter("groupid"));
-			PrintWriter out = res.getWriter();
-	        GroupMemberService service = new GroupMemberService();
-	        
-			List<Member> list = service.getAllMember(groupid);;
-			res.setContentType("application/json");
-			res.getWriter().print(gson.toJson(list));
-			
-		}
-		
-		//取得當前揪團留言內容
-		if("getGroupCons".equals(action)) {
-			Gson gson = new Gson();
-			Integer groupid = Integer.parseInt(req.getParameter("groupid"));
-			PrintWriter out = res.getWriter();
-			DiscussionService service = new DiscussionService();
-			
-			List<DiscussionVO> list = service.getAllContent(groupid);
-			res.setContentType("application/json");
-			res.getWriter().print(gson.toJson(list));
-		}
-		
-		//新增一筆留言
-		if("addContent".equals(action)) {
-			Gson gson = new Gson();
-			Integer memberid = Integer.valueOf(member.getId());
-			DiscussionVO discussionVO = new DiscussionVO();
-			DiscussionService service = new DiscussionService();
-			discussionVO.setMemberid(memberid);
-			discussionVO.setDiscussionContent(req.getParameter("content"));
-			discussionVO.setGroupid(Integer.valueOf(req.getParameter("groupid")));
-			service.insert(discussionVO);
-		}
-
-		
 	}
 
 	public void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		req.setCharacterEncoding("UTF-8");
 		res.setContentType("text/html;charset=UTF-8");
 		String action = req.getParameter("action");
-
+		GroupService service = new GroupService();
 		// 修改揪團資訊
 		if ("groupSetting".equals(action)) {
-		GroupVO groupVO = new GroupVO();
-		Integer groupId = Integer.parseInt(req.getParameter("groupid"));
-		String groupName = req.getParameter("groupname");
-		Integer groupMemberCount = Integer.parseInt(req.getParameter("groupmembercount"));
-		Integer ifjoingroupdirectly = Integer.parseInt(req.getParameter("ifjoingroupdirectly"));
+			GroupVO groupVO = new GroupVO();
+			Integer groupId = Integer.parseInt(req.getParameter("groupid"));
+			String groupName = req.getParameter("groupname");
+			Integer groupMemberCount = Integer.parseInt(req.getParameter("groupmembercount"));
+			Integer ifjoingroupdirectly = Integer.parseInt(req.getParameter("ifjoingroupdirectly"));
 
-		groupVO.setGroupid(groupId);
-		groupVO.setGroupmembercount(groupMemberCount);
-		groupVO.setGroupname(groupName);
-		groupVO.setIfjoingroupdirectly(ifjoingroupdirectly);
-		GroupService service = new GroupService();
-		service.updateGroupInfo(groupVO);
-		PrintWriter out = res.getWriter();
-		String jsonStr = new Gson().toJson(groupVO);
-		out.println(jsonStr);
-		}
-		
-	}
-	
-	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		req.setCharacterEncoding("UTF-8");
-		res.setContentType("text/html;charset=UTF-8");
-		String action = req.getParameter("action");
-		
-		if ("delDiscussion".equals(action)) {
-			Integer discussionId = Integer.valueOf(req.getParameter("discussionId"));
-			DiscussionService service = new DiscussionService();
-			service.delete(discussionId);
-		}
-		
-		if ("delGroupMember".equals(action)) {
-//			for(int i = 0 ; i<)
-			
-//			Integer discussionId = Integer.valueOf(req.getParameter("discussionId"));
-
-			
+			groupVO.setGroupid(groupId);
+			groupVO.setGroupmembercount(groupMemberCount);
+			groupVO.setGroupname(groupName);
+			groupVO.setIfjoingroupdirectly(ifjoingroupdirectly);
+			service.updateGroupInfo(groupVO);
 			PrintWriter out = res.getWriter();
-			Enumeration<String> e = req.getParameterNames();
-			List list = new ArrayList<Integer>();
-			
-			while(e.hasMoreElements()) {
-			    String param = e.nextElement();
-			    String value = req.getParameter(param);
-			    if(param.equals("groupid")) {
-				    list.add(0,Integer.parseInt(value));
-			    }else if(!param.equals("action")&&!param.equals("groupid")){
-			    	list.add(Integer.parseInt(value));
-			    }
-			}
-			GroupMemberService service = new GroupMemberService();
-			service.delGroupMem(list);
-			
+			String jsonStr = new Gson().toJson(groupVO);
+			out.println(jsonStr);
 		}
+
 	}
+
+//	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
+//		req.setCharacterEncoding("UTF-8");
+//		res.setContentType("text/html;charset=UTF-8");
+//		String action = req.getParameter("action");
+//
+//	}
 
 }

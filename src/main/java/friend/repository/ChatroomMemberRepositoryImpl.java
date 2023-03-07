@@ -15,17 +15,72 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
 
     @Override
     public boolean addChatroom(List<Integer> membersId) {
-        return false;
+        boolean hasAdded = false;
+        String sqlInsertChatroom = "INSERT INTO `chatroom` (`chatroom_name`) VALUES (' ');";
+        String sqlInsertChatroomMember = "INSERT INTO `chatroom_member` (`chatroom_id`, `member_id`) VALUES (?, ?);";
+        String[] generatedColumns = {"chatroom_id"};
+        int chatroomId;
+
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps1 = connection.prepareStatement(sqlInsertChatroom, generatedColumns);
+             PreparedStatement ps2 = connection.prepareStatement(sqlInsertChatroomMember)) {
+            hasAdded = ps1.executeUpdate() != 0;
+            ResultSet rs = ps1.getGeneratedKeys();
+
+            if (rs.next()) {
+                chatroomId = rs.getInt(1);
+                ps2.setInt(1, chatroomId);
+            } else {
+                throw new RuntimeException("Failed to create a chatroom");
+            }
+
+            for (Integer m : membersId) {
+                ps2.setInt(2, m);
+                ps2.addBatch();
+            }
+
+            int[] insertResults = ps2.executeBatch();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("無法將該名會員加入聊天室");
+        }
+        return hasAdded;
     }
 
     @Override
     public boolean addMembersToChatroom(List<Integer> membersId, Integer chatroomId) {
+        boolean hasAdded = false;
+        String sql = "INSERT INTO `chatroom_member` (`chatroom_id`, `member_id`) VALUES (?, ?);";
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, chatroomId);
+
+            for (Integer m : membersId) {
+                ps.setInt(2, m);
+                ps.addBatch();
+            }
+
+            ps.executeBatch();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
 
     @Override
     public boolean deleteMemberFromChatroom(Integer memberId, Integer chatroomId) {
-        return false;
+        boolean hasDeleted = false;
+        String sql = "DELETE FROM `chatroom_member` WHERE chatroom_id = ? and member_id = ?;";
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, chatroomId);
+            ps.setInt(2, memberId);
+            hasDeleted = ps.executeUpdate() != 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("無法從聊天室移除該名成員");
+        }
+        return hasDeleted;
     }
 
     @Override
@@ -52,7 +107,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("目前資料庫有異狀，無法取得所有聊天室");
         }
 
         return chatrooms;
@@ -62,7 +117,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
     public List<Member> getChatroomMembers(Integer chatroomId) {
         List<Member> members = new ArrayList<>();
         String sql = """
-                SELECT m.member_id, m.member_name, m.member_account FROM chatroom_member cm
+                SELECT m.member_id, m.member_name, m.member_account, m.member_username FROM chatroom_member cm
                 \tJOIN member m ON cm.member_id = m.member_id
                 WHERE cm.chatroom_id = ?;
                 """;
@@ -76,11 +131,12 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
                 member.setId(Integer.parseInt(rs.getString("member_id")));
                 member.setAccount(rs.getString("member_account"));
                 member.setName(rs.getString("member_name"));
+                member.setUsername(rs.getString("member_username"));
                 members.add(member);
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("目前資料庫有異狀，無法取得聊天室成員");
         }
         return members;
     }

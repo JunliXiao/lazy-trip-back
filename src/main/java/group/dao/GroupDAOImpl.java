@@ -6,13 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
 import common.HikariDataSource;
 import group.model.GroupVO;
+import group.model.Group_memberVO;
 import tour.model.TourVO;
 
 public class GroupDAOImpl implements GroupDAO_interface {
@@ -26,6 +27,7 @@ public class GroupDAOImpl implements GroupDAO_interface {
 	private static final String DELETE = "DELETE from lazy.group where group_id = ?";
 	private static final String UPDATE_GROUP_SETTING_STMT = "UPDATE lazy.group set group_member_count = ?  ,group_name = ? ,if_join_group_directly = ? where group_id= ?";
 	private static final String GET_TOURNAME_STMT = "SELECT  tour_title , start_date ,end_date FROM lazy.tour t WHERE t.tour_id= ?";
+	private static final String INSERT_WHEN_CREATE_STMT = "INSERT INTO lazy.group_member (member_id , group_id , g_m_status ) values(?,?,?)";
 
 	@Override
 	public int insert(GroupVO groupVo) {
@@ -165,5 +167,28 @@ public class GroupDAOImpl implements GroupDAO_interface {
 		return tourVO;
 	}
 
+	@Override
+	public void insertWhenCreate(Group_memberVO groupmemberVO) {
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(INSERT_WHEN_CREATE_STMT)) {
+			pstmt.setInt(1, groupmemberVO.getMemberid());
+			pstmt.setInt(2, groupmemberVO.getGroupid());
+			pstmt.setInt(3, 1);
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+//	@Override
+//	public List<GroupVO> getAllbyMemberId(Integer member_id) {
+//		// TODO Auto-generated method stub
+//		List list = new ArrayList<GroupVO>();
+//		
+//		return list;
+//	}
 
 }

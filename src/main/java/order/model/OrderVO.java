@@ -1,14 +1,15 @@
 package order.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class OrderVO implements java.io.Serializable {
+public class OrderVO implements Serializable {
 
-    private Integer orderId;
-    private Integer memberId;
-    private Integer companyId;
-    private Integer couponId;
+    private Integer orderID;
+    private Integer memberID;
+    private Integer companyID;
+    private Integer couponID;
     private LocalDate orderCheckInDate;
     private LocalDate orderCheckOutDate;
     private Integer orderTotalPrice;
@@ -21,40 +22,40 @@ public class OrderVO implements java.io.Serializable {
     private String orderPayCardYear;
     private String orderPayCardMonth;
     private String travelerName;
-    private String travelerIdNumber;
+    private String travelerIDNumber;
     private String travelerEmail;
     private String travelerPhone;
 
-    public Integer getOrderId() {
-        return orderId;
+    public Integer getOrderID() {
+        return orderID;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setOrderID(Integer orderID) {
+        this.orderID = orderID;
     }
 
-    public Integer getMemberId() {
-        return memberId;
+    public Integer getMemberID() {
+        return memberID;
     }
 
-    public void setMemberId(Integer memberId) {
-        this.memberId = memberId;
+    public void setMemberID(Integer memberID) {
+        this.memberID = memberID;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
+    public Integer getCompanyID() {
+        return companyID;
     }
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
+    public void setCompanyID(Integer companyID) {
+        this.companyID = companyID;
     }
 
-    public Integer getCouponId() {
-        return couponId;
+    public Integer getCouponID() {
+        return couponID;
     }
 
-    public void setCouponId(Integer couponId) {
-        this.couponId = couponId;
+    public void setCouponID(Integer couponID) {
+        this.couponID = couponID;
     }
 
     public LocalDate getOrderCheckInDate() {
@@ -153,12 +154,12 @@ public class OrderVO implements java.io.Serializable {
         this.travelerName = travelerName;
     }
 
-    public String getTravelerIdNumber() {
-        return travelerIdNumber;
+    public String getTravelerIDNumber() {
+        return travelerIDNumber;
     }
 
-    public void setTravelerIdNumber(String travelerIdNumber) {
-        this.travelerIdNumber = travelerIdNumber;
+    public void setTravelerIDNumber(String travelerIDNumber) {
+        this.travelerIDNumber = travelerIDNumber;
     }
 
     public String getTravelerEmail() {

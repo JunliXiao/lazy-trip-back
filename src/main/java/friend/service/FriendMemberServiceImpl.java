@@ -5,6 +5,7 @@ import friend.repository.FriendMemberRepositoryImpl;
 import member.model.Member;
 
 import java.util.List;
+import java.util.Map;
 
 public class FriendMemberServiceImpl implements FriendMemberService {
 
@@ -33,17 +34,22 @@ public class FriendMemberServiceImpl implements FriendMemberService {
 	public boolean removeFriendRequest(Integer requesterId, Integer addresseeId) {
 		return repository.deleteFriendship(requesterId, addresseeId);
 	}
-    
-    @Override
-    public List<Member> getFriends(Integer memberId) {
-        return repository.getMembersByFriendship(memberId, "A");
-    }
+
+	@Override
+	public Map<String, String> checkFriendshipBetween(Integer specifierId, Integer otherId) {
+		return repository.getFriendshipBetween(specifierId, otherId);
+	}
+
+	@Override
+	public List<Member> getFriends(Integer memberId) {
+		return repository.getMembersByFriendship(memberId, "A");
+	}
 
 	@Override
 	public List<Member> getBlockedMembers(Integer memberId) {
 		return repository.getMembersByFriendship(memberId, "B");
 	}
-	
+
 	@Override
 	public List<Member> getSentRequests(Integer memberId) {
 		return repository.getMembersByRequest(memberId, "sent");
