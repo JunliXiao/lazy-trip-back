@@ -42,7 +42,6 @@ public class GroupMemberService {
 	
 	public void acceptInvite(Integer id ,Integer needApproval) {
 		if(needApproval.equals(1)) {
-			System.out.println("U啊");
 			dao.insertNeedApprove(id);
 		}else if(needApproval.equals(2)){
 			dao.insertDirectly(id);
