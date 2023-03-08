@@ -6,25 +6,47 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-@Entity
-@Table(name="tour_schedule_company")
+
 public class TourScheduleComVO implements Serializable{
 	private static final long serialVersionUID = 1L;
-	@Id
-	@Column(name="c_tour_schedule_id")
 	private Integer tourScheduleComId;
-	@Column(name="c_tour_id")
 	private Integer tourComId;
-	@Column(name="attraction_id")
 	private Integer attractionId;
-	@Column(name="date")
 	private String date;
-	@Column(name="start_time")
 	private String startTime;
-	@Column(name="stay_time")
-	private String stayTime;
+	private Integer stayTime;
+	private String endTime;
+    private AttractionVO attractionVO;
 	
 	public TourScheduleComVO() {
+	}
+	public TourScheduleComVO(Integer tourScheduleComId, Integer tourComId, Integer attractionId, String date,
+			String startTime, Integer stayTime, String endTime, AttractionVO attractionVO) {
+		super();
+		this.tourScheduleComId = tourScheduleComId;
+		this.tourComId = tourComId;
+		this.attractionId = attractionId;
+		this.date = date;
+		this.startTime = startTime;
+		this.stayTime = stayTime;
+		this.endTime = endTime;
+		this.attractionVO = attractionVO;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
+	public AttractionVO getAttractionVO() {
+		return attractionVO;
+	}
+
+	public void setAttractionVO(AttractionVO attractionVO) {
+		this.attractionVO = attractionVO;
 	}
 	
 	public Integer getTourScheduleComId() {
@@ -57,29 +79,17 @@ public class TourScheduleComVO implements Serializable{
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
-	public String getStayTime() {
+	public Integer getStayTime() {
 		return stayTime;
 	}
-	public void setStayTime(String stayTime) {
+	public void setStayTime(Integer stayTime) {
 		this.stayTime = stayTime;
 	}
-	
-	public TourScheduleComVO(Integer tourScheduleComId, Integer tourComId, Integer attractionId, String date,
-			String startTime, String stayTime) {
-		super();
-		this.tourScheduleComId = tourScheduleComId;
-		this.tourComId = tourComId;
-		this.attractionId = attractionId;
-		this.date = date;
-		this.startTime = startTime;
-		this.stayTime = stayTime;
-	}
-	
 	@Override
 	public String toString() {
 		return "TourScheduleComVO [tourScheduleComId=" + tourScheduleComId + ", tourComId=" + tourComId
 				+ ", attractionId=" + attractionId + ", date=" + date + ", startTime=" + startTime + ", stayTime="
-				+ stayTime + "]";
+				+ stayTime + ", endTime=" + endTime + ", attractionVO=" + attractionVO + "]";
 	}
 
 }
