@@ -1,6 +1,7 @@
 package order.dao;
 
 
+import common.HikariDataSource;
 import company.model.CompanyVO;
 import company.model.CouponVO;
 import company.model.RoomTypeImgVO;
@@ -15,8 +16,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import common.HikariDataSource;
-
 public class OrderJDBCDAOImpl implements OrderDAOInterface {
 
 
@@ -25,14 +24,20 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
     //====================================================================================
 
 
-
-
     //從定位找到該飯店的所有資料(之後再做限制筆數功能，俗稱分頁) 1?
     //方法已做
     private static final String SELECT_FIND_COMPANY_AND_ROOMTYPE_PRICE_BY_POSITION =
-    "SELECT cm.company_id, cm.company_name, cm.introduction, cm.address_county, cm.address_area, cm.address_street, cm.company_img, MIN(rt.roomtype_price) FROM lazy.company cm JOIN lazy.roomtype rt ON cm.company_id = rt.company_id  WHERE cm.address_county = ? GROUP BY cm.company_id LIMIT 50;";
+            "SELECT cm.company_id, cm.company_name, cm.introduction, cm.address_county, cm.address_area, cm.address_street, cm.company_img, MIN(rt.roomtype_price) FROM lazy.company cm JOIN lazy.roomtype rt ON cm.company_id = rt.company_id  WHERE cm.address_county = ? GROUP BY cm.company_id LIMIT 50;";
 
     //====================================================================================
+
+    //透過文字搜尋框 關鍵字輸入模糊比對飯店名稱或飯店縣市或飯店區域 搜尋多個飯店資料 3?
+    //方法已做
+    private static final String SELECT_FIND_COMPANY_AND_ROOMTYPE_PRICE_BY_COMPANY_NAME_OR_COUNTY_OR_AREA =
+            "SELECT cm.company_id, cm.company_name, cm.introduction, cm.address_county, cm.address_area, cm.address_street, cm.company_img, MIN(rt.roomtype_price) FROM lazy.company cm JOIN lazy.roomtype rt ON cm.company_id = rt.company_id  WHERE cm.address_county LIKE ? OR cm.address_area LIKE ? OR cm.company_name LIKE ? GROUP BY cm.company_id;";
+
+    //====================================================================================
+
 
     //從廠商編號 找到 廠商資料 1?
     //方法已做
@@ -67,6 +72,16 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
     //方法已做
     private static final String SELECT_FIND_All_ROOMTYPE_IMG_BY_ROOMTYPE_ID =
             "SELECT roomtype_id, roomtype_img_id, roomtype_img FROM lazy.roomtype_img WHERE roomtype_id = ?;";
+
+
+    //從飯店id找到飯店所有資料(不含帳號密碼統一編號) 1?
+    //方法已做
+    private static final String SELECT_FIND_COMPANY_ALL_BY_COMPANY_ID =
+            "SELECT cm.company_id, cm.company_name, cm.introduction, cm.address_county, cm.address_area, cm.address_street, " +
+                    "cm.longitude, cm.latitude, cm.company_img, rt.roomtype_id, rt.company_id, rt.roomtype_name, " +
+                    "rt.roomtype_person, rt.roomtype_quantity, rt.roomtype_price, rti.roomtype_img_id, rti.roomtype_id, " +
+                    "rti.roomtype_img FROM lazy.company cm JOIN lazy.roomtype rt ON cm.company_id = rt.company_id " +
+                    "JOIN lazy.roomtype_img rti ON rt.roomtype_id = rti.roomtype_id WHERE cm.company_id = ?;";
 
 
     //====================================================================================
@@ -130,10 +145,34 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
             "SELECT order_detail_id, roomtype_id, order_detail_room_price, order_detail_room_quantity, order_detail_coupon_discount_price FROM lazy.order_detail WHERE order_id = ?;";
     //====================================================================================
 
+    //從會員編號找到訂單與訂單明細 1?
+    ////方法已做
+    private static final String SELECT_FIND_ORDER_ALL_BY_MEMBER_ID =
+            "SELECT o.order_id, o.member_id, o.company_id, o.coupon_id, o.order_check_in_date, o.order_check_out_date,\n" +
+                    "o.order_total_price, o.order_status, o.order_create_datetime, o.order_pay_deadline, o.order_pay_datetime,\n" +
+                    "o.order_pay_card_name, o.order_pay_card_number, o.order_pay_card_year, o.order_pay_card_month, o.traveler_name,\n" +
+                    "o.traveler_id_number,  o.traveler_email, o.traveler_phone, od.order_detail_id, od.order_id, od.roomtype_id,\n" +
+                    "od.order_detail_room_price, od.order_detail_room_quantity, od.order_detail_coupon_discount_price\n" +
+                    " FROM lazy.order_detail od JOIN  lazy.order o ON o.order_id = od.order_id WHERE o.member_id = ?;";
+
+    //====================================================================================
+
+
+    //從廠商編號找到訂單與訂單明細 1?
+    //方法已做
+    private static final String SELECT_FIND_ORDER_ALL_BY_COMPANY_ID =
+            "SELECT o.order_id, o.member_id, o.company_id, o.coupon_id, o.order_check_in_date, o.order_check_out_date,\n" +
+                    "o.order_total_price, o.order_status, o.order_create_datetime, o.order_pay_deadline, o.order_pay_datetime,\n" +
+                    "o.order_pay_card_name, o.order_pay_card_number, o.order_pay_card_year, o.order_pay_card_month, o.traveler_name,\n" +
+                    "o.traveler_id_number,  o.traveler_email, o.traveler_phone, od.order_detail_id, od.order_id, od.roomtype_id,\n" +
+                    "od.order_detail_room_price, od.order_detail_room_quantity, od.order_detail_coupon_discount_price\n" +
+                    " FROM lazy.order_detail od JOIN  lazy.order o ON o.order_id = od.order_id WHERE o.order_status = ? AND o.company_id = ?";
+
+    //====================================================================================
 
 
     //從定位找到該飯店的所有資料(之後再做限制筆數功能，俗稱分頁) 1?
-    public List<CompanyVO> selectFindCompanyAndRoomTypePriceByPosition(String addressCounty){
+    public List<CompanyVO> selectFindCompanyAndRoomTypePriceByPosition(String addressCounty) {
 
         List<CompanyVO> companyVOs = new ArrayList<>();
 
@@ -141,11 +180,11 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
         try (Connection con = HikariDataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_FIND_COMPANY_AND_ROOMTYPE_PRICE_BY_POSITION);) {
 
-            ps.setString(1,addressCounty);
+            ps.setString(1, addressCounty);
 
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 CompanyVO companyVO = new CompanyVO();
                 companyVO.setCompanyID(rs.getInt("cm.company_id"));
                 companyVO.setCompanyName(rs.getString("cm.company_name"));
@@ -159,15 +198,44 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 companyVO.setRoomTypeVO(roomTypeVO);
                 companyVOs.add(companyVO);
             }
-        }catch (SQLException e){
-            System.out.println("SelectFindCompanyAndRoomTypePriceByPosition: "+e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("SelectFindCompanyAndRoomTypePriceByPosition: " + e.getMessage());
         }
         return companyVOs;
+    }
+
+
+    //透過文字搜尋框 關鍵字輸入飯店名稱或飯店縣市或飯店區域 搜尋多個飯店資料 3?
+    public List<CompanyVO> SelectFindCompanyAndRoomTypePriceByCompanyNameOrCountyOrArea(String keyword) {
+
+        List<CompanyVO> companyVOs = new ArrayList<>();
+//    try (Connection con = DriverManager.getConnection(bd.URL, bd.USER, bd.PASSWORD);
+        try (Connection con = HikariDataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(SELECT_FIND_COMPANY_AND_ROOMTYPE_PRICE_BY_COMPANY_NAME_OR_COUNTY_OR_AREA);) {
+
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+            ps.setString(3, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CompanyVO companyVO = new CompanyVO();
+                companyVO.setCompanyID(rs.getInt("cm.company_id"));
+                companyVO.setCompanyName(rs.getString("cm.company_name"));
+                companyVO.setIntroduction(rs.getString("cm.introduction"));
+                companyVO.setAddressCounty(rs.getString("cm.address_county"));
+                companyVO.setAddressArea(rs.getString("cm.address_area"));
+                companyVO.setCompanyImg(rs.getString("cm.company_img"));
+                RoomTypeVO roomTypeVO = new RoomTypeVO();
+                roomTypeVO.setRoomTypePrice(rs.getInt("MIN(rt.roomtype_price)"));
+                companyVO.setRoomTypeVO(roomTypeVO);
+                companyVOs.add(companyVO);
+            }
+        } catch (SQLException e) {
+            System.out.println("SelectFindCompanyAndRoomTypePriceByCompanyNameOrCountyOrArea: " + e.getMessage());
         }
-
-
-
-
+        return companyVOs;
+    }
 
 
     //從廠商編號 找到 廠商資料 1?
@@ -194,7 +262,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 companyVO.setCompanyImg(rs.getString("company_img"));
             }
         } catch (SQLException e) {
-            System.out.println("SelectFindCompanyByCompanyID :"+e.getMessage());
+            System.out.println("SelectFindCompanyByCompanyID :" + e.getMessage());
         }
         return companyVO;
     }
@@ -214,7 +282,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 companyVO.setCompanyName(rs.getString("company_name"));
             }
         } catch (SQLException e) {
-            System.out.println("selectFindCompanyNameByCompanyID: "+e.getMessage());
+            System.out.println("selectFindCompanyNameByCompanyID: " + e.getMessage());
         }
         return companyVO;
     }
@@ -241,7 +309,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 roomTypeVOs.add(roomTypeVO);
             }
         } catch (SQLException e) {
-            System.out.println("SelectFindAllRoomTypeByCompanyID: "+e.getMessage());
+            System.out.println("SelectFindAllRoomTypeByCompanyID: " + e.getMessage());
         }
         return roomTypeVOs;
     }
@@ -262,7 +330,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 roomTypeVO.setRoomTypePrice(rs.getInt("roomtype_price"));
             }
         } catch (SQLException e) {
-            System.out.println("SelectFindRoomTypeByRoomTypeID: "+e.getMessage());
+            System.out.println("SelectFindRoomTypeByRoomTypeID: " + e.getMessage());
         }
         return roomTypeVO;
     }
@@ -281,7 +349,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 roomTypeVO.setRoomTypeName(rs.getString("roomtype_name"));
             }
         } catch (SQLException e) {
-            System.out.println("selectFindRoomTypeNameByRoomTypeID: "+e.getMessage());
+            System.out.println("selectFindRoomTypeNameByRoomTypeID: " + e.getMessage());
         }
         return roomTypeVO;
     }
@@ -305,9 +373,54 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 roomTypeImgVOs.add(roomTypeImgVO);
             }
         } catch (SQLException e) {
-            System.out.println("selectFindAllRoomTypeImgByRoomTypeID: "+e.getMessage());
+            System.out.println("selectFindAllRoomTypeImgByRoomTypeID: " + e.getMessage());
         }
         return roomTypeImgVOs;
+    }
+
+
+    //從飯店id找到飯店所有資料(不含帳號密碼統一編號) 1?
+    //方法已做
+    public List<CompanyVO> SelectFindCompanyAllByCompanyID(Integer companyID) {
+        List<CompanyVO> companyVOs = new ArrayList<>();
+
+//        try (Connection con = DriverManager.getConnection(bd.URL, bd.USER, bd.PASSWORD);
+        try (Connection con = HikariDataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(SELECT_FIND_COMPANY_ALL_BY_COMPANY_ID);) {
+
+            ps.setInt(1, companyID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                CompanyVO companyVO = new CompanyVO();
+                companyVO.setCompanyID(rs.getInt("cm.company_id"));
+                companyVO.setCompanyName(rs.getString("cm.company_name"));
+                companyVO.setIntroduction(rs.getString("cm.introduction"));
+                companyVO.setAddressCounty(rs.getString("cm.address_county"));
+                companyVO.setAddressArea(rs.getString("cm.address_area"));
+                companyVO.setAddressStreet(rs.getString("cm.address_street"));
+                companyVO.setLongitude(rs.getDouble("cm.longitude"));
+                companyVO.setLatitude(rs.getDouble("cm.latitude"));
+                companyVO.setCompanyImg(rs.getString("cm.company_img"));
+                RoomTypeVO roomTypeVO = new RoomTypeVO();
+                roomTypeVO.setRoomTypeID(rs.getInt("rt.roomtype_id"));
+                roomTypeVO.setCompanyID(rs.getInt("rt.company_id"));
+                roomTypeVO.setRoomTypeName(rs.getString("rt.roomtype_name"));
+                roomTypeVO.setRoomTypePerson(rs.getInt("rt.roomtype_person"));
+                roomTypeVO.setRoomTypeQuantity(rs.getInt("rt.roomtype_quantity"));
+                roomTypeVO.setRoomTypePrice(rs.getInt("rt.roomtype_price"));
+                RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
+                roomTypeImgVO.setRoomTypeImgID(rs.getInt("rti.roomtype_img_id"));
+                roomTypeImgVO.setRoomTypeID(rs.getInt("rti.roomtype_id"));
+                roomTypeImgVO.setRoomTypeImg(rs.getString("rti.roomtype_img"));
+                roomTypeVO.setRoomTypeImgVO(roomTypeImgVO);
+                companyVO.setRoomTypeVO(roomTypeVO);
+                companyVOs.add(companyVO);
+            }
+        } catch (SQLException e) {
+            System.out.println("SelectFindCompanyAllByCompanyID: " + e.getMessage());
+        }
+        return companyVOs;
     }
 
 
@@ -317,7 +430,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
         List<CompanyVO> companyVOs = new ArrayList<>();
 
 //        try (Connection con = DriverManager.getConnection(bd.URL, bd.USER, bd.PASSWORD);
-        try(Connection con = HikariDataSource.getConnection();
+        try (Connection con = HikariDataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_SHOW_SEARCH_KEY_WORD_BY_COMPANY_NAME_OR_ADDRESS);) {
             ps.setString(1, companyVO.getCompanyName());
             ps.setString(2, companyVO.getAddressCounty());
@@ -335,7 +448,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 companyVOs.add(companyVO);
             }
         } catch (SQLException e) {
-            System.out.println("selectShowSearchKeyWordByCompanyNameOrAddress: "+e.getMessage());
+            System.out.println("selectShowSearchKeyWordByCompanyNameOrAddress: " + e.getMessage());
         }
         return companyVOs;
     }
@@ -367,36 +480,29 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
         CouponVO couponVO = new CouponVO();
 
 //        try (Connection con = DriverManager.getConnection(bd.URL, bd.USER, bd.PASSWORD);
-        try(Connection con = HikariDataSource.getConnection();
+        try (Connection con = HikariDataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_CONFIRM_COUPON);) {
 
-            ps.setInt(1,couponID);
+            ps.setInt(1, couponID);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()){
+            if (rs.next()) {
                 couponVO.setCouponID(rs.getInt("coupon_id"));
                 couponVO.setCompanyID(rs.getInt("company_id"));
                 couponVO.setCouponText(rs.getString("coupon_text"));
-                couponVO.setCouponStartTime(rs.getObject("coupon_starttime",LocalDateTime.class));
-                couponVO.setCouponEndTime(rs.getObject("coupon_endtime",LocalDateTime.class));
+                couponVO.setCouponStartTime(rs.getObject("coupon_starttime", LocalDateTime.class));
+                couponVO.setCouponEndTime(rs.getObject("coupon_endtime", LocalDateTime.class));
 //                couponVO.setCouponImg(rs.getString("coupon_img"));
                 couponVO.setCouponStatus(rs.getBoolean("coupon_status"));
                 couponVO.setCouponDiscount(rs.getDouble("coupon_discount"));
                 couponVO.setCouponQuantity(rs.getInt("coupon_quantity"));
                 couponVO.setCouponUsedQuantity(rs.getInt("coupon_used_quantity"));
             }
-        }catch (SQLException e){
-            System.out.println("SelectConfirmCoupon: "+e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("SelectConfirmCoupon: " + e.getMessage());
         }
         return couponVO;
     }
-
-
-
-
-
-
-
 
 
     //      新增訂單與訂單明細時，在JDBCDao做交易，一個方法直接做訂單與明細的新增，一旦出錯就還原，但搞不太清楚service裡要怎麼做，
@@ -475,7 +581,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 }
 
             }
-            System.out.println("createOrderAndOrderDetail: "+ se.getMessage());
+            System.out.println("createOrderAndOrderDetail: " + se.getMessage());
             System.out.println("insert failed.");
         } finally {
             if (ps != null) {
@@ -519,7 +625,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
 
         } catch (SQLException e) {
             result = 0;
-            System.out.println("OrderPay: "+e.getMessage());
+            System.out.println("OrderPay: " + e.getMessage());
             System.out.print("Update the pay with order failed.");
 
         }
@@ -546,7 +652,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
             result = 1;
 
         } catch (SQLException e) {
-            System.out.println("updateOrderOverTimeForPay: "+e.getMessage());
+            System.out.println("updateOrderOverTimeForPay: " + e.getMessage());
             System.out.println("Update over time for pay failed.");
             result = 0;
         }
@@ -583,7 +689,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
             }
 
         } catch (SQLException e) {
-            System.out.println("SelectFindOrderByMemberID: "+e.getMessage());
+            System.out.println("SelectFindOrderByMemberID: " + e.getMessage());
         }
         return orderVOs;
 
@@ -613,11 +719,111 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
 
 
         } catch (SQLException e) {
-            System.out.println("SelectFindOrderDetailByOrderID: "+e.getMessage());
+            System.out.println("SelectFindOrderDetailByOrderID: " + e.getMessage());
         }
 
         return orderDetailVOs;
     }
+
+    //從會員編號找到訂單與訂單明細 1?
+    public List<OrderVO> selectFindOrderAllByMemberID(Integer memberID) {
+
+        List<OrderVO> orderVOs = new ArrayList<>();
+
+//        try (Connection con = DriverManager.getConnection(bd.URL, bd.USER, bd.PASSWORD);
+        try (Connection con = HikariDataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(SELECT_FIND_ORDER_ALL_BY_MEMBER_ID);) {
+            ps.setInt(1, memberID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                OrderVO orderVO = new OrderVO();
+                orderVO.setOrderID(rs.getInt("o.order_id"));
+                orderVO.setMemberID(rs.getInt("o.member_id"));
+                orderVO.setCompanyID(rs.getInt("o.company_id"));
+                orderVO.setCouponID(rs.getInt("o.coupon_id"));
+                orderVO.setOrderCheckInDate(rs.getObject("o.order_check_in_date", LocalDate.class));
+                orderVO.setOrderCheckOutDate(rs.getObject("o.order_check_out_date", LocalDate.class));
+                orderVO.setOrderTotalPrice(rs.getInt("o.order_total_price"));
+                orderVO.setOrderStatus(rs.getString("o.order_status"));
+                orderVO.setOrderCreateDatetime(rs.getObject("o.order_create_datetime", LocalDateTime.class));
+                orderVO.setOrderPayDeadline(rs.getObject("o.order_pay_deadline", LocalDateTime.class));
+                orderVO.setOrderPayDatetime(rs.getObject("o.order_pay_datetime", LocalDateTime.class));
+                orderVO.setOrderPayCardName(rs.getString("o.order_pay_card_name"));
+                orderVO.setOrderPayCardNumber(rs.getString("o.order_pay_card_number"));
+                orderVO.setOrderPayCardYear(rs.getString("o.order_pay_card_year"));
+                orderVO.setOrderPayCardMonth(rs.getString("o.order_pay_card_month"));
+                orderVO.setTravelerName(rs.getString("o.traveler_name"));
+                orderVO.setTravelerIDNumber(rs.getString("o.traveler_id_number"));
+                orderVO.setTravelerEmail(rs.getString("o.traveler_email"));
+                orderVO.setTravelerPhone(rs.getString("o.traveler_phone"));
+                OrderDetailVO orderDetailVO = new OrderDetailVO();
+                orderDetailVO.setOrderDetailID(rs.getInt("od.order_detail_id"));
+                orderDetailVO.setOrderID(rs.getInt("od.order_id"));
+                orderDetailVO.setRoomTypeID(rs.getInt("od.roomtype_id"));
+                orderDetailVO.setOrderDetailRoomPrice(rs.getInt("od.order_detail_room_price"));
+                orderDetailVO.setOrderDetailRoomQuantity(rs.getByte("od.order_detail_room_quantity"));
+                orderDetailVO.setOrderDetailCouponDiscountPrice(rs.getInt("od.order_detail_coupon_discount_price"));
+                orderVO.setOrderDetailVO(orderDetailVO);
+                orderVOs.add(orderVO);
+            }
+        } catch (SQLException e) {
+            System.out.println("SelectFindOrderAllByMemberID: " + e.getMessage());
+        }
+        return orderVOs;
+    }
+
+
+    //從廠商編號找到訂單與訂單明細 1?
+    public List<OrderVO> selectFindOrderAllByCompanyID(Integer companyID) {
+
+        List<OrderVO> orderVOs = new ArrayList<>();
+
+//        try (Connection con = DriverManager.getConnection(bd.URL, bd.USER, bd.PASSWORD);
+        try (Connection con = HikariDataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(SELECT_FIND_ORDER_ALL_BY_COMPANY_ID);) {
+            ps.setString(1, "已付款");
+            ps.setInt(2, companyID);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                OrderVO orderVO = new OrderVO();
+                orderVO.setOrderID(rs.getInt("o.order_id"));
+                orderVO.setMemberID(rs.getInt("o.member_id"));
+                orderVO.setCompanyID(rs.getInt("o.company_id"));
+                orderVO.setCouponID(rs.getInt("o.coupon_id"));
+                orderVO.setOrderCheckInDate(rs.getObject("o.order_check_in_date", LocalDate.class));
+                orderVO.setOrderCheckOutDate(rs.getObject("o.order_check_out_date", LocalDate.class));
+                orderVO.setOrderTotalPrice(rs.getInt("o.order_total_price"));
+                orderVO.setOrderStatus(rs.getString("o.order_status"));
+                orderVO.setOrderCreateDatetime(rs.getObject("o.order_create_datetime", LocalDateTime.class));
+                orderVO.setOrderPayDeadline(rs.getObject("o.order_pay_deadline", LocalDateTime.class));
+                orderVO.setOrderPayDatetime(rs.getObject("o.order_pay_datetime", LocalDateTime.class));
+                orderVO.setOrderPayCardName(rs.getString("o.order_pay_card_name"));
+                orderVO.setOrderPayCardNumber(rs.getString("o.order_pay_card_number"));
+                orderVO.setOrderPayCardYear(rs.getString("o.order_pay_card_year"));
+                orderVO.setOrderPayCardMonth(rs.getString("o.order_pay_card_month"));
+                orderVO.setTravelerName(rs.getString("o.traveler_name"));
+                orderVO.setTravelerIDNumber(rs.getString("o.traveler_id_number"));
+                orderVO.setTravelerEmail(rs.getString("o.traveler_email"));
+                orderVO.setTravelerPhone(rs.getString("o.traveler_phone"));
+                OrderDetailVO orderDetailVO = new OrderDetailVO();
+                orderDetailVO.setOrderDetailID(rs.getInt("od.order_detail_id"));
+                orderDetailVO.setOrderID(rs.getInt("od.order_id"));
+                orderDetailVO.setRoomTypeID(rs.getInt("od.roomtype_id"));
+                orderDetailVO.setOrderDetailRoomPrice(rs.getInt("od.order_detail_room_price"));
+                orderDetailVO.setOrderDetailRoomQuantity(rs.getByte("od.order_detail_room_quantity"));
+                orderDetailVO.setOrderDetailCouponDiscountPrice(rs.getInt("od.order_detail_coupon_discount_price"));
+                orderVO.setOrderDetailVO(orderDetailVO);
+                orderVOs.add(orderVO);
+            }
+        } catch (SQLException e) {
+            System.out.println("SelectFindOrderAllByCompanyID: " + e.getMessage());
+        }
+        return orderVOs;
+    }
+
+
+
 
 
 }

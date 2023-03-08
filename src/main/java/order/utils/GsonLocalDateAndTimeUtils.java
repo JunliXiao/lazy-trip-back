@@ -1,4 +1,4 @@
-package order.model;
+package order.utils;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
@@ -15,14 +15,20 @@ public class GsonLocalDateAndTimeUtils {
     private static String PATTERN_TIME = "HH:mm:ss";
     private static String PATTERN_DATETIME = String.format("%s %s", PATTERN_DATE, PATTERN_TIME);
 
-    private static Gson gson = new GsonBuilder()
-            .disableHtmlEscaping()
-            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .setDateFormat(PATTERN_DATETIME)
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter().nullSafe())
-            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter().nullSafe())
-            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter().nullSafe())
-            .create();
+    private static Gson gson =
+            new GsonBuilder().disableHtmlEscaping()
+                             .setDateFormat(PATTERN_DATETIME)
+                             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter().nullSafe())
+                             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter().nullSafe())
+                             .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter().nullSafe())
+                             .create();
+//                new GsonBuilder().disableHtmlEscaping()
+//                             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+//                             .setDateFormat(PATTERN_DATETIME)
+//                             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter().nullSafe())
+//            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter().nullSafe())
+//            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter().nullSafe())
+//            .create();
 
     public static String toJson(Object o) {
         String result = gson.toJson(o);

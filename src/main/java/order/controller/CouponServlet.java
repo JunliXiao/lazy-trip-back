@@ -1,7 +1,7 @@
 package order.controller;
 
 import company.model.CouponVO;
-import order.model.GsonLocalDateAndTimeUtils;
+import order.utils.GsonLocalDateAndTimeUtils;
 import order.service.CouponService;
 
 import javax.servlet.ServletException;

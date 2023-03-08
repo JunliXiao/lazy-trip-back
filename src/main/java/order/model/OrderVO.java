@@ -25,6 +25,7 @@ public class OrderVO implements Serializable {
     private String travelerIDNumber;
     private String travelerEmail;
     private String travelerPhone;
+    private OrderDetailVO orderDetailVO;
 
     public Integer getOrderID() {
         return orderID;
@@ -176,5 +177,12 @@ public class OrderVO implements Serializable {
 
     public void setTravelerPhone(String travelerPhone) {
         this.travelerPhone = travelerPhone;
+    }
+    public OrderDetailVO getOrderDetailVO() {
+        return orderDetailVO;
+    }
+
+    public void setOrderDetailVO(OrderDetailVO orderDetailVO) {
+        this.orderDetailVO = orderDetailVO;
     }
 }

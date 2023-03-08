@@ -17,4 +17,10 @@ public class OrderService {
     public int addOrderAndOrderDetail(OrderVO orderVO, List<OrderDetailVO> orderDetailVOs) {
         return dao.createOrderAndOrderDetail(orderVO,orderDetailVOs);
     }
+    public List<OrderVO> showOrderAllByMemberID(Integer memberID){
+        return dao.selectFindOrderAllByMemberID(memberID);
+    }
+    public List<OrderVO> showOrderAllByCompanyID(Integer companyID){
+        return dao.selectFindOrderAllByCompanyID(companyID);
+    }
 }

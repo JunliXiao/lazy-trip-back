@@ -11,12 +11,14 @@ import java.util.List;
 public interface OrderDAOInterface {
 
     public List<CompanyVO> selectFindCompanyAndRoomTypePriceByPosition(String addressCounty);
+    public List<CompanyVO> SelectFindCompanyAndRoomTypePriceByCompanyNameOrCountyOrArea(String keyword);
     public CompanyVO selectFindCompanyByCompanyID(Integer companyID);
     public CompanyVO selectFindCompanyNameByCompanyID(CompanyVO companyVO);
     public List<RoomTypeVO> selectFindAllRoomTypeByCompanyID(Integer companyID);
     public RoomTypeVO selectFindRoomTypeByRoomTypeID(RoomTypeVO roomTypeVO);
     public RoomTypeVO selectFindRoomTypeNameByRoomTypeID(RoomTypeVO roomTypeVO);
     public List<RoomTypeImgVO> selectFindAllRoomTypeImgByRoomTypeID(Integer roomTypeID);
+    public List<CompanyVO> SelectFindCompanyAllByCompanyID(Integer companyID);
     public List<CompanyVO> selectShowSearchKeyWordByCompanyNameOrAddress(CompanyVO companyVO);
     public CouponVO selectConfirmCoupon(Integer couponID);
     public int createOrderAndOrderDetail(OrderVO orderVO, List<OrderDetailVO> orderDetailVOs);
@@ -24,5 +26,8 @@ public interface OrderDAOInterface {
     public int updateOrderOverTimeForPay();
     public List<OrderVO> selectFindOrderByMemberID(OrderVO orderVO);
     public List<OrderDetailVO> selectFindOrderDetailByOrderID(OrderDetailVO orderDetailVO);
+    public List<OrderVO> selectFindOrderAllByMemberID(Integer memberID);
+    public List<OrderVO> selectFindOrderAllByCompanyID(Integer companyID);
+
 
 }
