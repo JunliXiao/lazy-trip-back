@@ -34,9 +34,9 @@ public class GroupMemberServlet extends HttpServlet {
 		Member member = (Member) session.getAttribute("member");
 		GroupMemberService service = new GroupMemberService();
 
-		if (member != null) {
-			member.setPassword("***");
-		}
+//		if (member != null) {
+//			member.setPassword("***");
+//		}
 
 		// 邀請朋友
 		if ("inviteFriend".equals(action)) {
@@ -110,8 +110,33 @@ public class GroupMemberServlet extends HttpServlet {
 			res.getWriter().print(gson.toJson(list));
 		}
 		
-		if("acceptInvite".equals("action")) {
-			
+		//得到一筆資料
+		if("getOne".equals(action)){
+			Gson gson = new Gson();
+			Integer id = Integer.valueOf(req.getParameter("Id"));
+			res.getWriter().print(gson.toJson(service.getOne(id)));;
+
+		}
+		
+		//接受邀請
+		if("acceptInvite".equals(action)) {
+			Gson gson = new Gson();
+			Integer id = Integer.valueOf(req.getParameter("gp_member"));
+			Integer needApproval = Integer.valueOf(req.getParameter("need_Approval"));
+//			System.out.println(needApproval);
+			service.acceptInvite(id, needApproval);
+		}
+		
+		//更新自介相關
+		if("updateInfo".equals(action)) {
+			Group_memberVO vo=new Group_memberVO();
+			Integer id = Integer.valueOf(req.getParameter("gp_member"));
+			String selfintro = req.getParameter("selfintro");
+			String specialneed =   req.getParameter("specialneed");
+			vo.setGroupmember(id);
+			vo.setSelfintro(selfintro);
+			vo.setSpecialneed(specialneed);
+			service.updateInfo(vo);
 		}
 	}
 }

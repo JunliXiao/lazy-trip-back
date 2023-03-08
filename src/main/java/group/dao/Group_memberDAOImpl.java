@@ -21,7 +21,8 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 	private static DataSource ds = null;
 
 	private static final String INSERT_STMT = "INSERT INTO lazy.group_member (  member_id , group_id , self_intro , special_need , g_m_status) values(?,?,?,?,?)";
-	private static final String UPDATE_STMT = "UPDATE lazy.group_member set g_m_status = ? where group_member= ? ";
+	private static final String UPDATE_WHEN_INVITE_STMT = "UPDATE `lazy`.`group_member` SET `g_m_status` = ? WHERE (`group_member` = ?);";
+	private static final String GET_ONE_STMT ="SELECT * FROM lazy.group_member WHERE group_member = ?;";
 	private static final String GET_ALL_G_MEMBER_STMT = "SELECT  m.member_id, m.member_username , m.member_name , m.member_img "
 			+ "FROM lazy.group_member g JOIN lazy.member m ON g.member_id = m.member_id "
 			+ "WHERE g.group_id = ? AND g.g_m_status = 1;";
@@ -30,21 +31,38 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 			+ "(select group_id from lazy.group_member where member_id = ?  and g_m_status = 1 ) "
 			+ "and m.g_m_status = 1  group by m.group_id ;";
 
-	private static final String GET_ALL_INVITE = "SELECT m.group_member, IFNULL(tour.tour_title, '沒有行程') AS tour_title, g.group_member_count"
+	private static final String GET_ALL_INVITE = "SELECT m.group_member, m.g_m_status , IFNULL(tour.tour_title, '沒有行程') AS tour_title, g.group_member_count"
 			+ ", g.group_name, g.if_join_group_directly ,IFNULL(m.self_intro, '無') as self_intro ,IFNULL(m.special_need, '無') as special_need "
 			+ "FROM lazy.group_member m INNER JOIN lazy.group g ON m.group_id = g.group_id "
 			+ "LEFT JOIN lazy.tour tour ON g.tour_id = tour.tour_id WHERE m.member_id = ? AND m.g_m_status <> 1;";
 
 	@Override
-	public void insertNeedApprove(Group_memberVO groupmemberVO) {
-		// TODO Auto-generated method stub
-
+	public void insertNeedApprove(Integer id) {
+		
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(UPDATE_WHEN_INVITE_STMT)) {
+			
+			pstmt.setInt(1, 2);
+			pstmt.setInt(2, id);
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public void insertDirectly(Group_memberVO groupmemberVO) {
-		// TODO Auto-generated method stub
-
+	public void insertDirectly(Integer id) {
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(UPDATE_WHEN_INVITE_STMT)) {
+			
+			pstmt.setInt(1, 1);
+			pstmt.setInt(2, id);
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -106,8 +124,9 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 				tourVO = new TourVO();
 
 				groupMemberVO.setGroupmember(rs.getInt("group_member"));
-				groupMemberVO.setSelfintro("self_intro");
-				groupMemberVO.setSpecialneed("special_need");
+				groupMemberVO.setSelfintro(rs.getString("self_intro"));
+				groupMemberVO.setSpecialneed(rs.getString("special_need"));
+				groupMemberVO.setGmstatus(rs.getInt("g_m_status"));
 				groupVO.setGroupmembercount(rs.getInt("group_member_count"));
 				groupVO.setGroupname(rs.getString("group_name"));
 				groupVO.setIfjoingroupdirectly(rs.getInt("if_join_group_directly"));
@@ -265,6 +284,32 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 		}
 
 		return list;
+	}
+
+	@Override
+	public Group_memberVO getOne(Integer id) {
+		// TODO Auto-generated method stub
+		Group_memberVO mem = new Group_memberVO();
+		ResultSet rs = null;
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(GET_ONE_STMT)) {
+			pstmt.setInt(1, id);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				mem.setMemberid(rs.getInt("member_id"));
+				mem.setGroupmember(rs.getInt("group_member"));
+				if(rs.getString("self_intro")!=null) {
+					mem.setSelfintro(rs.getString("self_intro"));
+				}
+				if(rs.getString("special_need")!=null) {
+					mem.setSpecialneed(rs.getString("special_need"));
+				}
+			}
+
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return mem;
 	}
 
 }

@@ -7,11 +7,13 @@ import group.model.Group_memberVO;
 import member.model.Member;
 
 public interface Group_memberDAO_interface {
-	public void insertNeedApprove(Group_memberVO groupmemberVO);
+	public void insertNeedApprove(Integer id);
 
-	public void insertDirectly(Group_memberVO groupmemberVO);
+	public void insertDirectly(Integer id);
 
 	public void inviteFriendtoGroup(List<Integer> list);
+	
+	public Group_memberVO getOne(Integer id);
 
 	public void update(Group_memberVO groupmemberVO);
 
@@ -24,6 +26,8 @@ public interface Group_memberDAO_interface {
 	public List<Member> getAllMember(Integer groupid);
 
 	public List<Group_memberVO> getMemList(Integer groupid);
+	
+	
     // public List<Group_memberVO> getAllDeleted(Integer groupid);
 	// insertNeedApprove為審核加入申請時 狀態碼:2
 	// insertDirectly直接加入時新加入一筆 為update 狀態碼 3->1

@@ -39,4 +39,22 @@ public class GroupMemberService {
 	public List<Group_memberVO> getAllInvite(Integer memberid) {
 		return dao.getAllInvite(memberid);
 	}
+	
+	public void acceptInvite(Integer id ,Integer needApproval) {
+		if(needApproval.equals(1)) {
+			System.out.println("U啊");
+			dao.insertNeedApprove(id);
+		}else if(needApproval.equals(2)){
+			dao.insertDirectly(id);
+		}
+	}
+	
+	public Group_memberVO getOne(Integer id) {
+		return dao.getOne(id);
+	}
+	
+	public void updateInfo(Group_memberVO vo) {
+		
+	}
+
 }
