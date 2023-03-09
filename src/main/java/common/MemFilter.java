@@ -2,13 +2,13 @@ package common;
 
 import java.io.IOException;
 
-import javax.servlet.*;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,6 +27,23 @@ public class MemFilter implements Filter{
 		HttpSession session = req.getSession();
 		Member member = (Member) session.getAttribute("member");
 		if(member == null) {
+			String username = "memUsername";
+			String id = "memId";
+			Cookie[] cookie = req.getCookies();
+			for (Cookie c: cookie) {
+//				System.out.println(c.getName());
+		        if (username.equals(c.getName())) {
+		        	c.setPath("/");
+		            c.setMaxAge(0);
+		            resp.addCookie(c);
+		        }
+		        if (id.equals(c.getName())) {
+		        	c.setPath("/");
+		        	c.setMaxAge(0);
+		        	resp.addCookie(c);
+		        }
+		    }
+			
 			session.setAttribute("location", req.getRequestURI());
 			resp.sendRedirect(req.getContextPath() + "/page/login.html");
 			return;

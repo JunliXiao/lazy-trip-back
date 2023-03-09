@@ -53,9 +53,14 @@ public class MemberLoginServlet extends HttpServlet{
 				resp.addCookie(cookie);
 				resp.addCookie(cookie2);
 				
-				
+				String location = (String) req.getSession().getAttribute("location");
+				if(location == null || location.isEmpty()) {
 				resp.sendRedirect(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()  + req.getContextPath() + "/" + "index.html");
-//				resp.sendRedirect("member");
+				}else {
+					resp.sendRedirect(location);
+				}
+				System.out.println(location);
+				
 			}
 
 		} catch (NamingException e) {
