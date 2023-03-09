@@ -19,6 +19,7 @@ import tour.model.TourScheduleComVO;
 
 public class TourScheduleComDaoImpl implements TourScheduleComDao {
 	
+//	private static final String INSERT_SQL = "insert into tour_schedule_company (date, start_time, stay_time, end_time, attraction_id, c_tour_id) values (?,?,?,?,?,?);";
 	private static final String INSERT_SQL = "insert into tour_schedule_company (date, start_time, stay_time, end_time, attraction_id, c_tour_id) values (?,?,?,?,?,?);";
 	private static final String UPDATE_SQL = "update tour_schedule_company set date=?, start_time=?, stay_time=?, end_time=?, attraction_id=? where c_tour_schedule_id=?;";
 	private static final String DELETE_SQL = "delete from tour_schedule_company where c_tour_schedule_id = ?";
