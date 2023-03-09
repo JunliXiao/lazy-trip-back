@@ -25,7 +25,7 @@ public class TourComDaoImpl implements TourComDao {
     private static final String DELETE_SQL = "update tour_company set status=? where c_tour_id = ?";
     private static final String GET_ALL_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, status from tour_company where company_id=?;";
     private static final String GET_ONE_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id form tour_company where c_tour_id=?;";
-//    private static final String GET_TOUR_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, status from tour_company where tour_title like ?;";
+//    private static final String GET_TOUR_AND_SCHE_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, status from tour_company where tour_title like ?;";
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override

@@ -33,8 +33,8 @@ public class TourScheduleComServiceImpl implements TourScheduleComService{
 	}
 
 	@Override
-	public List<TourScheduleComVO> tourScheduleComQueryAll() {
-		final List<TourScheduleComVO> resultLists = dao.getAll();
+	public List<TourScheduleComVO> tourScheduleComQueryAll(Integer tourComId) {
+		final List<TourScheduleComVO> resultLists = dao.getAll(tourComId);
 		return resultLists;
 	}
 	@Override

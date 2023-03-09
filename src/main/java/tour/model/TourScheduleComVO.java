@@ -16,7 +16,8 @@ public class TourScheduleComVO implements Serializable{
 	private String startTime;
 	private Integer stayTime;
 	private String endTime;
-    private AttractionVO attractionVO;
+	private String status;
+	private AttractionVO attractionVO;
 	
 	public TourScheduleComVO() {
 	}
@@ -84,6 +85,12 @@ public class TourScheduleComVO implements Serializable{
 	}
 	public void setStayTime(Integer stayTime) {
 		this.stayTime = stayTime;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	@Override
 	public String toString() {

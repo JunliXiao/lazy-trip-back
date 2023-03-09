@@ -11,7 +11,7 @@ public interface TourScheduleComService {
 
     String tourScheduleComDelete(Integer tourScheduleComId);
 
-    List<TourScheduleComVO> tourScheduleComQueryAll();
+    List<TourScheduleComVO> tourScheduleComQueryAll(Integer tourComId);
 
     List<TourScheduleComVO> tourScheComQueryOne(Integer tourComId);
 }

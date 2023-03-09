@@ -24,8 +24,9 @@ public class TourScheComQueryAllServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
         try {
+        	String companyId = req.getParameter("companyId");
             TourScheduleComService service = new TourScheduleComServiceImpl();
-            final List<TourScheduleComVO> resultLists = service.tourScheduleComQueryAll();
+            final List<TourScheduleComVO> resultLists = service.tourScheduleComQueryAll(Integer.valueOf(companyId));
             resp.setContentType("application/json");
             resp.getWriter().print(gson.toJson(resultLists));
             System.out.println(gson.toJson(resultLists));

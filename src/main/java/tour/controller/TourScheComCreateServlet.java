@@ -30,7 +30,6 @@ public class TourScheComCreateServlet extends HttpServlet  {
             Gson gson = new Gson();
             req.setCharacterEncoding("UTF-8");
             final List<TourScheduleComVO> lists = gson.fromJson(req.getReader(), new TypeToken<List<TourScheduleComVO>>(){}.getType());
-            System.out.println(lists.toString());
             TourScheduleComService service = new TourScheduleComServiceImpl();
             List<Integer> result = service.tourScheduleComCreate(lists);
             resp.setContentType("application/json");

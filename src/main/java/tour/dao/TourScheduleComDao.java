@@ -11,7 +11,7 @@ public interface TourScheduleComDao {
 
 	public int delete(Integer tourScheduleComId);
 
-	public List<TourScheduleComVO> getAll();
+	public List<TourScheduleComVO> getAll(Integer tourComId);
 
 	public List<TourScheduleComVO> findByPrimaryKey(Integer tourComId);
 }
