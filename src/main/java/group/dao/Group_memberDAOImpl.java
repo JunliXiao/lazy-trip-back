@@ -22,7 +22,7 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 
 	private static final String INSERT_STMT = "INSERT INTO lazy.group_member (  member_id , group_id , self_intro , special_need , g_m_status) values(?,?,?,?,?)";
 	private static final String UPDATE_WHEN_INVITE_STMT = "UPDATE `lazy`.`group_member` SET `g_m_status` = ? WHERE (`group_member` = ?);";
-	private static final String GET_ONE_STMT ="SELECT * FROM lazy.group_member WHERE group_member = ?;";
+	private static final String GET_ONE_STMT = "SELECT * FROM lazy.group_member WHERE group_member = ?;";
 	private static final String GET_ALL_G_MEMBER_STMT = "SELECT  m.member_id, m.member_username , m.member_name , m.member_img "
 			+ "FROM lazy.group_member g JOIN lazy.member m ON g.member_id = m.member_id "
 			+ "WHERE g.group_id = ? AND g.g_m_status = 1;";
@@ -31,21 +31,26 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 			+ "(select group_id from lazy.group_member where member_id = ?  and g_m_status = 1 ) "
 			+ "and m.g_m_status = 1  group by m.group_id ;";
 
+	private static final String DELETE_ONE_STMT = "DELETE FROM lazy.group_member WHERE group_member=?;";
+
 	private static final String GET_ALL_INVITE = "SELECT m.group_member, m.g_m_status , IFNULL(tour.tour_title, '沒有行程') AS tour_title, g.group_member_count"
 			+ ", g.group_name, g.if_join_group_directly ,IFNULL(m.self_intro, '無') as self_intro ,IFNULL(m.special_need, '無') as special_need "
 			+ "FROM lazy.group_member m INNER JOIN lazy.group g ON m.group_id = g.group_id "
 			+ "LEFT JOIN lazy.tour tour ON g.tour_id = tour.tour_id WHERE m.member_id = ? AND m.g_m_status <> 1;";
 
+	private static final String UPDATE_INFO_STMT = "UPDATE `lazy`.`group_member` SET `self_intro` = ?, `special_need` = ?"
+			+ " WHERE (`group_member` = ?);";
+
 	@Override
 	public void insertNeedApprove(Integer id) {
-		
+
 		try (Connection connection = HikariDataSource.getConnection();
 				PreparedStatement pstmt = connection.prepareStatement(UPDATE_WHEN_INVITE_STMT)) {
-			
+
 			pstmt.setInt(1, 2);
 			pstmt.setInt(2, id);
 			pstmt.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -55,20 +60,30 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 	public void insertDirectly(Integer id) {
 		try (Connection connection = HikariDataSource.getConnection();
 				PreparedStatement pstmt = connection.prepareStatement(UPDATE_WHEN_INVITE_STMT)) {
-			
+
 			pstmt.setInt(1, 1);
 			pstmt.setInt(2, id);
 			pstmt.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void update(Group_memberVO groupmemberVO) {
+	public void updateInfo(Group_memberVO groupmemberVO) {
 		// TODO Auto-generated method stub
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(UPDATE_INFO_STMT)) {
 
+			pstmt.setString(1, groupmemberVO.getSelfintro());
+			pstmt.setString(2, groupmemberVO.getSpecialneed());
+			pstmt.setInt(3, groupmemberVO.getGroupmember());
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -266,7 +281,9 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 				member = new Member();
 				mem.setMemberid(rs.getInt("member_id"));
 				mem.setGmstatus(rs.getInt("g_m_status"));
-
+				mem.setGroupmember(rs.getInt("group_member"));
+				mem.setSelfintro(rs.getString("self_intro"));
+				mem.setSpecialneed(rs.getString("special_need"));
 				member.setUsername(rs.getString("member_username"));
 				member.setName(rs.getString("member_name"));
 				member.setImg(rs.getBytes("member_img"));
@@ -298,18 +315,60 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 			while (rs.next()) {
 				mem.setMemberid(rs.getInt("member_id"));
 				mem.setGroupmember(rs.getInt("group_member"));
-				if(rs.getString("self_intro")!=null) {
+				if (rs.getString("self_intro") != null) {
 					mem.setSelfintro(rs.getString("self_intro"));
 				}
-				if(rs.getString("special_need")!=null) {
+				if (rs.getString("special_need") != null) {
 					mem.setSpecialneed(rs.getString("special_need"));
 				}
 			}
 
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return mem;
+	}
+
+	@Override
+	public void deleteOne(Integer id) {
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(DELETE_ONE_STMT)) {
+			pstmt.setInt(1, id);
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void opMembers(List<Integer> list) {
+		// TODO Auto-generated method stub
+
+		String stmt = "UPDATE lazy.group_member SET g_m_status = ? WHERE group_id = ? and group_member in( ";
+		int id = list.get(0);
+		int status = list.get(1);
+
+		for (int i = 2; i < list.size(); i++) {
+			if (i != list.size() - 1) {
+
+				stmt += list.get(i) + ", ";
+
+			} else {
+				stmt += list.get(i) + " ) ";
+			}
+		}
+
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(stmt)) {
+
+			pstmt.setInt(1, status);
+			pstmt.setInt(2, id);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

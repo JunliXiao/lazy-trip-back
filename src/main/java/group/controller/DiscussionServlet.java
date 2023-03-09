@@ -61,8 +61,9 @@ public class DiscussionServlet extends HttpServlet{
 		req.setCharacterEncoding("UTF-8");
 		res.setContentType("text/html;charset=UTF-8");
 		String action = req.getParameter("action");
+		HttpSession session = req.getSession();
+		Member member = (Member) session.getAttribute("member");
 		DiscussionService service = new DiscussionService();
-
 		//刪除留言
 		if ("delDiscussion".equals(action)) {
 			Integer discussionId = Integer.valueOf(req.getParameter("discussionId"));

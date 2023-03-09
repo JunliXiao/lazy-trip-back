@@ -53,7 +53,13 @@ public class GroupMemberService {
 	}
 	
 	public void updateInfo(Group_memberVO vo) {
-		
+		dao.updateInfo(vo);
+	}
+	public void deleteOne(Integer id) {
+		dao.deleteOne(id);
+	}
+	public void opMembers(List<Integer>list) {
+		dao.opMembers(list);
 	}
 
 }
