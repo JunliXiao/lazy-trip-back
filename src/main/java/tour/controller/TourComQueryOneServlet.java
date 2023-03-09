@@ -3,6 +3,7 @@ package tour.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,12 +24,17 @@ public class TourComQueryOneServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
         String companyId = req.getParameter("companyId");
-        TourComService service = new TourComServiceImpl();
-		final List<TourComVO> resultLists = service.tourComQueryAll(Integer.valueOf(companyId));
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().print(gson.toJson(resultLists));
-		System.out.println(gson.toJson(resultLists));
+        TourComService service;
+		try {
+			service = new TourComServiceImpl();
+			final List<TourComVO> resultLists = service.tourComQueryAll(Integer.valueOf(companyId));
+			resp.setContentType("application/json");
+			resp.setCharacterEncoding("UTF-8");
+			resp.getWriter().print(gson.toJson(resultLists));
+			System.out.println(gson.toJson(resultLists));
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
 
     }
 }

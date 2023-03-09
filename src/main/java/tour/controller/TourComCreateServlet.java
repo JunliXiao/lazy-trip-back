@@ -2,6 +2,7 @@ package tour.controller;
 
 import java.io.IOException;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -25,11 +26,17 @@ public class TourComCreateServlet extends HttpServlet  {
         Gson gson = new Gson();
 		req.setCharacterEncoding("UTF-8");
 		TourComVO tourComVO = gson.fromJson(req.getReader(), TourComVO.class);
-		TourComService service = new TourComServiceImpl();
-		int result = service.tourComCreate(tourComVO);
-		tourComVO.setTourComId(result);
-		resp.setContentType("application/json");
-		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().print(gson.toJson(tourComVO));
+		TourComService service;
+		try {
+			service = new TourComServiceImpl();
+			int result = service.tourComCreate(tourComVO);
+			System.out.println(result);
+			tourComVO.setTourComId(result);
+			resp.setContentType("application/json");
+			resp.setCharacterEncoding("UTF-8");
+			resp.getWriter().print(gson.toJson(tourComVO));	
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
     }
 }

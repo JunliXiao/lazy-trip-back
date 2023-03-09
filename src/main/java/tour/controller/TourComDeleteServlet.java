@@ -2,6 +2,7 @@ package tour.controller;
 
 import java.io.IOException;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,10 +21,15 @@ public class TourComDeleteServlet extends HttpServlet  {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String tourComId = req.getParameter("tourComId");
-        TourComService service = new TourComServiceImpl();
-		final String resultStr = service.tourComDelete(Integer.valueOf(tourComId));
-		Gson gson = new Gson();
-		resp.setContentType("application/json");
-		resp.getWriter().print(gson.toJson(resultStr));
+        TourComService service;
+		try {
+			service = new TourComServiceImpl();
+			final String resultStr = service.tourComDelete(Integer.valueOf(tourComId));
+			Gson gson = new Gson();
+			resp.setContentType("application/json");
+			resp.getWriter().print(gson.toJson(resultStr));
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
     }
 }

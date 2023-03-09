@@ -2,12 +2,17 @@ package tour.service;
 
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import tour.dao.TourComDao;
+import tour.dao.TourComDaoImpl;
 import tour.model.TourComVO;
 
 public class TourComServiceImpl implements TourComService{
-	
 	private TourComDao dao;
+	public TourComServiceImpl() throws NamingException {
+		dao = new TourComDaoImpl();
+    }
 	
 	@Override
 	public int tourComCreate(TourComVO tourComVO) {
