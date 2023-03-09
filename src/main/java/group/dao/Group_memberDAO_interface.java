@@ -23,6 +23,8 @@ public interface Group_memberDAO_interface {
 	
 	public void deleteOne(Integer id);
 
+	public void deleteAll(Integer id);
+
 	public List<Group_memberVO> getAllInvite(Integer memberid);
 
 	public List<GroupVO> getAllGroupByMemberid(Integer memberid);
@@ -30,6 +32,7 @@ public interface Group_memberDAO_interface {
 	public List<Member> getAllMember(Integer groupid);
 
 	public List<Group_memberVO> getMemList(Integer groupid);
+	
 	
 	
     // public List<Group_memberVO> getAllDeleted(Integer groupid);

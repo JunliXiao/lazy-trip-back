@@ -32,6 +32,7 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 			+ "and m.g_m_status = 1  group by m.group_id ;";
 
 	private static final String DELETE_ONE_STMT = "DELETE FROM lazy.group_member WHERE group_member=?;";
+	private static final String DELETE_ALL_STMT = "DELETE FROM lazy.group_member WHERE group_id = ?";
 
 	private static final String GET_ALL_INVITE = "SELECT m.group_member, m.g_m_status , IFNULL(tour.tour_title, '沒有行程') AS tour_title, g.group_member_count"
 			+ ", g.group_name, g.if_join_group_directly ,IFNULL(m.self_intro, '無') as self_intro ,IFNULL(m.special_need, '無') as special_need "
@@ -369,6 +370,20 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void deleteAll(Integer id) {
+		// TODO Auto-generated method stub
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_STMT)) {
+
+			pstmt.setInt(1, id);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

@@ -179,6 +179,11 @@ public class GroupMemberServlet extends HttpServlet {
 			}
 			service.delGroupMem(list);
 		}
+		//刪除揪團全部成員
+		if("delAllGroupMember".equals(action)) {
+			Integer id = Integer.parseInt(req.getParameter("groupid"));
+			service.deleteAll(id);
+		}
 
 	}
 }

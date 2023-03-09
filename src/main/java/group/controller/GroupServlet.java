@@ -26,7 +26,7 @@ import tour.model.TourVO;
 public class GroupServlet extends HttpServlet {
 	// Service
 	GroupService service = new GroupService();
-	
+
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
 	}
@@ -39,7 +39,6 @@ public class GroupServlet extends HttpServlet {
 
 		HttpSession session = req.getSession();
 		Member member = (Member) session.getAttribute("member");
-
 
 //		if (member != null) {
 //			member.setPassword("***");
@@ -115,7 +114,7 @@ public class GroupServlet extends HttpServlet {
 				return;
 
 			}
-			
+
 		}
 
 		// 取得揪團當前的行程名稱
@@ -129,7 +128,7 @@ public class GroupServlet extends HttpServlet {
 			out.println(jsonStr);
 			return;
 		}
-		if(action.equals("") || action.trim().length() == 0 ||!action.isEmpty()) {
+		if (action.equals("") || action.trim().length() == 0 || !action.isEmpty()) {
 			error.addProperty("errorMessage", "Unknown Action");
 			PrintWriter out = res.getWriter();
 			out.println(new Gson().toJson(error));
@@ -161,7 +160,7 @@ public class GroupServlet extends HttpServlet {
 			out.println(jsonStr);
 			return;
 		}
-		if(action.equals("") || action.trim().length() == 0 ||!action.isEmpty()) {
+		if (action.equals("") || action.trim().length() == 0 || !action.isEmpty()) {
 			error.addProperty("errorMessage", "Unknown Action");
 			PrintWriter out = res.getWriter();
 			out.println(new Gson().toJson(error));
@@ -169,11 +168,16 @@ public class GroupServlet extends HttpServlet {
 		}
 	}
 
-//	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
-//		req.setCharacterEncoding("UTF-8");
-//		res.setContentType("text/html;charset=UTF-8");
-//		String action = req.getParameter("action");
-//
-//	}
+	public void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		req.setCharacterEncoding("UTF-8");
+		res.setContentType("text/html;charset=UTF-8");
+		String action = req.getParameter("action");
+		HttpSession session = req.getSession();
+		Member member = (Member) session.getAttribute("member");
 
+		if ("delOneGroup".equals(action)) {
+			Integer id = Integer.parseInt(req.getParameter("groupid"));
+			service.delOneGroup(id);
+		}
+	}
 }

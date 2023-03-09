@@ -69,5 +69,10 @@ public class DiscussionServlet extends HttpServlet{
 			Integer discussionId = Integer.valueOf(req.getParameter("discussionId"));
 			service.delete(discussionId);
 		}
+		
+		if("delAllDis".equals(action)) {
+			Integer id = Integer.valueOf(req.getParameter("groupid"));
+			service.deleteAll(id);
+		}
 	}
 }
