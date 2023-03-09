@@ -7,16 +7,28 @@ public class Comment implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Integer memberId;
-	private Integer companyId;
-	private Integer point;
 	private Timestamp time;
 	private String text;
 	private String staus;
+	private String imgbase64Str;
+	
+	
 	
 	@Override
 	public String toString() {
-		return "Comment [id=" + id + ", memberId=" + memberId + ", companyId=" + companyId + ", point=" + point
-				+ ", time=" + time + ", text=" + text + ", staus=" + staus + "]";
+		return "Comment [id=" + id + ", memberId=" + memberId + ", time=" + time + ", text=" + text + ", staus=" + staus
+				+ "]";
+	}
+	public Comment() {
+		
+	}
+	public Comment(Integer id, Integer memberId, Timestamp time, String text, String staus) {
+		super();
+		this.id = id;
+		this.memberId = memberId;
+		this.time = time;
+		this.text = text;
+		this.staus = staus;
 	}
 	public Integer getId() {
 		return id;
@@ -29,18 +41,6 @@ public class Comment implements Serializable{
 	}
 	public void setMemberId(Integer memberId) {
 		this.memberId = memberId;
-	}
-	public Integer getCompanyId() {
-		return companyId;
-	}
-	public void setCompanyId(Integer companyId) {
-		this.companyId = companyId;
-	}
-	public Integer getPoint() {
-		return point;
-	}
-	public void setPoint(Integer point) {
-		this.point = point;
 	}
 	public Timestamp getTime() {
 		return time;
@@ -59,6 +59,12 @@ public class Comment implements Serializable{
 	}
 	public void setStaus(String staus) {
 		this.staus = staus;
+	}
+	public String getImgbase64Str() {
+		return imgbase64Str;
+	}
+	public void setImgbase64Str(String imgbase64Str) {
+		this.imgbase64Str = imgbase64Str;
 	}
 	
 	
