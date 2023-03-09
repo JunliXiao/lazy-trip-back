@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.List;
 
 import common.HikariDataSource;
 import member.model.CommentImg;
@@ -38,28 +37,5 @@ public class CommentImgDAOImpl implements CommentImgDAO{
 		return generatedKey;
 	}
 
-	@Override
-	public int delete(CommentImg commentImg) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public CommentImg selectById(CommentImg commentImg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<CommentImg> getAllImg() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<CommentImg> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
