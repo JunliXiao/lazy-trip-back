@@ -1,6 +1,8 @@
 package member.controller;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,6 +33,10 @@ public class MemberRegisterServlet extends HttpServlet{
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 			Member member = gson.fromJson(req.getReader(), Member.class);
 			MemberServiceImpl service = new MemberServiceImpl();
+			
+			String hashedPassword = hashPassword(member.getPassword());
+			member.setPassword(hashedPassword);
+			
 			final String resultStr = service.register(member);
 			
 //			System.out.println(resultStr);
@@ -47,5 +53,23 @@ public class MemberRegisterServlet extends HttpServlet{
 		
 		
 	}
+	private String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 	
 }
