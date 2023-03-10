@@ -28,7 +28,7 @@ public class TourTagQueryByMemberServlet extends HttpServlet{
 			tourTagVO.setMemberId(Integer.valueOf(memberId));
 			TourTagService service = new TourTagServiceImpl();
 			final Set<String> resultSet = service.tourQueryByMember(tourTagVO);
-			System.out.println(tourTagVO.toString());
+//			System.out.println(tourTagVO.toString());
 			resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(resultSet));

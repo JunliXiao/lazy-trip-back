@@ -31,6 +31,7 @@ public class DiscussionDAOImpl implements DiscussionDAO_interface {
 			+ "FROM lazy.discussion d JOIN lazy.member m ON d.member_id = m.member_id "
 			+ "WHERE group_id = ?  order by d.discussion_date desc;";
 	private static final String DELETE_STMT = "DELETE from lazy.discussion where discussion = ?";
+	private static final String DELETE_ALL_STMT = "DELETE FROM lazy.discussion WHERE group_id = ? ";
 	@Override
 	public void insert(DiscussionVO discussionVO) {
 		// TODO Auto-generated method stub
@@ -97,6 +98,19 @@ public class DiscussionDAOImpl implements DiscussionDAO_interface {
 		try (Connection connection = HikariDataSource.getConnection();
 				PreparedStatement pstmt = connection.prepareStatement(DELETE_STMT)){
 			pstmt.setInt(1, discussion);
+			pstmt.executeUpdate();
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	@Override
+	public void deleteAll(Integer id) {
+		// TODO Auto-generated method stub
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_STMT)){
+			pstmt.setInt(1, id);
 			pstmt.executeUpdate();
 			
 		}catch (SQLException e) {

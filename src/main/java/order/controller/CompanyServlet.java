@@ -2,7 +2,9 @@ package order.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import company.model.CompanyVO;
 import order.service.BookingSearchService;
+import order.service.CompanyService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,23 +21,23 @@ public class CompanyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
+        Gson gson = new Gson();
+        CompanyService companySvc = new CompanyService();
 
-
-
-        if(req.getParameter("type").equals("chooseCompany")){
+        if(req.getParameter("type").equals("showCompanyInformation")){
             try {
-                Gson gson = new Gson();
                 Integer companyID = Integer.valueOf(req.getParameter("companyID"));
-
-                BookingSearchService bsSvc = new BookingSearchService();
-                List<JsonObject> result = bsSvc.showCompanyInformationByCompanyID(companyID);
+                List<CompanyVO> result = companySvc.showCompanyAllByCompanyID(companyID);
 
                 res.setCharacterEncoding("UTF-8");
                 res.setContentType("application/json");
                 PrintWriter out = res.getWriter();
                 out.print(gson.toJson(result));
+                System.out.println("開啟飯店頁面 companyID: "+companyID);
+                System.out.println(result.get(0).toString());
+                System.out.println(result.get(1).toString());
             }catch (Exception e){
-                System.out.println("BookingSearch.do_showCompanyInformationByCompanyID: "+e.getMessage());
+                System.out.println("Company.do_showCompanyInformation: "+e.getMessage());
             }
 
         }

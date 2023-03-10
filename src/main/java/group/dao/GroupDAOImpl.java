@@ -24,7 +24,7 @@ public class GroupDAOImpl implements GroupDAO_interface {
 	private static final String GET_ALL_STMT = "SELECT group_id , tour_id , group_member_count , group_name , member_id FROM lazy.group"
 			+ " where member_id = ?" + " order by group_id";
 	private static final String GET_ONE_STMT = "SELECT group_id , tour_id , group_member_count , group_name , member_id , if_join_group_directly FROM lazy.group where group_id = ?";
-	private static final String DELETE = "DELETE from lazy.group where group_id = ?";
+	private static final String DELETE = "DELETE FROM lazy.group WHERE group_id = ?";
 	private static final String UPDATE_GROUP_SETTING_STMT = "UPDATE lazy.group set group_member_count = ?  ,group_name = ? ,if_join_group_directly = ? where group_id= ?";
 	private static final String GET_TOURNAME_STMT = "SELECT  tour_title , start_date ,end_date FROM lazy.tour t WHERE t.tour_id= ?";
 	private static final String INSERT_WHEN_CREATE_STMT = "INSERT INTO lazy.group_member (member_id , group_id , g_m_status ) values(?,?,?)";
@@ -78,39 +78,16 @@ public class GroupDAOImpl implements GroupDAO_interface {
 	@Override
 	public void delete(Integer groupid) {
 		// TODO Auto-generated method stub
-		Connection con = null;
-		PreparedStatement pstmt = null;
-
-		try {
-
-			con = ds.getConnection();
-			pstmt = con.prepareStatement(DELETE);
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(DELETE)) {
 
 			pstmt.setInt(1, groupid);
-
 			pstmt.executeUpdate();
 
-			// Handle any driver errors
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occured. " + se.getMessage());
-			// Clean up JDBC resources
-		} finally {
-			if (pstmt != null) {
-				try {
-					pstmt.close();
-				} catch (SQLException se) {
-					se.printStackTrace(System.err);
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (Exception e) {
-					e.printStackTrace(System.err);
-				}
+			}catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
-	}
 
 	@Override
 	public GroupVO findByPrimaryKey(Integer groupid) {

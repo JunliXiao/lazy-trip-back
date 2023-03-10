@@ -7,35 +7,23 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name="tour_company")
 public class TourComVO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Id
-	@Column(name = "c_tour_id")
 	private Integer tourComId;
-	@Column(name="company_id")
 	private String tourTitle;
-	@Column(name="tour_title")
 	private String startDate;
-	@Column(name="start_date")
 	private String endDate;
-	@Column(name="end_date")
 	private String tourImg;
-	@Column(name="cost")
 	private Integer cost;
-	@Column(name="tour_person")
 	private Integer tourPerson;
-	@Column(name="company_id")
 	private Integer companyId;
-	private byte[] tourImgByte;
-	
+	private String status;
 
 	public TourComVO() {
 	}
-	
 	public TourComVO(Integer tourComId, String tourTitle, String startDate, String endDate, String tourImg,
-			Integer cost, Integer tourPerson, Integer companyId, byte[] tourImgByte) {
+			Integer cost, Integer tourPerson, Integer companyId, String status) {
+		super();
 		this.tourComId = tourComId;
 		this.tourTitle = tourTitle;
 		this.startDate = startDate;
@@ -44,7 +32,13 @@ public class TourComVO implements Serializable {
 		this.cost = cost;
 		this.tourPerson = tourPerson;
 		this.companyId = companyId;
-		this.tourImgByte= tourImgByte;
+		this.status = status;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	public Integer getTourComId() {
@@ -98,19 +92,14 @@ public class TourComVO implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	public byte[] getTourImgByte() {
-		return tourImgByte;
-	}
-	public void setTourImgByte(byte[] tourImgByte) {
-		this.tourImgByte = tourImgByte;
-	}
 	
 	@Override
 	public String toString() {
 		return "TourComVO [tourComId=" + tourComId + ", tourTitle=" + tourTitle + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", tourImg=" + tourImg + ", cost=" + cost + ", tourPerson=" + tourPerson
-				+ ", companyId=" + companyId + "]";
+				+ ", companyId=" + companyId + ", status=" + status + "]";
 	}
+	
 
 
 }
