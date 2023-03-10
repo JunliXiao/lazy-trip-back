@@ -26,7 +26,7 @@ public class ChatroomController extends HttpServlet {
         ChatMemberService service = new ChatMemberServiceImpl();
         Integer id = Integer.parseInt(request.getParameter("member_id"));
         
-        output = gson.toJson(service.getChatroomsByOneMember(id));
+        output = gson.toJson(service.getChatroomsByMember(id));
         out.println(output);
 	}
 

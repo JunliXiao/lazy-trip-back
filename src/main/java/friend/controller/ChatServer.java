@@ -2,7 +2,6 @@ package friend.controller;
 
 import friend.model.ChatMessage;
 import friend.model.ChatMessageWrapper;
-import friend.model.Chatroom;
 import friend.service.ChatMemberService;
 import friend.service.ChatMemberServiceImpl;
 import friend.service.ChatMessageService;
@@ -35,46 +34,9 @@ public class ChatServer {
 
     @OnOpen
     public void onOpen(@PathParam("memberId") Integer memberId, Session memberSession) throws IOException {
-
         // 會員上線
         this.memberId = memberId;
         sessionsMap.put(memberId, memberSession);
-
-        // 上線訊息
-        ChatMessageWrapper onlineNotification = new ChatMessageWrapper("online", memberId);
-
-        // 會員的所有聊天室
-        List<Integer> chatroomsId =
-                chatMemberService
-                        .getChatroomsByOneMember(memberId)
-                        .stream()
-                        .map(Chatroom::getId)
-                        .toList();
-
-        // 會員所有聊天室的全部成員，上線者，其和會員的共同聊天室
-        Map<Session, List<Integer>> membersSessionAndChatroomsId =
-                chatroomsId
-                        .stream()
-                        .map(chatroomId -> chatMemberService.getMembersByChatroom(chatroomId))
-                        .flatMap(List::stream)
-                        .map(Member::getId)
-                        .distinct()
-                        .filter(chatMemberId -> sessionsMap.containsKey(chatMemberId))
-                        .collect(Collectors.toMap(
-                                id -> sessionsMap.get(id),
-                                id -> chatMemberService
-                                        .getChatroomsByOneMember(id)
-                                        .stream()
-                                        .map(Chatroom::getId)
-                                        .filter(chatroomsId::contains)
-                                        .toList()
-                        ));
-
-        // 將上線訊息通知所有上線中聊天室成員
-        membersSessionAndChatroomsId.forEach((key, value) -> {
-            onlineNotification.setMessageContent(value);
-            if (key.isOpen()) key.getAsyncRemote().sendObject(onlineNotification);
-        });
 
         System.out.println("All members online: " + sessionsMap.keySet());
     }
@@ -94,7 +56,17 @@ public class ChatServer {
                             .stream()
                             .map(Member::getId)
                             .collect(Collectors.toSet());
-            chatMessageService.saveMessage((ChatMessage) wrapper.getMessageContent());
+
+            // 儲存訊息
+//            if (wrapper.getMessageContent() instanceof LinkedTreeMap<?, ?> messageMap) {
+//                ChatMessage newMessage = new ChatMessage();
+//                newMessage.setMessage((String) messageMap.get("message"));
+//                newMessage.setSentAt(((Double) messageMap.get("sentAt")).intValue());
+//                newMessage.setChatroomId(wrapper.getChatroomId());
+//                newMessage.setSenderId(wrapper.getMemberId());
+//                chatMessageService.saveMessage(newMessage);
+//            }
+            // 推播訊息
             broadcast(wrapper, chatroomMembersId);
         }
 
@@ -113,43 +85,6 @@ public class ChatServer {
         // 會員下線
         sessionsMap.remove(memberId, memberSession);
         System.out.println("Connection with member ID " + memberId + " closed");
-
-        // 下線訊息
-        ChatMessageWrapper offlineNotification = new ChatMessageWrapper("offline", memberId);
-
-        // 會員的所有聊天室
-        List<Integer> chatroomsId =
-                chatMemberService
-                        .getChatroomsByOneMember(memberId)
-                        .stream()
-                        .map(Chatroom::getId)
-                        .toList();
-
-        // 會員所有聊天室的全部成員，上線者，其和會員的共同聊天室
-        Map<Session, List<Integer>> membersSessionAndChatroomsId =
-                chatroomsId
-                        .stream()
-                        .map(chatroomId -> chatMemberService.getMembersByChatroom(chatroomId))
-                        .flatMap(List::stream)
-                        .map(Member::getId)
-                        .distinct()
-                        .filter(chatMemberId -> sessionsMap.containsKey(chatMemberId))
-                        .collect(Collectors.toMap(
-                                id -> sessionsMap.get(id),
-                                id -> chatMemberService
-                                        .getChatroomsByOneMember(id)
-                                        .stream()
-                                        .map(Chatroom::getId)
-                                        .filter(chatroomsId::contains)
-                                        .toList()
-                        ));
-
-        // 將下線訊息通知所有上線中聊天室成員
-        membersSessionAndChatroomsId.forEach((key, value) -> {
-            offlineNotification.setMessageContent(value);
-            if (key.isOpen()) key.getAsyncRemote().sendObject(offlineNotification);
-        });
-
     }
 
     private static void broadcast(ChatMessageWrapper wrapper, Set<Integer> receiversId) {
