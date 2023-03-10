@@ -40,7 +40,8 @@ public class RoomTypeService {
 		roomTypeVO.setRoomTypePerson(roomTypePerson);
 		roomTypeVO.setRoomTypeQuantity(roomTypeQuantity);
 		roomTypeVO.setRoomTypePrice(roomTypePrice);
-		dao.insert(roomTypeVO);
+		roomTypeVO.setRoomTypeID(roomTypeID);
+		dao.update(roomTypeVO);
 
 		return roomTypeVO;
 	}
