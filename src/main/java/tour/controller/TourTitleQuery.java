@@ -16,22 +16,22 @@ import tour.model.TourVO;
 import tour.service.TourService;
 import tour.service.TourServiceImpl;
 
-@WebServlet("/tourQueryOne")
-public class TourQueryOneServlet extends HttpServlet {
+@WebServlet("/tourTitleQuery")
+public class TourTitleQuery extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
-        String memberId = req.getParameter("memberId");
+        req.setCharacterEncoding("UTF-8");
+        String queryStr = req.getParameter("queryStr");
+        System.out.println(queryStr);
         try {
-        	
             TourService service = new TourServiceImpl();
-            final List<TourVO> resultLists = service.tourQueryAll(Integer.valueOf(memberId));
+            final List<TourVO> result = service.tourTitleQuery(queryStr);
+            System.out.println(result.toString());
             resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().print(gson.toJson(resultLists));
-            System.out.println(gson.toJson(resultLists));
+            resp.getWriter().print(gson.toJson(result));
         } catch (NamingException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package tour.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -11,29 +12,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import tour.model.TourVO;
-import tour.service.TourService;
-import tour.service.TourServiceImpl;
+import tour.model.TourScheduleComVO;
+import tour.service.TourScheduleComService;
+import tour.service.TourScheduleComServiceImpl;
 
-@WebServlet("/tourCreate")
+@WebServlet("/tourScheComCreate")
 @MultipartConfig
-public class TourCreateServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+public class TourScheComCreateServlet extends HttpServlet  {
+	private static final long serialVersionUID = 1L;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 前端將資料利用JSON格式傳送到controller，req接收下來，用java IO的方法getReader讀進來，把資料轉成我要的型別(GSON)
+
         try {
             Gson gson = new Gson();
             req.setCharacterEncoding("UTF-8");
-            TourVO tourVO = gson.fromJson(req.getReader(), TourVO.class);
-            TourService service = new TourServiceImpl();
-            int result = service.tourCreate(tourVO);
-            tourVO.setTourId(result);
+            final List<TourScheduleComVO> lists = gson.fromJson(req.getReader(), new TypeToken<List<TourScheduleComVO>>(){}.getType());
+            TourScheduleComService service = new TourScheduleComServiceImpl();
+            List<Integer> result = service.tourScheduleComCreate(lists);
             resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().print(gson.toJson(tourVO));
+            resp.getWriter().print(gson.toJson(result));
         } catch (NamingException e) {
             e.printStackTrace();
         }

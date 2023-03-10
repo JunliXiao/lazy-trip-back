@@ -12,26 +12,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import tour.model.TourVO;
-import tour.service.TourService;
-import tour.service.TourServiceImpl;
+import tour.model.TourScheduleComVO;
+import tour.service.TourScheduleComService;
+import tour.service.TourScheduleComServiceImpl;
 
-@WebServlet("/tourQueryOne")
-public class TourQueryOneServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+@WebServlet("/tourScheComQueryOne")
+public class TourScheComQueryOneServlet extends HttpServlet{
+	private static final long serialVersionUID = 1L;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Gson gson = new Gson();
-        String memberId = req.getParameter("memberId");
+    	Gson gson = new Gson();
+        resp.setCharacterEncoding("UTF-8");
+        String tourComId = req.getParameter("tourComId");
         try {
-        	
-            TourService service = new TourServiceImpl();
-            final List<TourVO> resultLists = service.tourQueryAll(Integer.valueOf(memberId));
+            TourScheduleComService service = new TourScheduleComServiceImpl();
+            final List<TourScheduleComVO> resultLists = service.tourScheComQueryOne(Integer.valueOf(tourComId));
             resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
             resp.getWriter().print(gson.toJson(resultLists));
-            System.out.println(gson.toJson(resultLists));
         } catch (NamingException e) {
             e.printStackTrace();
         }

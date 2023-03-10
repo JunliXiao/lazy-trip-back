@@ -34,14 +34,22 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourVO> tourQueryAll() {
-        final List<TourVO> resultLists = dao.getAll();
+    public List<TourVO> tourQueryAll(Integer memberId) {
+        final List<TourVO> resultLists = dao.getAll(memberId);
         return resultLists;
     }
 
     @Override
-    public TourVO tourQueryOne(Integer tourId) {
-        final TourVO result = dao.findByPrimaryKey(tourId);
+    public List<TourVO> tourTitleQuery(String queryStr) {
+        final List<TourVO> result = dao.findByTourTitle(queryStr);
         return result;
     }
+    
+    @Override
+    public TourVO getTourInfoByTourId(Integer tourId) {
+        final TourVO result = dao.getTourByTourId(tourId);
+        return result;
+    }
+    
+    
 }
