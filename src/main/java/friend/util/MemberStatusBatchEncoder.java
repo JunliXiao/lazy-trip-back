@@ -13,7 +13,6 @@ public class MemberStatusBatchEncoder implements Encoder.Text<MemberStatusBatch>
 
     @Override
     public String encode(MemberStatusBatch memberStatusBatch) throws EncodeException {
-        System.out.println("Encoder for MemberStatusBatch called");
         return gson.toJson(memberStatusBatch);
     }
 

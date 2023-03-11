@@ -36,8 +36,6 @@ public class NotificationServer {
         this.memberId = memberId;
         sessionsMap.put(memberId, memberSession);
         MemberStatus onlineNotification = new MemberStatus(memberId, "online");
-//        notifyAllOnlineMembers(onlineNotification, memberSession);
-//        System.out.printf("%s: all online members = %s\n", this.getClass().getSimpleName(), sessionsMap.keySet());
 
         Map<String, Set<Integer>> chatroomsIdAndChatroomMembersId =
                 chatMemberService.getChatroomsIdAndChatroomMembersId(memberId);
@@ -104,12 +102,6 @@ public class NotificationServer {
         membersSessionAndChatroomsId.forEach((session, commonChatroomsId) -> {
             offlineNotification.setCommonChatroomsId(commonChatroomsId);
             if (session.isOpen()) session.getAsyncRemote().sendObject(offlineNotification);
-        });
-    }
-
-    private static void notifyAllOnlineMembers(MemberStatus memberStatus, Session memberSession) {
-        memberSession.getOpenSessions().forEach(session -> {
-            if (session.isOpen()) session.getAsyncRemote().sendObject(memberStatus);
         });
     }
 
