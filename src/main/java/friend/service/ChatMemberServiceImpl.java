@@ -13,31 +13,55 @@ import java.util.stream.Collectors;
 
 public class ChatMemberServiceImpl implements ChatMemberService {
 
-    private ChatroomMemberRepository repository;
+    private ChatroomMemberRepository chatroomMemberRepository;
 
     public ChatMemberServiceImpl() {
-        this.repository = new ChatroomMemberRepositoryImpl();
+        this.chatroomMemberRepository = new ChatroomMemberRepositoryImpl();
     }
 
     @Override
     public boolean createChatroom(List<Integer> membersId) {
-        return repository.addChatroom(membersId);
+        boolean canCreateNewChatroom = false;
+
+        // 檢查是否輸入的會員已有共同的聊天室，而不能新增
+        List<List<Integer>> listOfCurrentChatroomsId = membersId
+                .stream()
+                .map(id -> chatroomMemberRepository.getChatrooms(id))
+                .map(list -> list.stream()
+                        .map(Chatroom::getId)
+                        .collect(Collectors.toList()))
+                .toList();
+        List<Integer> refList = listOfCurrentChatroomsId.get(0);
+
+        for (int i = 1; i < listOfCurrentChatroomsId.size(); i++) {
+            System.out.printf("refList = %s, check if it intersects %s\n", refList, listOfCurrentChatroomsId.get(i));
+            refList.retainAll(listOfCurrentChatroomsId.get(i));
+            if (refList.size() == 0) {
+                canCreateNewChatroom = true;
+                break;
+            }
+        }
+
+        if (canCreateNewChatroom) {
+//            return repository.addChatroom(membersId);
+        }
+        return canCreateNewChatroom;
     }
 
     @Override
     public List<Chatroom> getChatroomsByMember(Integer memberId) {
-        return repository.getChatrooms(memberId);
+        return chatroomMemberRepository.getChatrooms(memberId);
     }
 
     @Override
     public Map<String, Set<Integer>> getChatroomsIdAndChatroomMembersId(Integer memberId) {
         Map<String, Set<Integer>> resultMap = new HashMap<>();
 
-        Set<Integer> chatroomsId = repository.getChatrooms(memberId).stream()
+        Set<Integer> chatroomsId = chatroomMemberRepository.getChatrooms(memberId).stream()
                 .map(Chatroom::getId)
                 .collect(Collectors.toSet());
         Set<Integer> chatroomMembersId = chatroomsId.stream()
-                .map(chatroomId -> repository.getChatroomMembers(chatroomId))
+                .map(chatroomId -> chatroomMemberRepository.getChatroomMembers(chatroomId))
                 .flatMap(List::stream)
                 .map(Member::getId)
                 .collect(Collectors.toSet());
@@ -54,6 +78,11 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
     @Override
     public List<Member> getMembersByChatroom(Integer chatroomId) {
-        return repository.getChatroomMembers(chatroomId);
+        return chatroomMemberRepository.getChatroomMembers(chatroomId);
+    }
+
+    @Override
+    public Member findMember(String searchText) {
+        return chatroomMemberRepository.getMemberByNameOrUsername(searchText);
     }
 }
