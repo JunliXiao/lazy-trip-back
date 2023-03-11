@@ -11,7 +11,9 @@ public interface TourComDao {
 
     int delete(Integer tourComId);
 
-    List<TourComVO> getAll(Integer companyId);
+    List<TourComVO> getAllByCompany(Integer companyId);
+    
+    List<TourComVO> getAll();
 
     TourComVO getTourByTourComId(Integer tourComId);
 }

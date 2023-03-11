@@ -1,8 +1,11 @@
 package tour.model;
 
 import java.io.Serializable;
+import java.util.List;
 
-public class TourComVO implements Serializable {
+import member.model.Member;
+
+public class DTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer tourComId;
 	private String tourTitle;
@@ -14,40 +17,18 @@ public class TourComVO implements Serializable {
 	private Integer companyId;
 	private String status;
 	private String feature;
-
+	private List<Member> memberVO;
+	private List<TourVO> tourVO;
 	
-	public TourComVO() {
+	public DTO() {
 	}
-	
-	public TourComVO(Integer tourComId, String tourTitle, String startDate, String endDate, String tourImg,
-			Integer cost, Integer tourPerson, Integer companyId, String status, String feature) {
-		super();
-		this.tourComId = tourComId;
-		this.tourTitle = tourTitle;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.tourImg = tourImg;
-		this.cost = cost;
-		this.tourPerson = tourPerson;
-		this.companyId = companyId;
-		this.status = status;
-		this.feature = feature;
+	@Override
+	public String toString() {
+		return "DTO [tourComId=" + tourComId + ", tourTitle=" + tourTitle + ", startDate=" + startDate + ", endDate="
+				+ endDate + ", tourImg=" + tourImg + ", cost=" + cost + ", tourPerson=" + tourPerson + ", companyId="
+				+ companyId + ", status=" + status + ", feature=" + feature + ", memberVO=" + memberVO + ", tourVO="
+				+ tourVO + "]";
 	}
-
-//	@Override
-//	public String toString() {
-//		return "TourComVO [tourComId=" + tourComId + ", tourTitle=" + tourTitle + ", startDate=" + startDate
-//				+ ", endDate=" + endDate + ", tourImg=" + tourImg + ", cost=" + cost + ", tourPerson=" + tourPerson
-//				+ ", companyId=" + companyId + ", status=" + status + ", feature=" + feature + "]";
-//	}
-	
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
 	public Integer getTourComId() {
 		return tourComId;
 	}
@@ -96,8 +77,11 @@ public class TourComVO implements Serializable {
 	public void setCompanyId(Integer companyId) {
 		this.companyId = companyId;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	public String getFeature() {
 		return feature;
@@ -105,8 +89,34 @@ public class TourComVO implements Serializable {
 	public void setFeature(String feature) {
 		this.feature = feature;
 	}
+	public List<Member> getMemberVO() {
+		return memberVO;
+	}
+	public void setMemberVO(List<Member> memberVO) {
+		this.memberVO = memberVO;
+	}
+	public List<TourVO> getTourVO() {
+		return tourVO;
+	}
+	public void setTourVO(List<TourVO> tourVO) {
+		this.tourVO = tourVO;
+	}
 	
-
-
+	
+	public DTO(Integer tourComId, String tourTitle, String startDate, String endDate, String tourImg, Integer cost,
+			Integer tourPerson, Integer companyId, String status, String feature, List<Member> memberVO, List<TourVO> tourVO) {
+		super();
+		this.tourComId = tourComId;
+		this.tourTitle = tourTitle;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.tourImg = tourImg;
+		this.cost = cost;
+		this.tourPerson = tourPerson;
+		this.companyId = companyId;
+		this.status = status;
+		this.feature = feature;
+		this.memberVO = memberVO;
+		this.tourVO = tourVO;
+	}
 }
-
