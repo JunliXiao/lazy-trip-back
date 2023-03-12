@@ -29,7 +29,7 @@ public class ChatMemberController extends HttpServlet {
 
         if (target.equals("member")) {
             String searchText = request.getParameter("search_text");
-            output = gson.toJson(service.findMember(searchText));
+            output = gson.toJson(service.searchMembersByText(searchText));
         } else if (target.equals("chatroom_member")) {
             Integer id = Integer.parseInt(request.getParameter("chatroom_id"));
             output = gson.toJson(service.getMembersByChatroom(id));

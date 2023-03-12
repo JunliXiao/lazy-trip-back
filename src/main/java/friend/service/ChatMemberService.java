@@ -19,6 +19,6 @@ public interface ChatMemberService {
 
     List<Member> getMembersByChatroom(Integer chatroomId);
 
-    Member findMember(String searchText);
+    List<Member> searchMembersByText(String searchText);
 
 }
