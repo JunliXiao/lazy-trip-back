@@ -1,12 +1,13 @@
 package order.dao;
 
 import company.model.CompanyVO;
-import company.model.CouponVO;
+import order.model.CouponVO;
 import company.model.RoomTypeImgVO;
 import company.model.RoomTypeVO;
 import order.model.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface OrderDAOInterface {
 
@@ -21,13 +22,14 @@ public interface OrderDAOInterface {
     public List<CompanyVO> SelectFindCompanyAllByCompanyID(Integer companyID);
     public List<CompanyVO> selectShowSearchKeyWordByCompanyNameOrAddress(CompanyVO companyVO);
     public CouponVO selectConfirmCoupon(Integer couponID);
-    public int createOrderAndOrderDetail(OrderVO orderVO, List<OrderDetailVO> orderDetailVOs);
+    public int createOrderAndOrderDetail(List<OrderVO> orderVOs);
     public int orderPay(OrderVO orderVO);
     public int updateOrderOverTimeForPay();
     public List<OrderVO> selectFindOrderByMemberID(OrderVO orderVO);
     public List<OrderDetailVO> selectFindOrderDetailByOrderID(OrderDetailVO orderDetailVO);
-    public List<OrderVO> selectFindOrderAllByMemberID(Integer memberID);
-    public List<OrderVO> selectFindOrderAllByCompanyID(Integer companyID);
+    public List<OrderVO> selectFindOrderAllAndStatusWaitPayByOrderID(Integer orderID);
+    public Map<Integer, OrderVO> selectFindOrderAllByMemberID(Integer memberID);
+    public Map<Integer, OrderVO> selectFindOrderAllAndAlreadyPayByCompanyID(Integer companyID);
 
 
 }

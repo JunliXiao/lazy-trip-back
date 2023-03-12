@@ -1,15 +1,18 @@
 package order.model;
 
+import company.model.CompanyVO;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderVO implements Serializable {
 
     private Integer orderID;
     private Integer memberID;
     private Integer companyID;
-    private Integer couponID;
+    private String couponID;
     private LocalDate orderCheckInDate;
     private LocalDate orderCheckOutDate;
     private Integer orderTotalPrice;
@@ -26,6 +29,9 @@ public class OrderVO implements Serializable {
     private String travelerEmail;
     private String travelerPhone;
     private OrderDetailVO orderDetailVO;
+    private List<OrderDetailVO> orderDetailVOList;
+    private CompanyVO companyVO;
+
 
     public Integer getOrderID() {
         return orderID;
@@ -51,11 +57,11 @@ public class OrderVO implements Serializable {
         this.companyID = companyID;
     }
 
-    public Integer getCouponID() {
+    public String getCouponID() {
         return couponID;
     }
 
-    public void setCouponID(Integer couponID) {
+    public void setCouponID(String couponID) {
         this.couponID = couponID;
     }
 
@@ -184,5 +190,21 @@ public class OrderVO implements Serializable {
 
     public void setOrderDetailVO(OrderDetailVO orderDetailVO) {
         this.orderDetailVO = orderDetailVO;
+    }
+
+    public CompanyVO getCompanyVO() {
+        return companyVO;
+    }
+
+    public void setCompanyVO(CompanyVO companyVO) {
+        this.companyVO = companyVO;
+    }
+
+    public List<OrderDetailVO> getOrderDetailVOList() {
+        return orderDetailVOList;
+    }
+
+    public void setOrderDetailVOList(List<OrderDetailVO> orderDetailVOList) {
+        this.orderDetailVOList = orderDetailVOList;
     }
 }

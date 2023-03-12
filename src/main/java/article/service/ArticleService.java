@@ -11,43 +11,47 @@ public class ArticleService {
 		dao = new ArticleDAO();
 	}
 
-	public ArticleVO addArticle(String articleContent, Timestamp articleDate, String status, Integer adminId,
-			Integer memberId, Integer companyId, Integer tourId) {
+	public ArticleVO addArticle(String articleTitle,String articleContent, Timestamp articleDate,Timestamp articleDateChange, byte[] articleImage, Integer adminId,
+			Integer memberId, Integer tourId) {
 		ArticleVO articleVO = new ArticleVO();
+		articleVO.setArticleTitle(articleTitle);
 		articleVO.setArticleContent(articleContent);
 		articleVO.setArticleDate(articleDate);
-		articleVO.setStatus(status);
+		articleVO.setArticleDateChange(null);
+		articleVO.setArticleImage(articleImage);
 		articleVO.setAdminId(adminId);
 		articleVO.setMemberId(memberId);
-		articleVO.setCompanyId(companyId);
 		articleVO.setTourId(tourId);
 		dao.insert(articleVO);
 		
 		return articleVO;
 	}
 	
-	public ArticleVO updateArticle(Integer articleId, String articleContent, Timestamp articleDate, String status, Integer adminId,
-			Integer memberId, Integer companyId, Integer tourId) {
+	public ArticleVO updateArticle(Integer articleId,String articleTitle, String articleContent, Timestamp articleDateChange, byte[] articleImage, Integer adminId,
+			Integer memberId, Integer tourId) {
 		ArticleVO articleVO = new ArticleVO();
 		articleVO.setArticleId(articleId);
+		articleVO.setArticleTitle(articleTitle);
 		articleVO.setArticleContent(articleContent);
-		articleVO.setArticleDate(articleDate);
-		articleVO.setStatus(status);
+		articleVO.setArticleDateChange(articleDateChange);
+		articleVO.setArticleImage(articleImage);
 		articleVO.setAdminId(adminId);
 		articleVO.setMemberId(memberId);
-		articleVO.setCompanyId(companyId);
 		articleVO.setTourId(tourId);
 		dao.update(articleVO);
-		
 		return articleVO;
 	}
 	
-	public void deleteArticle(Integer artilcleId) {
-		dao.delete(artilcleId);
+	public void deleteArticle(Integer articleId) {
+		dao.delete(articleId);
 	}
 	
-	public ArticleVO getOneEmp(Integer artilcleId) {
-		return dao.findByPrimaryKey(artilcleId);
+	public ArticleVO getOneArticle(Integer articleId) {
+		return dao.findByPrimaryKey(articleId);
+	}
+	
+	public List<ArticleVO> getOneByMember(Integer memberId) {
+		return dao.findByMemberKey(memberId);
 	}
 
 	public List<ArticleVO> getAll() {

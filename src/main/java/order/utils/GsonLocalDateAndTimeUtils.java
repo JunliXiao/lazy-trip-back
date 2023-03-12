@@ -5,6 +5,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -46,6 +48,12 @@ public class GsonLocalDateAndTimeUtils {
         }
         return null;
     }
+
+    public static <T> T fromJson(Reader json, Type typeOfT){
+        return gson.fromJson(json, typeOfT);
+    }
+
+
     static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
         DateTimeFormatter format = DateTimeFormatter.ofPattern(PATTERN_DATETIME);
 
