@@ -1,4 +1,4 @@
-package article.dao;
+package com.article.model;
 
 import java.util.*;
 
@@ -8,6 +8,7 @@ public interface ArticleDAO_interface {
     public void update(ArticleVO articleVO);
     public void delete(Integer articleId);
     public ArticleVO findByPrimaryKey(Integer articleId);
+    public List<ArticleVO> findByMemberKey(Integer memberId);
     public List<ArticleVO> getAll();
 	
 }
