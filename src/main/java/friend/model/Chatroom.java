@@ -4,7 +4,7 @@ public class Chatroom {
 
     private Integer id;
     private String name;
-    private Long createdAtUnix;
+    private Long createdAt;
 
     public Chatroom() {
 
@@ -26,11 +26,11 @@ public class Chatroom {
         this.name = name;
     }
 
-    public Long getCreatedAtUnix() {
-        return createdAtUnix;
+    public Long getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedAtUnix(Long createdAtUnix) {
-        this.createdAtUnix = createdAtUnix;
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -3,6 +3,7 @@ package friend.model;
 public class ChatMessage {
 
     private Integer senderId;
+    private String senderNickname;
     private Integer chatroomId;
     private String message;
     private Integer sentAt;
@@ -17,6 +18,14 @@ public class ChatMessage {
 
     public void setSenderId(Integer senderId) {
         this.senderId = senderId;
+    }
+
+    public String getSenderNickname() {
+        return senderNickname;
+    }
+
+    public void setSenderNickname(String senderNickname) {
+        this.senderNickname = senderNickname;
     }
 
     public Integer getChatroomId() {

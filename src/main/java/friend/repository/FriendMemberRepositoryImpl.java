@@ -103,7 +103,7 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
     public List<Member> getMembersByFriendship(Integer memberId, String statusCode) {
         List<Member> friends = new ArrayList<>();
         String sql = """
-                SELECT member_id, member_account, member_name FROM member\r
+                SELECT member_id, member_account, member_name, member_username FROM member\r
                 	WHERE member_id IN \r
                 (SELECT addressee_id FROM friendship WHERE status_code = ? AND requester_id = ?\r
                 	UNION\r
@@ -121,6 +121,7 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
                 friend.setId(Integer.parseInt(rs.getString("member_id")));
                 friend.setAccount(rs.getString("member_account"));
                 friend.setName(rs.getString("member_name"));
+                friend.setUsername(rs.getString("member_username"));
                 friends.add(friend);
             }
         } catch (SQLException e) {
@@ -135,15 +136,15 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
         List<Member> friends = new ArrayList<>();
         String sql = direction.equals("sent") 
         		? """
-                SELECT member_id, member_account, member_name FROM member\r
+                SELECT member_id, member_account, member_name, member_username FROM member\r
                 	WHERE member_id IN \r
                 (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ? AND status_code = 'R');
                 """
         		: """
-        		SELECT member_id, member_account, member_name FROM member\r
-                	WHERE member_id IN \r
-                (SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ? AND status_code = 'R');
-        		""";
+                SELECT member_id, member_account, member_name, member_username FROM member\r
+                      	WHERE member_id IN \r
+                      (SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ? AND status_code = 'R');
+                """;
 
         try (Connection connection = HikariDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -154,6 +155,7 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
                 friend.setId(Integer.parseInt(rs.getString("member_id")));
                 friend.setAccount(rs.getString("member_account"));
                 friend.setName(rs.getString("member_name"));
+                friend.setUsername(rs.getString("member_username"));
                 friends.add(friend);
             }
         } catch (SQLException e) {
@@ -167,7 +169,7 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
 	public List<Member> getMembersByNonFriendship(Integer memberId) {
         List<Member> nonFriends = new ArrayList<>();
         String sql = """
-                SELECT member_id, member_account, member_name FROM member\r
+                SELECT member_id, member_account, member_name, member_username FROM member\r
                 	WHERE member_id NOT IN \r
                 (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ?\r
                 	UNION\r
@@ -183,6 +185,7 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
                 nonFriend.setId(Integer.parseInt(rs.getString("member_id")));
                 nonFriend.setAccount(rs.getString("member_account"));
                 nonFriend.setName(rs.getString("member_name"));
+                nonFriend.setUsername(rs.getString("member_username"));
                 nonFriends.add(nonFriend);
             }
         	

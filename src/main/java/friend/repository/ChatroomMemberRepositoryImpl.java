@@ -104,7 +104,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
                 Chatroom chatroom = new Chatroom();
                 chatroom.setId(rs.getInt("chatroom_id"));
                 chatroom.setName(rs.getString("chatroom_name"));
-                chatroom.setCreatedAtUnix(rs.getLong("created_at_unix"));
+                chatroom.setCreatedAt(rs.getLong("created_at_unix"));
                 chatrooms.add(chatroom);
             }
 

@@ -1,9 +1,9 @@
 package friend.controller;
 
-import friend.model.ChatMessageWrapper;
+import friend.json.ChatMessageWrapper;
+import friend.json.MemberStatus;
+import friend.json.MemberStatusBatch;
 import friend.model.Chatroom;
-import friend.model.MemberStatus;
-import friend.model.MemberStatusBatch;
 import friend.service.ChatMemberService;
 import friend.service.ChatMemberServiceImpl;
 
@@ -19,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @ServerEndpoint(value = "/notification-ws/{memberId}",
-        decoders = friend.util.MemberStatusDecoder.class,
-        encoders = {friend.util.MemberStatusEncoder.class, friend.util.MemberStatusBatchEncoder.class})
+        decoders = friend.json.MemberStatusDecoder.class,
+        encoders = {friend.json.MemberStatusEncoder.class, friend.json.MemberStatusBatchEncoder.class})
 public class NotificationServer {
 
     // 所有上線會員和他們的連線對話映射
