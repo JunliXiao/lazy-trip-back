@@ -24,4 +24,8 @@ public class DiscussionService {
 	public void delete(Integer discussion) {
 		dao.delete(discussion);
 	}
+	
+	public void deleteAll(Integer id) {
+		dao.deleteAll(id);
+	}
 }

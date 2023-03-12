@@ -26,7 +26,6 @@ public class TourCreateServlet extends HttpServlet {
         // 前端將資料利用JSON格式傳送到controller，req接收下來，用java IO的方法getReader讀進來，把資料轉成我要的型別(GSON)
         try {
             Gson gson = new Gson();
-
             req.setCharacterEncoding("UTF-8");
             TourVO tourVO = gson.fromJson(req.getReader(), TourVO.class);
             TourService service = new TourServiceImpl();

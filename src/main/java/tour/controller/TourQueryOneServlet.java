@@ -1,6 +1,7 @@
 package tour.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -22,14 +23,15 @@ public class TourQueryOneServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
-        resp.setCharacterEncoding("UTF-8");
-        String tourId = req.getParameter("tourId");
+        String memberId = req.getParameter("memberId");
         try {
+        	
             TourService service = new TourServiceImpl();
-            final TourVO result = service.tourQueryOne(Integer.valueOf(tourId));
-            System.out.println(result.toString());
+            final List<TourVO> resultLists = service.tourQueryAll(Integer.valueOf(memberId));
             resp.setContentType("application/json");
-            resp.getWriter().print(gson.toJson(result));
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().print(gson.toJson(resultLists));
+            System.out.println(gson.toJson(resultLists));
         } catch (NamingException e) {
             e.printStackTrace();
         }

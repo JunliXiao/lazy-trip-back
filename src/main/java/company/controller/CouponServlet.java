@@ -14,9 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import company.model.CompanyVO;
-import company.model.RoomTypeVO;
 import company.service.CompanyService;
-import company.service.RoomTypeService;
 
 @WebServlet("/coupon")
 public class CouponServlet extends HttpServlet {

@@ -1,6 +1,8 @@
 package member.controller;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -27,8 +29,11 @@ public class MemberLoginServlet extends HttpServlet{
 		Member member = gson.fromJson(req.getReader(), Member.class);
 
 		try {
+//			String hashedPassword = "";
 			MemberService service = new MemberServiceImpl();
 			member = service.login(member);
+//			Member tempMember = service.findByAccount(member.getAccount());
+//			hashedPassword = tempMember.getPassword();
 			
 			if (member == null) {
 				JsonObject error = new JsonObject();
@@ -53,13 +58,22 @@ public class MemberLoginServlet extends HttpServlet{
 				resp.addCookie(cookie);
 				resp.addCookie(cookie2);
 				
-				
+				String location = (String) req.getSession().getAttribute("location");
+				if(location == null || location.isEmpty()) {
 				resp.sendRedirect(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()  + req.getContextPath() + "/" + "index.html");
-//				resp.sendRedirect("member");
+				}else {
+					resp.sendRedirect(location);
+				}
+				System.out.println(location);
+				
 			}
 
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+
+    
 }

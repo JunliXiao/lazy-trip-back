@@ -131,7 +131,6 @@ public class RoomTypeServlet extends HttpServlet{
 				} else if (!roomTypeName.trim().matches(roomTypeNameReg)) { // 以下練習正則(規)表示式(regular-expression)
 					errorMsgs.add("設備名稱: 只能是中、英文字母、數字和_ , 且長度必需在1到10之間");
 				}
-
 				RoomTypeVO roomTypeVO = new RoomTypeVO();
 				roomTypeVO.setRoomTypeID(roomTypeID);
 				roomTypeVO.setCompanyID(companyID);
@@ -227,7 +226,7 @@ public class RoomTypeServlet extends HttpServlet{
 				roomTypeService.deleteRoomType(roomTypeID);
 
 				/*************************** 3.刪除完成,準備轉交(Send the Success view) ***********/
-				String url = "/roomType/table roomType test.jsp";
+//				String url = "/roomType/table roomType test.jsp";
 				Gson gson = new Gson();
 				res.setContentType("application/json");
 				res.getWriter().print(gson.toJson(roomTypeID));

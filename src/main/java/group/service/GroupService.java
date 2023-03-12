@@ -38,5 +38,8 @@ public class GroupService {
 	public TourVO getOneTourInfo(Integer tourid) {
 		return dao.findTourNameByID(tourid);
 	}
+	public void delOneGroup(Integer id) {
+		dao.delete(id);
+	}
 
 }

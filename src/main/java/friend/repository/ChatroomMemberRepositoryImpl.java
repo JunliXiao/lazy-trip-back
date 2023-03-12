@@ -42,7 +42,9 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             int[] insertResults = ps2.executeBatch();
 
         } catch (SQLException e) {
-            throw new RuntimeException("無法將該名會員加入聊天室");
+            e.printStackTrace();
+//            throw new RuntimeException("無法將該名會員加入聊天室");
+            throw new RuntimeException(e);
         }
         return hasAdded;
     }
@@ -63,6 +65,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             ps.executeBatch();
 
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return false;
@@ -101,13 +104,14 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
                 Chatroom chatroom = new Chatroom();
                 chatroom.setId(rs.getInt("chatroom_id"));
                 chatroom.setName(rs.getString("chatroom_name"));
-//                System.out.println(rs.getLong("created_at_unix"));
                 chatroom.setCreatedAtUnix(rs.getLong("created_at_unix"));
                 chatrooms.add(chatroom);
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("目前資料庫有異狀，無法取得所有聊天室");
+            e.printStackTrace();
+//            throw new RuntimeException("目前資料庫有異狀，無法取得所有聊天室");
+            throw new RuntimeException(e);
         }
 
         return chatrooms;
@@ -136,8 +140,39 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("目前資料庫有異狀，無法取得聊天室成員");
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return members;
+    }
+
+    @Override
+    public Member getMemberByNameOrUsername(String searchText) {
+        String sql = """
+                SELECT member_id, member_account, member_name, member_username, member_address
+                \tFROM lazy.member
+                WHERE member_name LIKE ? OR member_username LIKE ?;""";
+        String text = "%" + searchText + "%";
+
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, text);
+            ps.setString(2, text);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Member member = new Member();
+                member.setId(rs.getInt("member_id"));
+                member.setAccount(rs.getString("member_account"));
+                member.setName(rs.getString("member_name"));
+                member.setUsername(rs.getString("member_username"));
+                member.setAddress(rs.getString("member_address"));
+                return member;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }

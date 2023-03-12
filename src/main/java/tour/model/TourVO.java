@@ -2,6 +2,7 @@ package tour.model;
 
 import java.io.Serializable;
 
+
 public class TourVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -11,9 +12,16 @@ public class TourVO implements Serializable {
     private String endDate;
     private String tourImg;
     private Integer memberId;
+    private String status;
 
-    public TourVO(Integer tourId, String tourTitle, String startDate, String endDate, String tourImg,
-                  Integer memberId) {
+    @Override
+	public String toString() {
+		return "TourVO [tourId=" + tourId + ", tourTitle=" + tourTitle + ", startDate=" + startDate + ", endDate="
+				+ endDate + ", tourImg=" + tourImg + ", memberId=" + memberId + ", status=" + status + "]";
+	}
+
+	public TourVO(Integer tourId, String tourTitle, String startDate, String endDate, String tourImg,
+                  Integer memberId, String status) {
         super();
         this.tourId = tourId;
         this.tourTitle = tourTitle;
@@ -21,13 +29,10 @@ public class TourVO implements Serializable {
         this.endDate = endDate;
         this.tourImg = tourImg;
         this.memberId = memberId;
+        this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "TourVO [tourId=" + tourId + ", tourTitle=" + tourTitle + ", startDate=" + startDate + ", endDate="
-                + endDate + ", tourImg=" + tourImg + ", memberId=" + memberId + ", tourImgByte=" + "]";
-    }
+    
 
     public TourVO() {
 
@@ -80,5 +85,10 @@ public class TourVO implements Serializable {
     public void setMemberId(Integer memberId) {
         this.memberId = memberId;
     }
-
+    public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
