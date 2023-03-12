@@ -1,7 +1,7 @@
 package friend.controller;
 
+import friend.json.ChatMessageWrapper;
 import friend.model.ChatMessage;
-import friend.model.ChatMessageWrapper;
 import friend.service.ChatMemberService;
 import friend.service.ChatMemberServiceImpl;
 import friend.service.ChatMessageService;
@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 
 @ServerEndpoint(value = "/chat-ws/{memberId}",
-        decoders = friend.util.ChatMessageDecoder.class,
-        encoders = friend.util.ChatMessageEncoder.class)
+        decoders = friend.json.ChatMessageDecoder.class,
+        encoders = friend.json.ChatMessageEncoder.class)
 public class ChatServer {
 
     // 所有上線會員和他們的連線對話映射

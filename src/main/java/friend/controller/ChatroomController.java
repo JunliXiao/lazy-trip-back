@@ -2,6 +2,8 @@ package friend.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import friend.json.ModelWrapper;
+import friend.model.Chatroom;
 import friend.service.ChatMemberService;
 import friend.service.ChatMemberServiceImpl;
 
@@ -28,8 +30,9 @@ public class ChatroomController extends HttpServlet {
 
         ChatMemberService service = new ChatMemberServiceImpl();
         Integer id = Integer.parseInt(request.getParameter("member_id"));
+        List<Chatroom> dataList = service.getChatroomsByMember(id);
 
-        output = gson.toJson(service.getChatroomsByMember(id));
+        output = gson.toJson(new ModelWrapper(dataList));
         out.println(output);
     }
 
