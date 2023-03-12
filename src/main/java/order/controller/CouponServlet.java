@@ -1,6 +1,6 @@
 package order.controller;
 
-import company.model.CouponVO;
+import order.model.CouponVO;
 import order.utils.GsonLocalDateAndTimeUtils;
 import order.service.CouponService;
 

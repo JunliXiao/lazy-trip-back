@@ -1,11 +1,14 @@
 package order.model;
 
+
 import java.io.Serializable;
 
 public class OrderDetailVO implements Serializable {
     private Integer orderDetailID;
     private Integer orderID;
     private Integer roomTypeID;
+    private String  roomTypeName;
+    private Integer roomTypePerson;
     private Integer orderDetailRoomPrice;
     private Byte orderDetailRoomQuantity;
     private Integer orderDetailCouponDiscountPrice;
@@ -32,6 +35,22 @@ public class OrderDetailVO implements Serializable {
 
     public void setRoomTypeID(Integer roomTypeID) {
         this.roomTypeID = roomTypeID;
+    }
+
+    public String getRoomTypeName() {
+        return roomTypeName;
+    }
+
+    public void setRoomTypeName(String roomTypeName) {
+        this.roomTypeName = roomTypeName;
+    }
+
+    public Integer getRoomTypePerson() {
+        return roomTypePerson;
+    }
+
+    public void setRoomTypePerson(Integer roomTypePerson) {
+        this.roomTypePerson = roomTypePerson;
     }
 
     public Integer getOrderDetailRoomPrice() {

@@ -1,6 +1,6 @@
 package order.service;
 
-import company.model.CouponVO;
+import order.model.CouponVO;
 import order.dao.OrderDAOInterface;
 import order.dao.OrderJDBCDAOImpl;
 
