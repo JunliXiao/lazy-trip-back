@@ -310,6 +310,21 @@ public class MemberDAOImpl implements MemberDAO{
 		return 0;
 	}
 
+	final static String UPDATE_PASSWORD_BY_ID = "update member set member_password = ? where member_id = ?";	
+	@Override
+	public int updatePasswordById(Member member) {
+		try (	Connection conn = HikariDataSource.getConnection(); 
+				PreparedStatement pstmt = conn.prepareStatement(UPDATE_PASSWORD_BY_ID);
+		) {
+			pstmt.setString(1, member.getPassword());
+			pstmt.setInt(2, member.getId());
+			return pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 	
 
 

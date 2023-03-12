@@ -139,6 +139,17 @@ public class MemberServiceImpl implements MemberService{
 		return dao.getAll();
 	}
 	
+	@Override
+	public String savePassword(Member member) {
+		String ps = member.getPassword();
+		if(ps == null) {
+			return "密碼修改失敗(null)";
+		}else {
+			final int rs = dao.updatePasswordById(member);
+			return rs > 0 ? "密碼修改成功" : "密碼修改失敗";
+		}
+	}
+	
 	private boolean verifyPassword(String password, String hashedPassword) {
         // Compare the hashed password with the hashed user input
         return hashedPassword.equals(hashPassword(password));
@@ -163,6 +174,7 @@ public class MemberServiceImpl implements MemberService{
             return null;
         }
     }
+
 
 	
 
