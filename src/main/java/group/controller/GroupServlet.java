@@ -40,13 +40,6 @@ public class GroupServlet extends HttpServlet {
 		HttpSession session = req.getSession();
 		Member member = (Member) session.getAttribute("member");
 
-//		if (member != null) {
-//			member.setPassword("***");
-//		}
-		// 加入返回登入頁面或出錯頁面
-//		else {
-//			
-//		}
 
 		if ("getUsingMember".equals(action)) {
 			PrintWriter out = res.getWriter();
@@ -160,6 +153,16 @@ public class GroupServlet extends HttpServlet {
 			out.println(jsonStr);
 			return;
 		}
+		if ("groupSetTour".equals(action)) {
+			GroupVO groupVO = new GroupVO();
+			Integer groupId = Integer.parseInt(req.getParameter("groupId"));
+			Integer tourId = Integer.parseInt(req.getParameter("tourId"));
+			groupVO.setGroupid(groupId);
+			groupVO.setTourid(tourId);
+			service.updateGroupTour(groupVO);
+			return;
+		}
+		
 		if (action.equals("") || action.trim().length() == 0 || !action.isEmpty()) {
 			error.addProperty("errorMessage", "Unknown Action");
 			PrintWriter out = res.getWriter();

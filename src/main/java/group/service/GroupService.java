@@ -41,5 +41,7 @@ public class GroupService {
 	public void delOneGroup(Integer id) {
 		dao.delete(id);
 	}
-
+	public void updateGroupTour(GroupVO vo) {
+		dao.updateTour(vo);
+	}
 }

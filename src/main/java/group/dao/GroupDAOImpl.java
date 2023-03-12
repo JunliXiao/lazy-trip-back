@@ -26,6 +26,8 @@ public class GroupDAOImpl implements GroupDAO_interface {
 	private static final String GET_ONE_STMT = "SELECT group_id , tour_id , group_member_count , group_name , member_id , if_join_group_directly FROM lazy.group where group_id = ?";
 	private static final String DELETE = "DELETE FROM lazy.group WHERE group_id = ?";
 	private static final String UPDATE_GROUP_SETTING_STMT = "UPDATE lazy.group set group_member_count = ?  ,group_name = ? ,if_join_group_directly = ? where group_id= ?";
+	private static final String UPDATE_GROUP_TOUR_STMT = "UPDATE lazy.group set tour_id = ? where group_id= ?";
+
 	private static final String GET_TOURNAME_STMT = "SELECT  tour_title , start_date ,end_date FROM lazy.tour t WHERE t.tour_id= ?";
 	private static final String INSERT_WHEN_CREATE_STMT = "INSERT INTO lazy.group_member (member_id , group_id , g_m_status ) values(?,?,?)";
 
@@ -158,6 +160,19 @@ public class GroupDAOImpl implements GroupDAO_interface {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void updateTour(GroupVO groupVo) {
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(UPDATE_GROUP_TOUR_STMT)) {
+			pstmt.setInt(1, groupVo.getTourid());
+			pstmt.setInt(2, groupVo.getGroupid());
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 //	@Override

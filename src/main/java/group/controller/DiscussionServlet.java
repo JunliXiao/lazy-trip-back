@@ -31,9 +31,6 @@ public class DiscussionServlet extends HttpServlet{
 		HttpSession session = req.getSession();
 		Member member = (Member) session.getAttribute("member");
 		DiscussionService service = new DiscussionService();
-		if(member!=null) {
-		member.setPassword("***");
-		}
 		
 		//新增一筆留言
 		if("addContent".equals(action)) {
