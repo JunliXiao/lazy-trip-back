@@ -1,4 +1,4 @@
-package com.article.model;
+package article.model;
 
 import java.sql.Timestamp;
 import java.util.List;
