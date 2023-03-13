@@ -1,24 +1,23 @@
-package friend.util;
+package friend.json;
 
 import com.google.gson.Gson;
-import friend.model.ChatMessageWrapper;
 
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-public class ChatMessageDecoder implements Decoder.Text<ChatMessageWrapper> {
+public class MemberStatusDecoder implements Decoder.Text<MemberStatus> {
 
     private static Gson gson = new Gson();
 
     @Override
-    public ChatMessageWrapper decode(String s) throws DecodeException {
-        return gson.fromJson(s, ChatMessageWrapper.class);
+    public MemberStatus decode(String s) throws DecodeException {
+        return gson.fromJson(s, MemberStatus.class);
     }
 
     @Override
     public boolean willDecode(String s) {
-        return (s != null);
+        return false;
     }
 
     @Override

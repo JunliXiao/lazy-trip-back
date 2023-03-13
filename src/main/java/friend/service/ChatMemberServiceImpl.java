@@ -82,7 +82,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     }
 
     @Override
-    public Member findMember(String searchText) {
+    public List<Member> searchMembersByText(String searchText) {
         return chatroomMemberRepository.getMemberByNameOrUsername(searchText);
     }
 }

@@ -1,4 +1,4 @@
-package friend.model;
+package friend.json;
 
 import java.util.List;
 import java.util.Map;

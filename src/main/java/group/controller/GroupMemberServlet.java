@@ -34,9 +34,6 @@ public class GroupMemberServlet extends HttpServlet {
 		Member member = (Member) session.getAttribute("member");
 		GroupMemberService service = new GroupMemberService();
 
-//		if (member != null) {
-//			member.setPassword("***");
-//		}
 
 		// 邀請朋友
 		if ("inviteFriend".equals(action)) {

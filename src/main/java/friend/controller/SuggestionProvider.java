@@ -1,6 +1,7 @@
 package friend.controller;
 
 import com.google.gson.Gson;
+import friend.json.ModelWrapper;
 import friend.service.FriendMemberService;
 import friend.service.FriendMemberServiceImpl;
 
@@ -25,11 +26,11 @@ public class SuggestionProvider extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         PrintWriter out = response.getWriter();
-    	FriendMemberService service = new FriendMemberServiceImpl();
-    	
-    	int id = Integer.parseInt(request.getParameter("member_id"));
-    	
-    	out.println(gson.toJson(service.getFriendSuggestions(id)));
+        FriendMemberService service = new FriendMemberServiceImpl();
+
+        int id = Integer.parseInt(request.getParameter("member_id"));
+        ModelWrapper wrapper = new ModelWrapper(service.getFriendSuggestions(id));
+        out.println(gson.toJson(wrapper));
     }
 
 }

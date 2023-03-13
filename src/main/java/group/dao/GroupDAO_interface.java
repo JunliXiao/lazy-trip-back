@@ -10,6 +10,8 @@ public interface GroupDAO_interface {
 	public int insert(GroupVO groupVo);
 
 	public void update(GroupVO groupVo);
+	
+	public void updateTour(GroupVO groupVo);
 
 	public void delete(Integer groupid);
 

@@ -104,7 +104,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
                 Chatroom chatroom = new Chatroom();
                 chatroom.setId(rs.getInt("chatroom_id"));
                 chatroom.setName(rs.getString("chatroom_name"));
-                chatroom.setCreatedAtUnix(rs.getLong("created_at_unix"));
+                chatroom.setCreatedAt(rs.getLong("created_at_unix"));
                 chatrooms.add(chatroom);
             }
 
@@ -147,7 +147,8 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
     }
 
     @Override
-    public Member getMemberByNameOrUsername(String searchText) {
+    public List<Member> getMemberByNameOrUsername(String searchText) {
+        List<Member> members = new ArrayList<>();
         String sql = """
                 SELECT member_id, member_account, member_name, member_username, member_address
                 \tFROM lazy.member
@@ -160,19 +161,19 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             ps.setString(2, text);
 
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 Member member = new Member();
                 member.setId(rs.getInt("member_id"));
                 member.setAccount(rs.getString("member_account"));
                 member.setName(rs.getString("member_name"));
                 member.setUsername(rs.getString("member_username"));
                 member.setAddress(rs.getString("member_address"));
-                return member;
+                members.add(member);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return null;
+        return members;
     }
 }

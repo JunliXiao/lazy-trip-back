@@ -1,7 +1,6 @@
-package friend.util;
+package friend.json;
 
 import com.google.gson.Gson;
-import friend.model.MemberStatusBatch;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;

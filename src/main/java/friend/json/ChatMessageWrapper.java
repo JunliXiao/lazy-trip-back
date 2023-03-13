@@ -1,8 +1,8 @@
-package friend.model;
+package friend.json;
 
 public class ChatMessageWrapper {
 
-    private String messageType; // new-message, reload-history, retrieve-history, online, offline, error
+    private String messageType; // new-message, reload-history, retrieve-history, error
     private Object messageContent;
 
     private Integer memberId;

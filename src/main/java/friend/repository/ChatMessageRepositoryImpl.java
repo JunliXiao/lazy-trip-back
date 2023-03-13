@@ -31,8 +31,12 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
     @Override
     public List<ChatMessage> getAllMessages(Integer chatroomId) {
         List<ChatMessage> messages = new ArrayList<>();
-        String sql = "SELECT sender_id, chatroom_id, message, sent_at FROM chatroom_message \n"
-                + "\tWHERE chatroom_id = ?;";
+        String sql = """
+                SELECT member_name, member_username, sender_id, chatroom_id, message, sent_at FROM chatroom_message cms
+                \tJOIN lazy.member m
+                \t\tON cms.sender_id = m.member_id
+                \tWHERE chatroom_id = ?;;
+                """;
         try (Connection connection = HikariDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, chatroomId);
@@ -40,6 +44,10 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
             while (rs.next()) {
                 ChatMessage message = new ChatMessage();
                 message.setSenderId(rs.getInt("sender_id"));
+                String nickname = rs.getString("member_username") != null
+                        ? rs.getString("member_username")
+                        : rs.getString("member_name");
+                message.setSenderNickname(nickname);
                 message.setChatroomId(rs.getInt("chatroom_id"));
                 message.setMessage(rs.getString("message"));
                 message.setSentAt(rs.getInt("sent_at"));
