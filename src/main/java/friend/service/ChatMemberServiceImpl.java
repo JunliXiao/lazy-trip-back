@@ -43,7 +43,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
         }
 
         if (canCreateNewChatroom) {
-//            return repository.addChatroom(membersId);
+            return chatroomMemberRepository.addChatroom(membersId);
         }
         return canCreateNewChatroom;
     }

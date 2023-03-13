@@ -173,12 +173,13 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
                 	WHERE member_id NOT IN \r
                 (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ?\r
                 	UNION\r
-                SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ?);""";
+                SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ?) AND member_id != ?;""";
 
         try (Connection connection = HikariDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, memberId);
             ps.setInt(2, memberId);
+            ps.setInt(3, memberId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Member nonFriend = new Member();
