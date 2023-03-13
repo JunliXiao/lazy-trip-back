@@ -1,16 +1,25 @@
 package company.dao;
 
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import common.HikariDataSource;
 import company.model.CompanyVO;
 import company.model.RoomTypeImgVO;
 import company.model.RoomTypeVO;
+import order.model.OrderVO;
 
 
 public class RoomTypeDAO implements RoomTypeDAO_interface {
@@ -34,10 +43,15 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 	roomtype_quantity=?,roomtype_price=? where roomtype_id = ?
 	""";
 	private static final String GET_ALL_BY_COMPANYID = """
-			SELECT a.roomtype_id as aRoomTypeID,company_id as companyID,roomtype_name as roomTypeName, 
-			roomtype_person as roomTypePerson,roomtype_quantity as roomTypeQuantity,roomtype_price as roomTypePrice,
-			roomtype_img_id as roomTypeImgID,b.roomtype_id as bRoomTypeID,roomtype_img as roomTypeImg 
-			FROM roomtype a left join roomtype_img b on a.roomtype_id = b.roomtype_id where company_id = ? order by a.roomtype_id;
+			SELECT a.roomtype_id as aRoomTypeID,a.company_id as companyID,a.roomtype_name as roomTypeName, 
+			a.roomtype_person as roomTypePerson, a.roomtype_quantity as roomTypeQuantity, a.roomtype_price as roomTypePrice,
+			b.roomtype_img_id as roomTypeImgID,b.roomtype_id as bRoomTypeID,b.roomtype_img as roomTypeImg ,
+			o.order_check_in_date as orderCheckInDate, o.order_check_out_date as  orderCheckOutDate
+			FROM roomtype a
+			left join roomtype_img b on a.roomtype_id = b.roomtype_id 
+            left join order_detail od on a.roomtype_id = od.roomtype_id
+            left join lazy.order o on o.company_id = a.company_id
+            where a.company_id = ? order by a.roomtype_id
 			""";
 	
 	
@@ -46,7 +60,7 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
-
+		int id;
 		try {
 
 			con = HikariDataSource.getConnection();
@@ -58,8 +72,8 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 			pstmt.setInt(4, roomTypeVO.getRoomTypeQuantity());
 			pstmt.setInt(5, roomTypeVO.getRoomTypePrice());
 			
-
 			pstmt.executeUpdate();
+
 
 			// Handle any SQL errors
 		} catch (SQLException se) {
@@ -311,18 +325,37 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 				roomTypeVO.setRoomTypeName(rs.getString("roomTypeName"));
 				roomTypeVO.setRoomTypeQuantity(rs.getInt("roomTypeQuantity"));
 				roomTypeVO.setRoomTypePrice(rs.getInt("roomTypePrice"));
-				
-				RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
-				roomTypeImgVO.setRoomTypeImgID(rs.getInt("roomTypeImgID"));
-				roomTypeImgVO.setRoomTypeID(rs.getInt("bRoomTypeID"));
-				roomTypeImgVO.setRoomTypeImg(rs.getString("roomTypeImg"));
-				roomTypeVO.setRoomTypeImgVO(roomTypeImgVO);
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+		        // 解析日期字串成 Date 物件
+				if(rs.getDate("orderCheckInDate") != null &&  rs.getDate("orderCheckOutDate") != null) {
+					Date start = dateFormat.parse(rs.getDate("orderCheckInDate").toString());
+			        Date end = dateFormat.parse(rs.getDate("orderCheckOutDate").toString());
+			        // 格式化日期
+			        String startformattedDate = dateFormat.format(start);
+			        String endformattedDate = dateFormat.format(end);
+					roomTypeVO.setOrderCheckInDate(startformattedDate);
+					roomTypeVO.setOrderCheckOutDate(endformattedDate);
+				}      
+				
+//				Blob blob = rs.getBlob("roomTypeImg");
+//			    InputStream inputStream = blob.getBinaryStream();
+//			    byte[] bytes = inputStream.readAllBytes();
+				if( rs.getInt("bRoomTypeID") !=0) {
+					byte[] bytes =  rs.getBytes("roomTypeImg");
+				    String base64String = Base64.getEncoder().encodeToString(bytes);
+					RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
+					roomTypeImgVO.setRoomTypeImgID(rs.getInt("roomTypeImgID"));
+					roomTypeImgVO.setRoomTypeID(rs.getInt("bRoomTypeID"));
+					roomTypeImgVO.setRoomTypeImgOutput(base64String);	
+					roomTypeVO.setRoomTypeImgVO(roomTypeImgVO);
+				}  
+				
 				list.add(roomTypeVO); // Store the row in the list
 			}
 
 			// Handle any driver errors
-		} catch (SQLException se) {
+		} catch (Exception se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
 			// Clean up JDBC resources
 		} finally {
