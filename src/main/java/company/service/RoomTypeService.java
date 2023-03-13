@@ -40,7 +40,8 @@ public class RoomTypeService {
 		roomTypeVO.setRoomTypePerson(roomTypePerson);
 		roomTypeVO.setRoomTypeQuantity(roomTypeQuantity);
 		roomTypeVO.setRoomTypePrice(roomTypePrice);
-		dao.insert(roomTypeVO);
+		roomTypeVO.setRoomTypeID(roomTypeID);
+		dao.update(roomTypeVO);
 
 		return roomTypeVO;
 	}
@@ -53,7 +54,10 @@ public class RoomTypeService {
 		return dao.findByPrimaryKey(roomTypeID);
 	}
 
-	public List<RoomTypeVO> getAll() {
-		return dao.getAll();
+	
+	public List<RoomTypeVO> getAllByCompanyID(Integer companyID) {
+		return dao.getAllByCompanyID(companyID);
 	}
+	
+	
 }

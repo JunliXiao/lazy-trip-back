@@ -13,6 +13,15 @@ public class CompanyVO implements java.io.Serializable {
 	private Double latitude;
 	private Double longitude;
 	private String companyImg;
+	private RoomTypeVO roomTypeVO;
+
+	public RoomTypeVO getRoomTypeVO() {
+		return roomTypeVO;
+	}
+
+	public void setRoomTypeVO(RoomTypeVO roomTypeVO) {
+		this.roomTypeVO = roomTypeVO;
+	}
 
 	public Integer getCompanyID() {
 		return companyID;

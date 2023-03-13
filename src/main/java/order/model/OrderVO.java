@@ -1,14 +1,18 @@
 package order.model;
 
+import company.model.CompanyVO;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class OrderVO implements java.io.Serializable {
+public class OrderVO implements Serializable {
 
-    private Integer orderId;
-    private Integer memberId;
-    private Integer companyId;
-    private Integer couponId;
+    private Integer orderID;
+    private Integer memberID;
+    private Integer companyID;
+    private String couponID;
     private LocalDate orderCheckInDate;
     private LocalDate orderCheckOutDate;
     private Integer orderTotalPrice;
@@ -21,40 +25,44 @@ public class OrderVO implements java.io.Serializable {
     private String orderPayCardYear;
     private String orderPayCardMonth;
     private String travelerName;
-    private String travelerIdNumber;
+    private String travelerIDNumber;
     private String travelerEmail;
     private String travelerPhone;
+    private OrderDetailVO orderDetailVO;
+    private List<OrderDetailVO> orderDetailVOList;
+    private CompanyVO companyVO;
 
-    public Integer getOrderId() {
-        return orderId;
+
+    public Integer getOrderID() {
+        return orderID;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setOrderID(Integer orderID) {
+        this.orderID = orderID;
     }
 
-    public Integer getMemberId() {
-        return memberId;
+    public Integer getMemberID() {
+        return memberID;
     }
 
-    public void setMemberId(Integer memberId) {
-        this.memberId = memberId;
+    public void setMemberID(Integer memberID) {
+        this.memberID = memberID;
     }
 
-    public Integer getCompanyId() {
-        return companyId;
+    public Integer getCompanyID() {
+        return companyID;
     }
 
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
+    public void setCompanyID(Integer companyID) {
+        this.companyID = companyID;
     }
 
-    public Integer getCouponId() {
-        return couponId;
+    public String getCouponID() {
+        return couponID;
     }
 
-    public void setCouponId(Integer couponId) {
-        this.couponId = couponId;
+    public void setCouponID(String couponID) {
+        this.couponID = couponID;
     }
 
     public LocalDate getOrderCheckInDate() {
@@ -153,12 +161,12 @@ public class OrderVO implements java.io.Serializable {
         this.travelerName = travelerName;
     }
 
-    public String getTravelerIdNumber() {
-        return travelerIdNumber;
+    public String getTravelerIDNumber() {
+        return travelerIDNumber;
     }
 
-    public void setTravelerIdNumber(String travelerIdNumber) {
-        this.travelerIdNumber = travelerIdNumber;
+    public void setTravelerIDNumber(String travelerIDNumber) {
+        this.travelerIDNumber = travelerIDNumber;
     }
 
     public String getTravelerEmail() {
@@ -175,5 +183,28 @@ public class OrderVO implements java.io.Serializable {
 
     public void setTravelerPhone(String travelerPhone) {
         this.travelerPhone = travelerPhone;
+    }
+    public OrderDetailVO getOrderDetailVO() {
+        return orderDetailVO;
+    }
+
+    public void setOrderDetailVO(OrderDetailVO orderDetailVO) {
+        this.orderDetailVO = orderDetailVO;
+    }
+
+    public CompanyVO getCompanyVO() {
+        return companyVO;
+    }
+
+    public void setCompanyVO(CompanyVO companyVO) {
+        this.companyVO = companyVO;
+    }
+
+    public List<OrderDetailVO> getOrderDetailVOList() {
+        return orderDetailVOList;
+    }
+
+    public void setOrderDetailVOList(List<OrderDetailVO> orderDetailVOList) {
+        this.orderDetailVOList = orderDetailVOList;
     }
 }

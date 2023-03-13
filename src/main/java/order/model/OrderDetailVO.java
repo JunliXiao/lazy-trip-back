@@ -1,35 +1,56 @@
 package order.model;
 
-public class OrderDetailVO implements java.io.Serializable {
-    private Integer orderDetailId;
-    private Integer orderId;
-    private Integer roomTypeId;
+
+import java.io.Serializable;
+
+public class OrderDetailVO implements Serializable {
+    private Integer orderDetailID;
+    private Integer orderID;
+    private Integer roomTypeID;
+    private String  roomTypeName;
+    private Integer roomTypePerson;
     private Integer orderDetailRoomPrice;
     private Byte orderDetailRoomQuantity;
     private Integer orderDetailCouponDiscountPrice;
 
-    public Integer getOrderDetailId() {
-        return orderDetailId;
+    public Integer getOrderDetailID() {
+        return orderDetailID;
     }
 
-    public void setOrderDetailId(Integer orderDetailId) {
-        this.orderDetailId = orderDetailId;
+    public void setOrderDetailID(Integer orderDetailID) {
+        this.orderDetailID = orderDetailID;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public Integer getOrderID() {
+        return orderID;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setOrderID(Integer orderID) {
+        this.orderID = orderID;
     }
 
-    public Integer getRoomTypeId() {
-        return roomTypeId;
+    public Integer getRoomTypeID() {
+        return roomTypeID;
     }
 
-    public void setRoomTypeId(Integer roomTypeId) {
-        this.roomTypeId = roomTypeId;
+    public void setRoomTypeID(Integer roomTypeID) {
+        this.roomTypeID = roomTypeID;
+    }
+
+    public String getRoomTypeName() {
+        return roomTypeName;
+    }
+
+    public void setRoomTypeName(String roomTypeName) {
+        this.roomTypeName = roomTypeName;
+    }
+
+    public Integer getRoomTypePerson() {
+        return roomTypePerson;
+    }
+
+    public void setRoomTypePerson(Integer roomTypePerson) {
+        this.roomTypePerson = roomTypePerson;
     }
 
     public Integer getOrderDetailRoomPrice() {

@@ -1,6 +1,8 @@
 package member.controller;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -27,8 +29,11 @@ public class MemberLoginServlet extends HttpServlet{
 		Member member = gson.fromJson(req.getReader(), Member.class);
 
 		try {
+//			String hashedPassword = "";
 			MemberService service = new MemberServiceImpl();
 			member = service.login(member);
+//			Member tempMember = service.findByAccount(member.getAccount());
+//			hashedPassword = tempMember.getPassword();
 			
 			if (member == null) {
 				JsonObject error = new JsonObject();
@@ -46,20 +51,29 @@ public class MemberLoginServlet extends HttpServlet{
 				
 				Cookie cookie = new Cookie("memId", member.getId().toString());
 				Cookie cookie2 = new Cookie("memUsername", member.getUsername());
-				cookie.setMaxAge(7 * 24 * 60 * 60);
-				cookie2.setMaxAge(7 * 24 * 60 * 60);
+				cookie.setMaxAge(30 * 60);
+				cookie2.setMaxAge(30 * 60);
 				cookie.setPath("/");
 				cookie2.setPath("/");
 				resp.addCookie(cookie);
 				resp.addCookie(cookie2);
 				
+				String location = (String) req.getSession().getAttribute("location");
+				if(location == null || location.isEmpty()) {
+					resp.sendRedirect(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()  + req.getContextPath() + "/" + "index.html");
+				}else {
+					resp.sendRedirect(location);
+				}
+//				System.out.println(location);
 				
-				resp.sendRedirect(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()  + req.getContextPath() + "/" + "index.html");
-//				resp.sendRedirect("member");
 			}
 
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+
+    
 }

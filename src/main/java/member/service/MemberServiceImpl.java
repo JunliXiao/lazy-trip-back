@@ -1,5 +1,7 @@
 package member.service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,10 +56,12 @@ public class MemberServiceImpl implements MemberService{
 	public Member login(Member member) {
 		final String account = member.getAccount();
 		final String password = member.getPassword();
-		
-		if(account == null || account.isEmpty() || password == null || password.isEmpty()) {
+		Member temp = dao.selectByAccount(account);
+		System.out.println(temp.getPassword() + " ; " + verifyPassword(password, temp.getPassword()) + " ; " + hashPassword(password));
+		if(account == null || account.isEmpty() || password == null || password.isEmpty() || !(verifyPassword(password, temp.getPassword()))) {
 			return null;
 		}else {
+			member.setPassword(hashPassword(password));
 			member = dao.find(member);
 			return member;
 		}
@@ -134,6 +138,43 @@ public class MemberServiceImpl implements MemberService{
 	public List<Member> findAll() {
 		return dao.getAll();
 	}
+	
+	@Override
+	public String savePassword(Member member) {
+		String ps = member.getPassword();
+		if(ps == null) {
+			return "密碼修改失敗(null)";
+		}else {
+			final int rs = dao.updatePasswordById(member);
+			return rs > 0 ? "密碼修改成功" : "密碼修改失敗";
+		}
+	}
+	
+	private boolean verifyPassword(String password, String hashedPassword) {
+        // Compare the hashed password with the hashed user input
+        return hashedPassword.equals(hashPassword(password));
+    }
+	
+	private String hashPassword(String password) {
+        // Hash the password using SHA-256 algorithm
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 	
 

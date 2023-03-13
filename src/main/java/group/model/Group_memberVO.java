@@ -1,5 +1,7 @@
 package group.model;
 
+import member.model.Member;
+
 public class Group_memberVO implements java.io.Serializable {
 	private Integer groupmember;
 	private Integer memberid;
@@ -7,7 +9,21 @@ public class Group_memberVO implements java.io.Serializable {
 	private String selfintro;
 	private String specialneed;
 	private Integer gmstatus;
-	
+	private Member member;
+	private GroupVO groupVO;
+
+	public GroupVO getGroupvo() {
+		return groupVO;
+	}
+	public void setGroupvo(GroupVO groupvo) {
+		this.groupVO = groupvo;
+	}
+	public Member getMember() {
+		return member;
+	}
+	public void setMember(Member member) {
+		this.member = member;
+	}
 	public Integer getGroupmember() {
 		return groupmember;
 	}

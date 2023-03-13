@@ -1,11 +1,10 @@
 package friend.controller;
 
 import com.google.gson.Gson;
-
+import friend.json.ModelWrapper;
 import friend.service.FriendMemberService;
 import friend.service.FriendMemberServiceImpl;
-import friend.service.FriendshipService;
-import friend.service.FriendshipServiceImpl;
+import member.model.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
+import java.util.List;
 
 @WebServlet("/api/friend/request")
 public class FriendRequestController extends HttpServlet {
@@ -71,21 +71,21 @@ public class FriendRequestController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
         String output;
-        
+
         FriendMemberService service = new FriendMemberServiceImpl();
         int id = Integer.parseInt(request.getParameter("member_id"));
         String direction = request.getParameter("direction");
-        
+
+        List<Member> dataList = null;
         if (direction.equals("sent")) {
-        	output = gson.toJson(service.getSentRequests(id));
+            dataList = service.getSentRequests(id);
         } else if (direction.equals("received")) {
-        	output = gson.toJson(service.getReceivedRequests(id));
-        } else {
-        	output = "{error:Failed}";
+            dataList = service.getReceivedRequests(id);
         }
-        
+
+        output = gson.toJson(new ModelWrapper(dataList));
         out.println(output);
-    	
+
     }
 
 }

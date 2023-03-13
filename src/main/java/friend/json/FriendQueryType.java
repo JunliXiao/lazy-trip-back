@@ -1,4 +1,4 @@
-package friend.util;
+package friend.json;
 
 public enum FriendQueryType {
 	

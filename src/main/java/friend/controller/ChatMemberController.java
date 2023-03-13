@@ -22,12 +22,18 @@ public class ChatMemberController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
-        String output;
+        String output = "false";
 
         ChatMemberService service = new ChatMemberServiceImpl();
-        Integer id = Integer.parseInt(request.getParameter("chatroom_id"));
+        String target = request.getParameter("action");
 
-        output = gson.toJson(service.getMembersByChatroom(id));
+        if (target.equals("member")) {
+            String searchText = request.getParameter("search_text");
+            output = gson.toJson(service.searchMembersByText(searchText));
+        } else if (target.equals("chatroom_member")) {
+            Integer id = Integer.parseInt(request.getParameter("chatroom_id"));
+            output = gson.toJson(service.getMembersByChatroom(id));
+        }
         out.println(output);
     }
 }

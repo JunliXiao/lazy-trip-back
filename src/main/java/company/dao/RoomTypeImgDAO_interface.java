@@ -14,6 +14,6 @@ public interface RoomTypeImgDAO_interface {
 
 	public RoomTypeImgVO findByRoomTypeID(Integer roomTypeID);
 
-	public List<RoomTypeImgVO> getAll();
+	public List<RoomTypeImgVO> getAllByRoomTypeImgID(Integer roomTypeImgID);
 	// 萬用複合查詢(傳入參數型態Map)(回傳 List)
 }

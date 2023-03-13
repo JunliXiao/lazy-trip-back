@@ -1,5 +1,7 @@
 package group.model;
 
+import tour.model.TourVO;
+
 public class GroupVO implements java.io.Serializable {
 	private Integer groupid;
 	private Integer tourid;
@@ -7,7 +9,14 @@ public class GroupVO implements java.io.Serializable {
 	private String groupname;
 	private Integer memberid;
 	private Integer ifjoingroupdirectly;
+	private TourVO tourVO;
 	
+	public TourVO getTourVO() {
+		return tourVO;
+	}
+	public void setTourVO(TourVO tourVO) {
+		this.tourVO = tourVO;
+	}
 	public Integer getIfjoingroupdirectly() {
 		return ifjoingroupdirectly;
 	}

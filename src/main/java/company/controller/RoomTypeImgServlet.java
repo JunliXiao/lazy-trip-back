@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import company.model.RoomTypeImgVO;
 import company.service.RoomTypeImgService;
 
-@WebServlet("/RoomtypeImgServlet")
+@WebServlet("/roomtypeimgservlet")
 public class RoomTypeImgServlet extends HttpServlet {
 
 
@@ -80,8 +80,11 @@ public class RoomTypeImgServlet extends HttpServlet {
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
 			req.setAttribute("roomTypeImgVO", roomtypeImgVO); // 資料庫取出的empVO物件,存入req
 			String url = "/company/listOneCompany.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url); // 成功轉交 listOneEmp.jsp
-			successView.forward(req, res);
+			Gson gson = new Gson();
+			 res.setContentType("application/json");
+			 
+	            res.getWriter().print(gson.toJson(roomTypeImgID));
+			
 		}
 
 		if ("getOne_For_Update".equals(action)) { // 來自listAllEmp.jsp的請求
@@ -104,8 +107,11 @@ public class RoomTypeImgServlet extends HttpServlet {
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) ************/
 			req.setAttribute("roomTypeImgVO", roomTypeImgVO); // 資料庫取出的empVO物件,存入req
 			String url = "/company/update_company_input.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url);// 成功轉交 update_emp_input.jsp
-			successView.forward(req, res);
+			Gson gson = new Gson();
+			 res.setContentType("application/json");
+			 
+	            res.getWriter().print(gson.toJson(roomTypeImgVO));
+			
 		}
 
 		if ("update".equals(action)) { // 來自update_comapny_input.jsp的請求
@@ -122,20 +128,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 			
 			String roomTypeImgString = req.getParameter("roomTypeImg");
 					
-		    // Open an input stream to the image file
-		    InputStream in = getServletContext().getResourceAsStream("/images/" + roomTypeImgString);
-		    
-		    // Copy the contents of the input stream to the output stream
-		    ByteArrayOutputStream out = new ByteArrayOutputStream();
-		    byte[] buffer = new byte[4096];
-		    int bytesRead = -1;
-		    while ((bytesRead = in.read(buffer)) != -1) {
-		      out.write(buffer, 0, bytesRead);
-		    }
-		    byte[] roomTypeImg = out.toByteArray();
-		    		    
-		    in.close();
-		    out.close();
+		   
 		  
 			
 //			String RoomtypeImgNameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{1,10}$";
@@ -153,7 +146,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 			
 			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
 			roomTypeImgVO.setRoomTypeID(roomTypeID);
-			roomTypeImgVO.setRoomTypeImg(roomTypeImg);
+			roomTypeImgVO.setRoomTypeImg(roomTypeImgString);
 
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
@@ -165,13 +158,16 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			/*************************** 2.開始修改資料 *****************************************/
 			RoomTypeImgService RoomtypeImgService = new RoomTypeImgService();
-			roomTypeImgVO = RoomtypeImgService.updateRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImg);
+			roomTypeImgVO = RoomtypeImgService.updateRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImgString);
 
 			/*************************** 3.修改完成,準備轉交(Send the Success view) *************/
 			req.setAttribute("RoomtypeImgVO", roomTypeImgVO); // 資料庫update成功後,正確的的empVO物件,存入req
 			String url = "/company/listOneCompany.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url); // 修改成功後,轉交listOneEmp.jsp
-			successView.forward(req, res);
+			Gson gson = new Gson();
+			 res.setContentType("application/json");
+			 
+	            res.getWriter().print(gson.toJson(roomTypeImgVO));
+			
 		}
 
 		if ("insert".equals(action)) { // 來自addEmp.jsp的請求
@@ -191,25 +187,12 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			String roomTypeImgString = req.getParameter("roomTypeImg");
 			
-		    // Open an input stream to the image file
-		    InputStream in = getServletContext().getResourceAsStream("/images/" + roomTypeImgString);
-		    
-		    // Copy the contents of the input stream to the output stream
-		    ByteArrayOutputStream out = new ByteArrayOutputStream();
-		    byte[] buffer = new byte[4096];
-		    int bytesRead = -1;
-		    while ((bytesRead = in.read(buffer)) != -1) {
-		      out.write(buffer, 0, bytesRead);
-		    }
-		    byte[] roomTypeImg = out.toByteArray();
-		    		    
-		    in.close();
-		    out.close();
+		   
 		    
 			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
 			
 			roomTypeImgVO.setRoomTypeID(roomTypeID);
-			roomTypeImgVO.setRoomTypeImg(roomTypeImg);
+			roomTypeImgVO.setRoomTypeImg(roomTypeImgString);
 
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
@@ -221,7 +204,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			/*************************** 2.開始新增資料 ***************************************/
 			RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
-			roomTypeImgVO = roomTypeImgService.addRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImg);
+			roomTypeImgVO = roomTypeImgService.addRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImgString);
 
 			/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
 			String url = "/company/addCompany.jsp";
@@ -241,23 +224,17 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			/*************************** 2.開始刪除資料 ***************************************/
 			RoomTypeImgService RoomTypeImgService = new RoomTypeImgService();
-			RoomTypeImgService.deleteroomTypeImg(RoomTypeImgID);
+			RoomTypeImgService.deleteRoomTypeImg(RoomTypeImgID);
 
 			/*************************** 3.刪除完成,準備轉交(Send the Success view) ***********/
 			String url = "/company/listAllCompany.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url);// 刪除成功後,轉交回送出刪除的來源網頁
-			successView.forward(req, res);
-		}
-
-		if ("1".equals(action)) {
-
 			Gson gson = new Gson();
-			RoomTypeImgVO jsonObject = gson.fromJson(req.getReader(), RoomTypeImgVO.class);
-			System.out.println(jsonObject.getRoomTypeImgID());
-			RoomTypeImgService service = new RoomTypeImgService();
-			List<RoomTypeImgVO> list = service.getAll();
-			res.setContentType("application/json");
-		    res.getWriter().write(gson.toJson(list));
+			 res.setContentType("application/json");
+			 
+	            res.getWriter().print(gson.toJson(RoomTypeImgID));
+			
 		}
+
+		
 	}
 }

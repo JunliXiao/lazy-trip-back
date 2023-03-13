@@ -17,4 +17,6 @@ public interface ChatroomMemberRepository {
 
     List<Member> getChatroomMembers(Integer chatroomId);
 
+    List<Member> getMemberByNameOrUsername(String searchText);
+
 }
