@@ -1,21 +1,18 @@
 package tour.service;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.naming.NamingException;
 
-import member.dao.MemberDAO;
-import member.dao.MemberDAOImpl;
-import member.model.Member;
 import tour.dao.TourComDao;
 import tour.dao.TourComDaoImpl;
 import tour.dao.TourDao;
 import tour.dao.TourDaoImpl;
-import tour.model.DTO;
 import tour.model.TourComVO;
 import tour.model.TourVO;
+
+
 
 public class TourComServiceImpl implements TourComService {
 	private TourComDao tourComDao;
@@ -68,6 +65,7 @@ public class TourComServiceImpl implements TourComService {
 									.map(TourComVO::getFeature)
 									.filter(strList::contains)
 									.collect(Collectors.toList());
+		System.out.println(resultTourCom.toString());
 		 if(featureList.size() <= 0) {
 			 List<String> top3TourRecommend = resultTourCom.stream()
 			 			.limit(3)
