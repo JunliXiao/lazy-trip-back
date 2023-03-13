@@ -25,8 +25,8 @@ public interface OrderDAOInterface {
     public int createOrderAndOrderDetail(List<OrderVO> orderVOs);
     public int orderPay(OrderVO orderVO);
     public int updateOrderOverTimeForPay();
-    public List<OrderVO> selectFindOrderByMemberID(OrderVO orderVO);
-    public List<OrderDetailVO> selectFindOrderDetailByOrderID(OrderDetailVO orderDetailVO);
+    public List<OrderVO> selectFindOrderByCompanyID(Integer companyID);
+    public List<OrderDetailVO> selectFindOrderDetailByOrderID(Integer orderID);
     public List<OrderVO> selectFindOrderAllAndStatusWaitPayByOrderID(Integer orderID);
     public Map<Integer, OrderVO> selectFindOrderAllByMemberID(Integer memberID);
     public Map<Integer, OrderVO> selectFindOrderAllAndAlreadyPayByCompanyID(Integer companyID);
