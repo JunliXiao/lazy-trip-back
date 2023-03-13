@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.article.model.ArticleDAO;
-import com.article.model.ArticleService;
-import com.article.model.ArticleVO;
+import article.dao.ArticleDAO;
+import article.model.ArticleVO;
+import article.service.ArticleService;
 
 @WebServlet("/article/ArticleServlet2")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 5 * 5 * 1024 * 1024)

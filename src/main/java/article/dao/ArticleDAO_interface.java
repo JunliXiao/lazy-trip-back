@@ -1,6 +1,8 @@
-package article.model;
+package article.dao;
 
 import java.util.*;
+
+import article.model.ArticleVO;
 
 public interface ArticleDAO_interface {
 
