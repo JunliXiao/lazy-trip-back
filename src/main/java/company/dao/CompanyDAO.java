@@ -24,12 +24,12 @@ public class CompanyDAO implements CompanyDAO_interface {
 	private static final String DELETE = "DELETE FROM company where company_id = ?";
 	private static final String UPDATE = "UPDATE company set company_username=?, company_password=?,taxid=?,company_name=?,introduction=?,address_county=?,address_area=?,address_street=?,latitude=?,longitude=?,company_img=? where company_id = ?";
 	private static final String GET_ALL_BY_COMPANYID = """
-			SELECT SELECT company_id as companyID,company_username as companyUserName,company_password as companyPassword,
+			 SELECT company_id as companyID,company_username as companyUserName,company_password as companyPassword,
 			 taxid as taxID,company_name as companyName,introduction, address_county as addressCounty,
 			 address_area as addressArea, address_street as addressStreet, latitude, longitude,company_img as companyImg 
 			 FROM company where company_id = ? order by company_id";
 			""";
-	
+	private static final String LOGIN = "select * from company where company_username =? and company_password=?";
 	@Override
 	public void insert(CompanyVO companyVO) {
 
@@ -359,6 +359,37 @@ public class CompanyDAO implements CompanyDAO_interface {
 			}
 		}
 		return list;
+	}
+
+		@Override
+	public CompanyVO login(CompanyVO companyVO) {
+		try (
+				Connection con = HikariDataSource.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(LOGIN);
+			){
+				pstmt.setString(1, companyVO.getCompanyUserName());
+				pstmt.setString(2, companyVO.getCompanyPassword());
+				try (ResultSet rs = pstmt.executeQuery();){
+					if(rs.next()) {
+						companyVO.setCompanyID(rs.getInt("company_id"));
+						companyVO.setCompanyUserName(rs.getString("company_username"));
+						companyVO.setCompanyPassword(rs.getString("company_password"));
+						companyVO.setTaxID(rs.getString("taxid"));
+						companyVO.setCompanyName(rs.getString("company_name"));
+						companyVO.setIntroduction(rs.getString("introduction"));
+						companyVO.setAddressCounty(rs.getString("address_county"));
+						companyVO.setAddressArea(rs.getString("address_area"));
+						companyVO.setAddressStreet(rs.getString("address_street"));
+						companyVO.setLatitude(rs.getDouble("latitude"));
+						companyVO.setLongitude(rs.getDouble("longitude"));
+						companyVO.setCompanyImg(rs.getString("company_img"));
+						return companyVO;
+					}
+				} 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
 	}
 	
 }

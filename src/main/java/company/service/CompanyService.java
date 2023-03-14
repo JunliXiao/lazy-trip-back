@@ -73,5 +73,8 @@ public class CompanyService {
 	public List<CompanyVO> getAllByCompanyID(Integer companyID) {
 		return dao.getAllByCompanyID(companyID);
 	}
+	public CompanyVO login(CompanyVO companyVO) {
+		return companyVO = dao.login(companyVO);
+	}
 	
 }

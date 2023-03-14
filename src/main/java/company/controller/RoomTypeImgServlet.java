@@ -23,7 +23,6 @@ import company.service.RoomTypeImgService;
 @WebServlet("/roomtypeimgservlet")
 public class RoomTypeImgServlet extends HttpServlet {
 
-
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
 	}
@@ -33,59 +32,18 @@ public class RoomTypeImgServlet extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 		String action = req.getParameter("action");
 
-		if ("getOne_For_Display".equals(action)) { // 來自select_page.jsp的請求
+		if ("getOne_For_Display".equals(action)) { 
 
-			List<String> errorMsgs = new LinkedList<String>();
-			// Store this set in the request scope, in case we need to
-			// send the ErrorPage view.
-			req.setAttribute("errorMsgs", errorMsgs);
+		String str = req.getParameter("roomTypeImgID");
+		Integer roomTypeImgID = Integer.valueOf(str);
+		
+		RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
+		RoomTypeImgVO roomtypeImgVO = roomTypeImgService.getOneRoomTypeImg(roomTypeImgID);
 
-			/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
-			String str = req.getParameter("roomTypeImgID");
-			if (str == null || (str.trim()).length() == 0) {
-				errorMsgs.add("請輸入房型圖片編號");
-			}
-			// Send the use back to the form, if there were errors
-			if (!errorMsgs.isEmpty()) {
-				RequestDispatcher failureView = req.getRequestDispatcher("/company/select_page.jsp");
-				failureView.forward(req, res);
-				return;// 程式中斷
-			}
+		Gson gson = new Gson();
+		res.setContentType("application/json");
+		res.getWriter().print(gson.toJson(roomTypeImgID));
 
-			Integer roomTypeImgID = null;
-			try {
-				roomTypeImgID = Integer.valueOf(str);
-			} catch (Exception e) {
-				errorMsgs.add("房型圖片編號格式不正確");
-			}
-			// Send the use back to the form, if there were errors
-			if (!errorMsgs.isEmpty()) {
-				RequestDispatcher failureView = req.getRequestDispatcher("/company/select_page.jsp");
-				failureView.forward(req, res);
-				return;// 程式中斷
-			}
-
-			/*************************** 2.開始查詢資料 *****************************************/
-			RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
-			RoomTypeImgVO roomtypeImgVO = roomTypeImgService.getOneRoomTypeImg(roomTypeImgID);
-			if (roomtypeImgVO == null) {
-				errorMsgs.add("查無資料");
-			}
-			// Send the use back to the form, if there were errors
-			if (!errorMsgs.isEmpty()) {
-				RequestDispatcher failureView = req.getRequestDispatcher("/company/select_page.jsp");
-				failureView.forward(req, res);
-				return;// 程式中斷
-			}
-
-			/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
-			req.setAttribute("roomTypeImgVO", roomtypeImgVO); // 資料庫取出的empVO物件,存入req
-			String url = "/company/listOneCompany.jsp";
-			Gson gson = new Gson();
-			 res.setContentType("application/json");
-			 
-	            res.getWriter().print(gson.toJson(roomTypeImgID));
-			
 		}
 
 		if ("getOne_For_Update".equals(action)) { // 來自listAllEmp.jsp的請求
@@ -100,19 +58,17 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			/*************************** 2.開始查詢資料 ****************************************/
 			RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
-			
+
 			RoomTypeImgVO roomTypeImgVO = roomTypeImgService.getOneRoomTypeImg(roomTypeID);
-			
-						
 
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) ************/
 			req.setAttribute("roomTypeImgVO", roomTypeImgVO); // 資料庫取出的empVO物件,存入req
 			String url = "/company/update_company_input.jsp";
 			Gson gson = new Gson();
-			 res.setContentType("application/json");
-			 
-	            res.getWriter().print(gson.toJson(roomTypeImgVO));
-			
+			res.setContentType("application/json");
+
+			res.getWriter().print(gson.toJson(roomTypeImgVO));
+
 		}
 
 		if ("update".equals(action)) { // 來自update_comapny_input.jsp的請求
@@ -126,12 +82,9 @@ public class RoomTypeImgServlet extends HttpServlet {
 			Integer roomTypeImgID = 0;
 
 			Integer roomTypeID = Integer.valueOf(req.getParameter("roomTypeID"));
-			
+
 //			String roomTypeImgString = req.getParameter("roomTypeImg");
-					
-		   
-		  
-			
+
 //			String RoomtypeImgNameReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{1,10}$";
 //			if (RoomtypeImgID == null || RoomTypeImgID.trim().length() == 0) {
 //				errorMsgs.add("設備名稱: 請勿空白");
@@ -144,7 +97,6 @@ public class RoomTypeImgServlet extends HttpServlet {
 //				errorMsgs.add("職位請勿空白");
 //			}
 
-			
 			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
 			roomTypeImgVO.setRoomTypeID(roomTypeID);
 //			roomTypeImgVO.setRoomTypeImg(roomTypeImgString);
@@ -165,10 +117,10 @@ public class RoomTypeImgServlet extends HttpServlet {
 			req.setAttribute("RoomtypeImgVO", roomTypeImgVO); // 資料庫update成功後,正確的的empVO物件,存入req
 			String url = "/company/listOneCompany.jsp";
 			Gson gson = new Gson();
-			 res.setContentType("application/json");
-			 
-	            res.getWriter().print(gson.toJson(roomTypeImgVO));
-			
+			res.setContentType("application/json");
+
+			res.getWriter().print(gson.toJson(roomTypeImgVO));
+
 		}
 
 		if ("insert".equals(action)) { // 來自addEmp.jsp的請求
@@ -188,9 +140,9 @@ public class RoomTypeImgServlet extends HttpServlet {
 //			InputStream fileContent = req.getParameter("roomTypeImg").getBytes();
 			byte[] roomTypeImg = Base64.getDecoder().decode(req.getParameter("roomTypeImg"));
 			String roomTypeImgString = req.getParameter("roomTypeImg");
-			
+
 			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
-			
+
 			roomTypeImgVO.setRoomTypeID(roomTypeID);
 			roomTypeImgVO.setRoomTypeImg(roomTypeImg);
 
@@ -232,12 +184,11 @@ public class RoomTypeImgServlet extends HttpServlet {
 			/*************************** 3.刪除完成,準備轉交(Send the Success view) ***********/
 			String url = "/company/listAllCompany.jsp";
 			Gson gson = new Gson();
-			 res.setContentType("application/json");
-			 
-	            res.getWriter().print(gson.toJson(RoomTypeImgID));
-			
+			res.setContentType("application/json");
+
+			res.getWriter().print(gson.toJson(RoomTypeImgID));
+
 		}
 
-		
 	}
 }
