@@ -30,4 +30,10 @@ public class OrderService {
     public List<OrderVO> showOrderAllAndStatusWaitPayByOrderID(Integer orderID){
         return dao.selectFindOrderAllAndStatusWaitPayByOrderID(orderID);
     }
+    public List<OrderVO> showOrderByCompanyID(Integer companyID){
+        return dao.selectFindOrderByCompanyID(companyID);
+    }
+    public List<OrderDetailVO> showOrderDetailByOrderID(Integer orderID){
+        return dao.selectFindOrderDetailByOrderID(orderID);
+    }
 }

@@ -1,11 +1,8 @@
-package com.article.model;
+package article.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 
-import com.articleImage.model.ArticleImageVO;
-import com.articleImage.model.ArticleImageVO;
 
 public class ArticleVO implements Serializable{
 

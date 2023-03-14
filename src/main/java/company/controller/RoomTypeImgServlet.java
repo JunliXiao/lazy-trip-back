@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -122,11 +123,11 @@ public class RoomTypeImgServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 
 			/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
-			Integer roomTypeImgID = Integer.valueOf(req.getParameter("roomTypeImgID"));
+			Integer roomTypeImgID = 0;
 
 			Integer roomTypeID = Integer.valueOf(req.getParameter("roomTypeID"));
 			
-			String roomTypeImgString = req.getParameter("roomTypeImg");
+//			String roomTypeImgString = req.getParameter("roomTypeImg");
 					
 		   
 		  
@@ -146,7 +147,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 			
 			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
 			roomTypeImgVO.setRoomTypeID(roomTypeID);
-			roomTypeImgVO.setRoomTypeImg(roomTypeImgString);
+//			roomTypeImgVO.setRoomTypeImg(roomTypeImgString);
 
 			// Send the use back to the form, if there were errors
 			if (!errorMsgs.isEmpty()) {
@@ -158,7 +159,7 @@ public class RoomTypeImgServlet extends HttpServlet {
 
 			/*************************** 2.開始修改資料 *****************************************/
 			RoomTypeImgService RoomtypeImgService = new RoomTypeImgService();
-			roomTypeImgVO = RoomtypeImgService.updateRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImgString);
+//			roomTypeImgVO = RoomtypeImgService.updateRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImgString);
 
 			/*************************** 3.修改完成,準備轉交(Send the Success view) *************/
 			req.setAttribute("RoomtypeImgVO", roomTypeImgVO); // 資料庫update成功後,正確的的empVO物件,存入req
@@ -178,38 +179,40 @@ public class RoomTypeImgServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 
 			/*********************** 1.接收請求參數 - 輸入格式的錯誤處理 *************************/
-			Integer roomTypeID = Integer.valueOf(req.getParameter("RoomTypeID").trim());
+			Integer roomTypeID = Integer.valueOf(req.getParameter("roomTypeID").trim());
 
-			Integer roomTypeImgID = Integer.valueOf(req.getParameter("RoomTypeImgID").trim());
-			if (roomTypeImgID == null || roomTypeImgID == 0) {
-				errorMsgs.add("請勿空白");
-			}
-
+//			Integer roomTypeImgID = Integer.valueOf(req.getParameter("roomTypeImgID").trim());
+//			if (roomTypeImgID == null || roomTypeImgID == 0) {
+//				errorMsgs.add("請勿空白");
+//			}
+//			InputStream fileContent = req.getParameter("roomTypeImg").getBytes();
+			byte[] roomTypeImg = Base64.getDecoder().decode(req.getParameter("roomTypeImg"));
 			String roomTypeImgString = req.getParameter("roomTypeImg");
 			
-		   
-		    
 			RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
 			
 			roomTypeImgVO.setRoomTypeID(roomTypeID);
-			roomTypeImgVO.setRoomTypeImg(roomTypeImgString);
+			roomTypeImgVO.setRoomTypeImg(roomTypeImg);
 
 			// Send the use back to the form, if there were errors
-			if (!errorMsgs.isEmpty()) {
-				req.setAttribute("RoomTypeImgVO", roomTypeImgVO); // 含有輸入格式錯誤的empVO物件,也存入req
-				RequestDispatcher failureView = req.getRequestDispatcher("/RoomtypeImg/addRoomtypeImg.jsp");
-				failureView.forward(req, res);
-				return;
-			}
+//			if (!errorMsgs.isEmpty()) {
+//				req.setAttribute("RoomTypeImgVO", roomTypeImgVO); // 含有輸入格式錯誤的empVO物件,也存入req
+//				RequestDispatcher failureView = req.getRequestDispatcher("/RoomtypeImg/addRoomtypeImg.jsp");
+//				failureView.forward(req, res);
+//				return;
+//			}
 
 			/*************************** 2.開始新增資料 ***************************************/
 			RoomTypeImgService roomTypeImgService = new RoomTypeImgService();
-			roomTypeImgVO = roomTypeImgService.addRoomTypeImg(roomTypeImgID, roomTypeID, roomTypeImgString);
+			roomTypeImgVO = roomTypeImgService.addRoomTypeImg(0, roomTypeID, roomTypeImg);
 
 			/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
-			String url = "/company/addCompany.jsp";
-			RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交listAllEmp.jsp
-			successView.forward(req, res);
+//			String url = "/company/addCompany.jsp";
+//			RequestDispatcher successView = req.getRequestDispatcher(url); // 新增成功後轉交listAllEmp.jsp
+//			successView.forward(req, res);
+			Gson gson = new Gson();
+			res.setContentType("application/json");
+			res.getWriter().print(gson.toJson(roomTypeImgVO));
 		}
 
 		if ("delete".equals(action)) { // 來自listAllEmp.jsp

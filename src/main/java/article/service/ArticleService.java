@@ -1,7 +1,11 @@
-package com.article.model;
+package article.service;
 
 import java.sql.Timestamp;
 import java.util.List;
+
+import article.dao.ArticleDAO;
+import article.dao.ArticleDAO_interface;
+import article.model.ArticleVO;
 
 public class ArticleService {
 
