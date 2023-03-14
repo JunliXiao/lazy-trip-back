@@ -15,6 +15,8 @@ public interface Group_memberDAO_interface {
 
 	public void inviteFriendtoGroup(List<Integer> list);
 	
+	public int inviteByLink(Integer memId , Integer groupId);
+	
 	public Group_memberVO getOne(Integer id);
 
 	public void updateInfo(Group_memberVO groupmemberVO);

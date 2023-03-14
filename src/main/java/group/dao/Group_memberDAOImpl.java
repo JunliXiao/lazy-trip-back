@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -20,7 +21,8 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 
 	private static DataSource ds = null;
 
-	private static final String INSERT_STMT = "INSERT INTO lazy.group_member (  member_id , group_id , self_intro , special_need , g_m_status) values(?,?,?,?,?)";
+	private static final String INSERT_BY_LINK_STMT = "INSERT INTO lazy.group_member (  member_id , group_id  , g_m_status) values(?,?,(SELECT if_join_group_directly FROM lazy.group WHERE group_id = ?));";
+	private static final String SELECT_BY_LINK_STMT = "SELECT LAST_INSERT_ID() as group_member;";
 	private static final String UPDATE_WHEN_INVITE_STMT = "UPDATE `lazy`.`group_member` SET `g_m_status` = ? WHERE (`group_member` = ?);";
 	private static final String GET_ONE_STMT = "SELECT * FROM lazy.group_member WHERE group_member = ?;";
 	private static final String GET_ALL_G_MEMBER_STMT = "SELECT  m.member_id, m.member_username , m.member_name , m.member_img "
@@ -377,13 +379,37 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 		// TODO Auto-generated method stub
 		try (Connection connection = HikariDataSource.getConnection();
 				PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_STMT)) {
-
 			pstmt.setInt(1, id);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
+	}
+
+	@Override
+	public int inviteByLink(Integer memId, Integer groupId) {
+		// TODO Auto-generated method stub
+		try (Connection connection = HikariDataSource.getConnection();
+				) {
+			PreparedStatement pstmt = connection.prepareStatement(INSERT_BY_LINK_STMT);
+			PreparedStatement pstmt2 = connection.prepareStatement(SELECT_BY_LINK_STMT);
+			pstmt.setInt(1,memId);
+			pstmt.setInt(2,groupId);
+			pstmt.setInt(3,groupId);
+			pstmt.executeUpdate(); 
+			ResultSet rs = pstmt2.executeQuery();
+			
+			while (rs.next()) {
+			    int groupMemberId = rs.getInt("group_member");
+				return groupMemberId;
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }
