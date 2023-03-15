@@ -3,6 +3,7 @@ package member.model;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Arrays;
 
 import com.google.gson.annotations.JsonAdapter;
 
@@ -25,33 +26,31 @@ public class Member implements Serializable{
 	private byte[] banner_img;
 	private String bannerImgBase64Str;
 	private String accessnum;
+	private String type;
 	
 	public Member() {
 	}
 	
-	
-	public Member(Integer id, String account, String password, String name, String gender, String username,
-			String phone, Date birthday, Timestamp reg_date, String address, String intro, byte[] img,
-			String imgBase64Str, byte[] banner_img, String bannerImgBase64Str, String accseenum) {
-		super();
-		this.id = id;
-		this.account = account;
-		this.password = password;
-		this.name = name;
-		this.gender = gender;
-		this.username = username;
-		this.phone = phone;
-		this.birthday = birthday;
-		this.reg_date = reg_date;
-		this.address = address;
-		this.intro = intro;
-		this.img = img;
-		this.imgBase64Str = imgBase64Str;
-		this.banner_img = banner_img;
-		this.bannerImgBase64Str = bannerImgBase64Str;
-		this.accessnum = accseenum;
+	@Override
+	public String toString() {
+		return "Member [id=" + id + ", account=" + account + ", password=" + password + ", name=" + name + ", gender="
+				+ gender + ", username=" + username + ", phone=" + phone + ", birthday=" + birthday + ", reg_date="
+				+ reg_date + ", address=" + address + ", intro=" + intro + ", img=" + Arrays.toString(img)
+				+ ", imgBase64Str=" + imgBase64Str + ", banner_img=" + Arrays.toString(banner_img)
+				+ ", bannerImgBase64Str=" + bannerImgBase64Str + ", accessnum=" + accessnum + "]";
 	}
 
+
+
+
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getImgBase64Str() {
 		return imgBase64Str;
