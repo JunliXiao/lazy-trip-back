@@ -19,7 +19,7 @@ public class SendEmail {
 	    // Create a mail session with the specified properties
 	    Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 	      protected PasswordAuthentication getPasswordAuthentication() {
-	        return new PasswordAuthentication("g23821208@gmail.com", "pdqjpkqpmbndtmhy");
+	        return new PasswordAuthentication("fortibameclass@gmail.com", "cbdhlhemyvgpacif");
 	      }
 	    });
 
