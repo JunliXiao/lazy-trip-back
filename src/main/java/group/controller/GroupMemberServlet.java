@@ -181,6 +181,11 @@ public class GroupMemberServlet extends HttpServlet {
 			Integer id = Integer.parseInt(req.getParameter("groupid"));
 			service.deleteAll(id);
 		}
-
+		//退出群組
+		if("exitGroup".equals(action)) {
+			Integer id = Integer.parseInt(req.getParameter("member"));
+			Integer group = Integer.parseInt(req.getParameter("groupId"));
+			service.exitGroup(id, group);
+		}
 	}
 }

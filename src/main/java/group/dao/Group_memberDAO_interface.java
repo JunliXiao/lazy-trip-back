@@ -27,6 +27,8 @@ public interface Group_memberDAO_interface {
 
 	public void deleteAll(Integer id);
 
+	public void exitGroup(Integer id , Integer group);
+	
 	public List<Group_memberVO> getAllInvite(Integer memberid);
 
 	public List<GroupVO> getAllGroupByMemberid(Integer memberid);

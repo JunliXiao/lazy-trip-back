@@ -33,6 +33,7 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 			+ "(select group_id from lazy.group_member where member_id = ?  and g_m_status = 1 ) "
 			+ "and m.g_m_status = 1  group by m.group_id ;";
 
+	private static final String EXIT_STMT ="DELETE FROM lazy.group_member WHERE member_id = ? AND group_id = ?;";
 	private static final String DELETE_ONE_STMT = "DELETE FROM lazy.group_member WHERE group_member=?;";
 	private static final String DELETE_ALL_STMT = "DELETE FROM lazy.group_member WHERE group_id = ?";
 
@@ -410,6 +411,18 @@ public class Group_memberDAOImpl implements Group_memberDAO_interface {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	@Override
+	public void exitGroup(Integer id, Integer group) {
+		try (Connection connection = HikariDataSource.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(EXIT_STMT)) {
+			pstmt.setInt(1, id);
+			pstmt.setInt(2, group);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
