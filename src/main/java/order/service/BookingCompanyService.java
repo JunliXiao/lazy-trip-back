@@ -1,19 +1,19 @@
 package order.service;
 
 import com.google.gson.JsonObject;
-import company.model.CompanyVO;
-import company.model.RoomTypeImgVO;
-import company.model.RoomTypeVO;
 import order.dao.OrderDAOInterface;
 import order.dao.OrderJDBCDAOImpl;
+import order.model.CompanyVO;
+import order.model.RoomTypeImgVO;
+import order.model.RoomTypeVO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompanyService {
+public class BookingCompanyService {
     private final OrderDAOInterface dao;
 
-    public CompanyService() {
+    public BookingCompanyService() {
         dao = new OrderJDBCDAOImpl();
     }
 

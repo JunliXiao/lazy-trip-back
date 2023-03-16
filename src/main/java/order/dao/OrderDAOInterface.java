@@ -1,9 +1,5 @@
 package order.dao;
 
-import company.model.CompanyVO;
-import order.model.CouponVO;
-import company.model.RoomTypeImgVO;
-import company.model.RoomTypeVO;
 import order.model.*;
 
 import java.util.List;
@@ -21,7 +17,6 @@ public interface OrderDAOInterface {
     public List<RoomTypeImgVO> selectFindAllRoomTypeImgByRoomTypeID(Integer roomTypeID);
     public List<CompanyVO> SelectFindCompanyAllByCompanyID(Integer companyID);
     public List<CompanyVO> selectShowSearchKeyWordByCompanyNameOrAddress(CompanyVO companyVO);
-    public CouponVO selectConfirmCoupon(Integer couponID);
     public int createOrderAndOrderDetail(List<OrderVO> orderVOs);
     public int orderPay(OrderVO orderVO);
     public int updateOrderOverTimeForPay();
