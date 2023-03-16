@@ -64,7 +64,7 @@ public class MemberLoginServlet extends HttpServlet{
 					
 					String location = (String) req.getSession().getAttribute("location");
 					if(location == null || location.isEmpty()) {
-						resp.sendRedirect(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()  + req.getContextPath() + "/" + "index.html");
+						resp.sendRedirect(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()  + req.getContextPath() + "/");
 					}else {
 						resp.sendRedirect(location);
 					}
