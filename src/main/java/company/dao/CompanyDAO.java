@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.naming.Context;
@@ -327,7 +328,8 @@ public class CompanyDAO implements CompanyDAO_interface {
 				companyVO.setAddressStreet(rs.getString("addressStreet"));
 				companyVO.setLatitude(rs.getDouble("latitude"));
 				companyVO.setLongitude(rs.getDouble("longitude"));
-				companyVO.setCompanyImg(rs.getString("companyImg"));
+				companyVO.setCompanyImg(Base64.getEncoder().encodeToString(rs.getBytes("companyImg")));
+//				companyVO.setCompanyImg(rs.getString("companyImg"));
 				list.add(companyVO); // Store the row in the list
 			}
 

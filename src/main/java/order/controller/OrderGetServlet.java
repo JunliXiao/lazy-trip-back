@@ -84,7 +84,7 @@ public class OrderGetServlet extends HttpServlet {
 
             try {
                 Integer companyID = Integer.valueOf(req.getParameter("companyID"));
-
+                System.out.println(companyID);
                 List<OrderVO> result = orderSvc.showOrderByCompanyID(companyID);
                 res.setCharacterEncoding("UTF-8");
                 res.setContentType("application/json");

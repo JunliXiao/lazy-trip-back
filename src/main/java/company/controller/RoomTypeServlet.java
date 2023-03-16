@@ -39,16 +39,6 @@ public class RoomTypeServlet extends HttpServlet{
 				/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
 				String str = req.getParameter("roomTypeID");
 
-//				if (str == null || (str.trim()).length() == 0) {
-//					errorMsgs.add("請輸入房型編號");
-//				}
-//				// Send the use back to the form, if there were errors
-//				if (!errorMsgs.isEmpty()) {
-//					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/select_page.jsp");
-//					failureView.forward(req, res);
-//					return;// 程式中斷
-//				}
-	//
 				Integer roomTypeID = null;
 
 				try {
@@ -68,19 +58,10 @@ public class RoomTypeServlet extends HttpServlet{
 
 				RoomTypeVO roomTypeVO = roomTypeService.getOneRoomType(roomTypeID);
 
-				if (roomTypeVO == null) {
-					errorMsgs.add("查無資料");
-				}
-				// Send the use back to the form, if there were errors
-				if (!errorMsgs.isEmpty()) {
-					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/table roomType test.jsp");
-					failureView.forward(req, res);
-					return;// 程式中斷
-				}
 
 				/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
 				req.setAttribute("roomTypeVO", roomTypeVO); // 資料庫取出的empVO物件,存入req
-				String url = "/roomType/table roomType test.jsp";
+
 				Gson gson = new Gson();
 				res.setContentType("application/json");
 				res.getWriter().print(gson.toJson(roomTypeID));
@@ -102,7 +83,7 @@ public class RoomTypeServlet extends HttpServlet{
 
 				/*************************** 3.查詢完成,準備轉交(Send the Success view) ************/
 				req.setAttribute("roomTypeVO", roomTypeVO); // 資料庫取出的empVO物件,存入req
-				String url = "/roomType/table roomType test.jsp";
+
 				Gson gson = new Gson();
 				res.setContentType("application/json");
 				res.getWriter().print(gson.toJson(roomTypeVO));
@@ -140,12 +121,6 @@ public class RoomTypeServlet extends HttpServlet{
 				roomTypeVO.setRoomTypePrice(roomTypePrice);
 
 				// Send the use back to the form, if there were errors
-				if (!errorMsgs.isEmpty()) {
-					req.setAttribute("roomTypeVO", roomTypeVO); // 含有輸入格式錯誤的empVO物件,也存入req
-					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/table roomType test.jsp");
-					failureView.forward(req, res);
-					return; // 程式中斷
-				}
 
 				/*************************** 2.開始修改資料 *****************************************/
 				RoomTypeService roomTypeService = new RoomTypeService();
@@ -169,28 +144,10 @@ public class RoomTypeServlet extends HttpServlet{
 				/*********************** 1.接收請求參數 - 輸入格式的錯誤處理 *************************/
 				Integer roomTypeID = 0;
 
-//				String equipmentName = req.getParameter("roomTypeName").trim();
-//				if (equipmentName == null || equipmentName.trim().length() == 0) {
-//					errorMsgs.add("請勿空白");
-//				}
-	//
-//				String equipmentDesc = req.getParameter("equipmentDesc").trim();
-//				if (equipmentDesc == null || equipmentDesc.trim().length() == 0) {
-//					errorMsgs.add("請勿空白");
-//				}
+
 
 				RoomTypeVO roomTypeVO = new RoomTypeVO();
-//				equipmentVO.setroomTypeID(123);
-//				equipmentVO.setroomTypeName("安安");
-//				equipmentVO.setEquipmentDesc("你好");
 
-				// Send the use back to the form, if there were errors
-//				if (!errorMsgs.isEmpty()) {
-//					req.setAttribute("equipmentVO", equipmentVO); // 含有輸入格式錯誤的empVO物件,也存入req
-//					RequestDispatcher failureView = req.getRequestDispatcher("/equipment/addequipment.jsp");
-//					failureView.forward(req, res);
-//					return;
-//				}
 
 				/*************************** 2.開始新增資料 ***************************************/
 				RoomTypeService roomTypeService = new RoomTypeService();
@@ -226,7 +183,7 @@ public class RoomTypeServlet extends HttpServlet{
 				roomTypeService.deleteRoomType(roomTypeID);
 				
 				/*************************** 3.刪除完成,準備轉交(Send the Success view) ***********/
-//				String url = "/roomType/table roomType test.jsp";
+
 				Gson gson = new Gson();
 				res.setContentType("application/json");
 				res.getWriter().print(gson.toJson(roomTypeID));
@@ -243,16 +200,7 @@ public class RoomTypeServlet extends HttpServlet{
 				/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
 				String str = req.getParameter("companyID");
 
-//				if (str == null || (str.trim()).length() == 0) {
-//					errorMsgs.add("請輸入房型編號");
-//				}
-//				// Send the use back to the form, if there were errors
-//				if (!errorMsgs.isEmpty()) {
-//					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/select_page.jsp");
-//					failureView.forward(req, res);
-//					return;// 程式中斷
-//				}
-	//
+
 				Integer companyID = null;
 
 				try {

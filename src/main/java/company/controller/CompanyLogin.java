@@ -28,7 +28,7 @@ public class CompanyLogin extends HttpServlet{
 		CompanyService service = new CompanyService();
 		company = service.login(company);
 		
-		System.out.println(company);
+//		System.out.println(company);
 		if (company == null) {
 			JsonObject error = new JsonObject();
 			error.addProperty("errorMessage", "用戶名或密碼錯誤");
@@ -45,16 +45,16 @@ public class CompanyLogin extends HttpServlet{
 
 			Cookie cookie = new Cookie("companyId", company.getCompanyID().toString());
 			Cookie cookie2 = new Cookie("companyUsername", company.getCompanyName());
-			Cookie cookie3 = new Cookie("companyImg",company.getCompanyImg());
+//			Cookie cookie3 = new Cookie("companyImg",company.getCompanyImg());
 			cookie.setMaxAge(30 * 60);
 			cookie2.setMaxAge(30 * 60);
-			cookie3.setMaxAge(30 * 60);
+//			cookie3.setMaxAge(30 * 60);
 			cookie.setPath("/");
 			cookie2.setPath("/");
-			cookie3.setPath("/");
+//			cookie3.setPath("/");
 			resp.addCookie(cookie);
 			resp.addCookie(cookie2);
-			resp.addCookie(cookie3);
+//			resp.addCookie(cookie3);
 
 			String location = (String) req.getSession().getAttribute("location");
 			if (location == null || location.isEmpty()) {
