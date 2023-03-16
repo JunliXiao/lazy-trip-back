@@ -18,9 +18,6 @@ public class OrderService {
     public int addOrderAndOrderDetail(List<OrderVO> orderVOs) {
         return dao.createOrderAndOrderDetail(orderVOs);
     }
-//    public List<OrderVO> showOrderAllByMemberID(Integer memberID){
-//        return dao.selectFindOrderAllByMemberID(memberID);
-//    }
     public Map<Integer,OrderVO> showOrderAllByMemberID(Integer memberID){
         return dao.selectFindOrderAllByMemberID(memberID);
     }

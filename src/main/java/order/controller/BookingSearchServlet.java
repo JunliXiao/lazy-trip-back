@@ -1,7 +1,7 @@
 package order.controller;
 
 import com.google.gson.Gson;
-import company.model.CompanyVO;
+import order.model.CompanyVO;
 import order.service.BookingSearchService;
 
 import javax.servlet.ServletException;

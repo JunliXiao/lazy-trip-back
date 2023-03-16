@@ -17,6 +17,7 @@ public class FriendMemberServiceImpl implements FriendMemberService {
     
 	@Override
 	public boolean createFriendRequest(Integer requesterId, Integer addresseeId) {
+		//TODO 加上過濾來自封鎖名單的邀請
 		return repository.addFriendship(requesterId, addresseeId);
 	}
 

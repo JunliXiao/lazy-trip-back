@@ -1,14 +1,10 @@
 package order.service;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import company.model.CompanyVO;
-import company.model.RoomTypeImgVO;
-import company.model.RoomTypeVO;
 import order.dao.OrderDAOInterface;
 import order.dao.OrderJDBCDAOImpl;
+import order.model.CompanyVO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookingSearchService {

@@ -1,10 +1,8 @@
 package order.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import company.model.CompanyVO;
-import order.service.BookingSearchService;
-import order.service.CompanyService;
+import order.model.CompanyVO;
+import order.service.BookingCompanyService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,14 +13,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet("/Company.do")
-public class CompanyServlet extends HttpServlet {
+@WebServlet("/BookingCompany.do")
+public class BookingCompanyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
         Gson gson = new Gson();
-        CompanyService companySvc = new CompanyService();
+        BookingCompanyService companySvc = new BookingCompanyService();
 
         if(req.getParameter("type").equals("showCompanyInformation")){
             try {

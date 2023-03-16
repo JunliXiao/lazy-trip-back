@@ -1,6 +1,5 @@
 package order.controller;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import order.model.OrderVO;
 import order.service.OrderService;
@@ -22,7 +21,6 @@ public class OrderPostServlet extends HttpServlet {
 
         req.setCharacterEncoding("UTF-8");
         GsonLocalDateAndTimeUtils gsonUtils = new GsonLocalDateAndTimeUtils();
-        Gson gson = new Gson();
         OrderService orderSvc = new OrderService();
 
 

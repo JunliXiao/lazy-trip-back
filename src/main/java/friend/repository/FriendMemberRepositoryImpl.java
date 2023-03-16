@@ -102,19 +102,30 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
     @Override
     public List<Member> getMembersByFriendship(Integer memberId, String statusCode) {
         List<Member> friends = new ArrayList<>();
-        String sql = """
+        String statusAR = """
                 SELECT member_id, member_account, member_name, member_username FROM member\r
                 	WHERE member_id IN \r
                 (SELECT addressee_id FROM friendship WHERE status_code = ? AND requester_id = ?\r
                 	UNION\r
                 SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?);
                 """;
+        String statusB = """
+                SELECT member_id, member_account, member_name, member_username FROM member
+                	WHERE member_id IN
+                (SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?);
+                """;
+        String sql = statusCode.equals("B") ? statusB : statusAR;
         try (Connection connection = HikariDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, statusCode);
-            ps.setInt(2, memberId);
-            ps.setString(3, statusCode);
-            ps.setInt(4, memberId);
+            if (statusCode.equals("B")) {
+                ps.setString(1, statusCode);
+                ps.setInt(2, memberId);
+            } else {
+                ps.setString(1, statusCode);
+                ps.setInt(2, memberId);
+                ps.setString(3, statusCode);
+                ps.setInt(4, memberId);
+            }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Member friend = new Member();
@@ -195,7 +206,5 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
             }
     	return nonFriends;
 	}
-
-	
 
 }
