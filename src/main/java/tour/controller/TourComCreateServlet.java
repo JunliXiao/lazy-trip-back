@@ -1,10 +1,7 @@
 package tour.controller;
 
 import java.io.IOException;
-import java.sql.DataTruncation;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -15,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.mysql.cj.jdbc.exceptions.MysqlDataTruncation;
 
 import tour.model.TourComVO;
 import tour.service.TourComService;
