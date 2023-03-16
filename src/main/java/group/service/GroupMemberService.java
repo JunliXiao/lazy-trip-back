@@ -35,6 +35,11 @@ public class GroupMemberService {
 	public void inviteFriend(List<Integer> list) {
 		dao.inviteFriendtoGroup(list);
 	}
+	
+	public int inviteFriendBylink(Integer memId , Integer groupId) {
+		return dao.inviteByLink(memId,groupId);
+	}
+
 
 	public List<Group_memberVO> getAllInvite(Integer memberid) {
 		return dao.getAllInvite(memberid);

@@ -265,6 +265,54 @@ public class MemberDAOImpl implements MemberDAO{
 		}
 		return resultList;
 	}
+	
+	@Override
+	public List<Member> getAll(String type, String text) {
+		List<Member> resultList = new ArrayList<Member>();
+		Member member;
+		String getAllByText;
+
+		if(type != null && type.equals("編號")) {
+			getAllByText = "select * from member where member_id like \"%"+ text +"%\" order by member_id";
+		}else if(type != null && type.equals("帳號")) {
+			getAllByText = "select * from member where member_account like \"%"+ text +"%\" order by member_id";
+		}else {
+			getAllByText = "select * from member where member_username like \"%"+ text +"%\" order by member_id";
+		}
+		try( 	Connection conn = HikariDataSource.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(getAllByText);
+				ResultSet rs = pstmt.executeQuery();){
+			while(rs.next()) {
+				member = new Member();
+				
+				member.setImg(rs.getBytes("member_img"));
+				final byte[] img = member.getImg();
+				if(img !=null && img.length !=0 ) {
+					member.setImgBase64Str(Base64.getEncoder().encodeToString(img));
+					member.setImg(null);
+				}
+				
+				member.setId(rs.getInt("member_id"));
+				member.setAccount(rs.getString("member_account"));
+				member.setPassword(rs.getString("member_password"));
+				member.setName(rs.getString("member_name"));
+				member.setGender(rs.getString("member_gender"));
+				member.setUsername(rs.getString("member_username"));
+				member.setPhone(rs.getString("member_phone"));;
+				member.setBirthday(rs.getDate("member_birth"));
+				member.setReg_date(rs.getTimestamp("member_reg_date"));
+				member.setAddress(rs.getString("member_address"));
+				member.setIntro(rs.getString("member_intro"));
+				member.setBanner_img(rs.getBytes("member_banner_img"));
+				member.setAccessnum(rs.getString("member_accessnum"));
+				resultList.add(member);
+				
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return resultList;
+	}
 
 	@Override
 	public int updateintroById(Member member) {

@@ -1,5 +1,7 @@
 package company.model;
 
+import java.util.Date;
+
 public class RoomTypeVO {
 	private Integer roomTypeID;
 	private Integer companyID;
@@ -8,7 +10,22 @@ public class RoomTypeVO {
 	private Integer roomTypeQuantity;
 	private Integer roomTypePrice;
 	private RoomTypeImgVO roomTypeImgVO;
+	private String orderCheckInDate;
+	private String orderCheckOutDate;
 	
+	
+	public String getOrderCheckInDate() {
+		return orderCheckInDate;
+	}
+	public void setOrderCheckInDate(String orderCheckInDate) {
+		this.orderCheckInDate = orderCheckInDate;
+	}
+	public String getOrderCheckOutDate() {
+		return orderCheckOutDate;
+	}
+	public void setOrderCheckOutDate(String orderCheckOutDate) {
+		this.orderCheckOutDate = orderCheckOutDate;
+	}
 	public RoomTypeImgVO getRoomTypeImgVO() {
 		return roomTypeImgVO;
 	}

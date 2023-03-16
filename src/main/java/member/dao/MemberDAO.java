@@ -16,4 +16,5 @@ public interface MemberDAO {
 	public Member selectByAccount(String account);
 	public byte[] selectAvatarById(Integer id);
 	public List<Member> getAll();
+	public List<Member> getAll(String type, String text);
 }

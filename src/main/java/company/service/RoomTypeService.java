@@ -5,12 +5,16 @@ import java.util.List;
 import company.dao.RoomTypeDAO;
 import company.model.RoomTypeVO;
 import company.dao.RoomTypeDAO_interface;
+import company.dao.RoomTypeImgDAO;
+import company.dao.RoomTypeImgDAO_interface;
 
 public class RoomTypeService {
 
 	private RoomTypeDAO_interface dao;
+	private RoomTypeImgDAO_interface imgDao;
 	public RoomTypeService() {
 		dao = new RoomTypeDAO();
+		imgDao = new RoomTypeImgDAO();
 	}
 	
 	public RoomTypeVO addRoomType(Integer roomTypeID,Integer companyID, String roomTypeName,Integer roomTypePerson, 
@@ -48,6 +52,7 @@ public class RoomTypeService {
 
 	public void deleteRoomType(Integer roomTypeID) {
 		dao.delete(roomTypeID);
+		imgDao.delete(roomTypeID);
 	}
 
 	public RoomTypeVO getOneRoomType(Integer roomTypeID) {

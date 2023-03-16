@@ -18,4 +18,6 @@ public interface CompanyDAO_interface {
 	// 萬用複合查詢(傳入參數型態Map)(回傳 List)
 
 	public List<CompanyVO> getAllByCompanyID(Integer companyID);
+	
+	public CompanyVO login(CompanyVO company);
 }

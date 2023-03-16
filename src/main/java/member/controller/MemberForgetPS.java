@@ -1,9 +1,8 @@
 package member.controller;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,34 +26,39 @@ public class MemberForgetPS extends HttpServlet{
 		Jedis jedis = new Jedis("localhost", 6379);
 		req.setCharacterEncoding("UTF-8");
 		Gson gson = new Gson();
-//		String testString = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-//		System.out.println(testString);
 		Member member = gson.fromJson(req.getReader(), Member.class);
-		
+
 		JsonObject errorMsgs = new JsonObject();
-		resp.setContentType("application/json;charset=UTF-8");
 		try {
 			MemberServiceImpl service = new MemberServiceImpl();
 			member = service.findByAccount(member.getAccount());
-			if(member == null) {
+			if (member == null) {
+				resp.setContentType("application/json;charset=UTF-8");
 				errorMsgs.addProperty("msg", "此帳號不存在");
 				resp.getWriter().append(errorMsgs.toString());
-			}else {
-				
+			} else {
+
 				StringBuilder db = new StringBuilder("Member:").append(member.getId());
 				String code = returnAuthCode();
 				jedis.set(db.toString(), code);
 				jedis.expire(db.toString(), 1800);
 				req.getSession().setAttribute("forgetMemId", member.getId());
-				
+
+				String toEmail = "fortibameclass@gmail.com";
+				String subject = "寄送驗證碼";
+				String text = "您想要修改密碼，請輸入以下的驗證碼來修改您的密碼 ，" + "驗證碼: " + code;
+				try {
+					SendEmail.sendEmail(toEmail, subject, text);
+				} catch (MessagingException e) {
+					resp.getWriter().write("Failed to send email. Error message: " + e.getMessage());
+				}
+
 				resp.sendRedirect("verify.html");
-				
 			}
-			
 		} catch (NamingException e) {
 			e.printStackTrace();
-		}
-		
+		} 
+
 	}
 	
 	private static String returnAuthCode() {
@@ -76,6 +80,10 @@ public class MemberForgetPS extends HttpServlet{
 		}
 		return sb.toString();
 	}
+	
+	
+	
+	
 	
 	
 }
