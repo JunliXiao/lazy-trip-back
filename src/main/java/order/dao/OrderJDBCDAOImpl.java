@@ -71,7 +71,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                     "cm.longitude, cm.latitude, cm.company_img, rt.roomtype_id, rt.company_id, rt.roomtype_name, " +
                     "rt.roomtype_person, rt.roomtype_quantity, rt.roomtype_price, rti.roomtype_img_id, rti.roomtype_id, " +
                     "rti.roomtype_img FROM lazy.company cm JOIN lazy.roomtype rt ON cm.company_id = rt.company_id " +
-                    "JOIN lazy.roomtype_img rti ON rt.roomtype_id = rti.roomtype_id WHERE cm.company_id = ? LIMIT 10;";
+                    "JOIN lazy.roomtype_img rti ON rt.roomtype_id = rti.roomtype_id WHERE cm.company_id = ? LIMIT 20;";
 
 
     //====================================================================================
@@ -391,7 +391,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 companyVO.setAddressStreet(rs.getString("cm.address_street"));
                 companyVO.setLongitude(rs.getDouble("cm.longitude"));
                 companyVO.setLatitude(rs.getDouble("cm.latitude"));
-                companyVO.setCompanyImg(Base64.getEncoder().encodeToString(rs.getBytes("cm.company_img")));
+                companyVO.setCompanyImg(rs.getString("cm.company_img"));
                 RoomTypeVO roomTypeVO = new RoomTypeVO();
                 roomTypeVO.setRoomTypeID(rs.getInt("rt.roomtype_id"));
                 roomTypeVO.setCompanyID(rs.getInt("rt.company_id"));
@@ -402,7 +402,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
                 roomTypeImgVO.setRoomTypeImgID(rs.getInt("rti.roomtype_img_id"));
                 roomTypeImgVO.setRoomTypeID(rs.getInt("rti.roomtype_id"));
-                roomTypeImgVO.setRoomTypeImg(Base64.getEncoder().encodeToString(rs.getBytes("rti.roomtype_img")));
+                roomTypeImgVO.setRoomTypeImg(rs.getString("rti.roomtype_img"));
                 roomTypeVO.setRoomTypeImgVO(roomTypeImgVO);
                 companyVO.setRoomTypeVO(roomTypeVO);
                 companyVOs.add(companyVO);
