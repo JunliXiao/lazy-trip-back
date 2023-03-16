@@ -54,7 +54,7 @@ public class FriendRequestController extends HttpServlet {
         out.println(output);
     }
     
-    // 刪除好友邀請關係
+    // 刪除好友邀請關係：取消邀請、婉拒邀請或解除封鎖
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
         String output;
