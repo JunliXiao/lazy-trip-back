@@ -12,8 +12,16 @@ public class RoomTypeVO {
 	private RoomTypeImgVO roomTypeImgVO;
 	private String orderCheckInDate;
 	private String orderCheckOutDate;
+	private String companyImg;
 	
 	
+	
+	public String getCompanyImg() {
+		return companyImg;
+	}
+	public void setCompanyImg(String companyImg) {
+		this.companyImg = companyImg;
+	}
 	public String getOrderCheckInDate() {
 		return orderCheckInDate;
 	}

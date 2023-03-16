@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import common.HikariDataSource;
@@ -64,7 +65,7 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 
 			
 			pstmt.setInt(2, roomTypeImgVO.getRoomTypeID());
-			pstmt.setBytes(1,roomTypeImgVO.getRoomTypeImg());
+			pstmt.setString(1,Base64.getEncoder().encodeToString(roomTypeImgVO.getRoomTypeImg()));
 			
 			pstmt.executeUpdate();
 

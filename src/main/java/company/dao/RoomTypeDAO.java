@@ -46,11 +46,12 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 			SELECT a.roomtype_id as aRoomTypeID,a.company_id as companyID,a.roomtype_name as roomTypeName, 
 			a.roomtype_person as roomTypePerson, a.roomtype_quantity as roomTypeQuantity, a.roomtype_price as roomTypePrice,
 			b.roomtype_img_id as roomTypeImgID,b.roomtype_id as bRoomTypeID,b.roomtype_img as roomTypeImg ,
-			o.order_check_in_date as orderCheckInDate, o.order_check_out_date as  orderCheckOutDate
+			o.order_check_in_date as orderCheckInDate, o.order_check_out_date as  orderCheckOutDate, c.company_img as companyImg
 			FROM roomtype a
 			left join roomtype_img b on a.roomtype_id = b.roomtype_id 
             left join order_detail od on a.roomtype_id = od.roomtype_id
             left join lazy.order o on o.company_id = a.company_id
+            left join company c on a.company_id = c.company_id
             where a.company_id = ? order by a.roomtype_id
 			""";
 	
@@ -326,7 +327,10 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 				roomTypeVO.setRoomTypeQuantity(rs.getInt("roomTypeQuantity"));
 				roomTypeVO.setRoomTypePrice(rs.getInt("roomTypePrice"));
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
+				
+				roomTypeVO.setCompanyImg(rs.getString("companyImg") );
+									
+				//加判斷是避免no point exception
 		        // 解析日期字串成 Date 物件
 				if(rs.getDate("orderCheckInDate") != null &&  rs.getDate("orderCheckOutDate") != null) {
 					Date start = dateFormat.parse(rs.getDate("orderCheckInDate").toString());
@@ -342,12 +346,12 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 //			    InputStream inputStream = blob.getBinaryStream();
 //			    byte[] bytes = inputStream.readAllBytes();
 				if( rs.getInt("bRoomTypeID") !=0) {
-					byte[] bytes =  rs.getBytes("roomTypeImg");
-				    String base64String = Base64.getEncoder().encodeToString(bytes);
-					RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
+//					byte[] bytes =  rs.getBytes("roomTypeImg");
+//				    String base64String = Base64.getEncoder().encodeToString(bytes);
+				    RoomTypeImgVO roomTypeImgVO = new RoomTypeImgVO();
 					roomTypeImgVO.setRoomTypeImgID(rs.getInt("roomTypeImgID"));
 					roomTypeImgVO.setRoomTypeID(rs.getInt("bRoomTypeID"));
-					roomTypeImgVO.setRoomTypeImgOutput(base64String);	
+					roomTypeImgVO.setRoomTypeImgOutput(rs.getString("roomTypeImg"));	
 					roomTypeVO.setRoomTypeImgVO(roomTypeImgVO);
 				}  
 				
