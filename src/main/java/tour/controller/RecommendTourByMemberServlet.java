@@ -26,7 +26,6 @@ public class RecommendTourByMemberServlet extends HttpServlet{
 			String memberId = req.getParameter("memberId");
 			TourComService service = new TourComServiceImpl();
 			final List<TourComVO> result = service.queryAll(Integer.valueOf(memberId));
-			System.out.println(result.size());
 			if(result != null && result.size() > 0) {
 				resp.setContentType("application/json");
 				resp.setCharacterEncoding("UTF-8");

@@ -35,9 +35,10 @@ public class TourComCreateServlet extends HttpServlet {
 				
 				// 驗證行程名稱
 				String tourComTitle = tourComVO.getTourTitle();
-				if(tourComTitle.length() <= 0 && tourComTitle.length() > 45) {
-					System.out.println(111);
+				if(tourComTitle.length() > 45) {
 					resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					resp.setContentType("application/json");
+					resp.setCharacterEncoding("UTF-8");
 					resp.getWriter().print("行程名稱長度異常");
 					return;
 				}
