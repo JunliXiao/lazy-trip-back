@@ -1,7 +1,5 @@
 package order.model;
 
-import company.model.CompanyVO;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

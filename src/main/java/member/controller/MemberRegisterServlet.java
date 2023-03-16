@@ -34,7 +34,8 @@ public class MemberRegisterServlet extends HttpServlet{
 			Member member = gson.fromJson(req.getReader(), Member.class);
 			MemberServiceImpl service = new MemberServiceImpl();
 			
-			String hashedPassword = hashPassword(member.getPassword());
+//			String hashedPassword = hashPassword(member.getPassword());
+			String hashedPassword = HashedPassword.hashPassword(member.getPassword());
 			member.setPassword(hashedPassword);
 			
 			final String resultStr = service.register(member);

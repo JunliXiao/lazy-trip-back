@@ -167,7 +167,7 @@ public class RoomTypeServlet extends HttpServlet{
 				req.setAttribute("errorMsgs", errorMsgs);
 
 				/*********************** 1.接收請求參數 - 輸入格式的錯誤處理 *************************/
-				Integer roomTypeID = Integer.valueOf(req.getParameter("roomTypeID"));
+				Integer roomTypeID = 0;
 
 //				String equipmentName = req.getParameter("roomTypeName").trim();
 //				if (equipmentName == null || equipmentName.trim().length() == 0) {
@@ -224,7 +224,7 @@ public class RoomTypeServlet extends HttpServlet{
 				/*************************** 2.開始刪除資料 ***************************************/
 				RoomTypeService roomTypeService = new RoomTypeService();
 				roomTypeService.deleteRoomType(roomTypeID);
-
+				
 				/*************************** 3.刪除完成,準備轉交(Send the Success view) ***********/
 //				String url = "/roomType/table roomType test.jsp";
 				Gson gson = new Gson();
@@ -261,11 +261,11 @@ public class RoomTypeServlet extends HttpServlet{
 					errorMsgs.add("房型編號格式不正確");
 				}
 				// Send the use back to the form, if there were errors
-				if (!errorMsgs.isEmpty()) {
-					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/select_page.jsp");
-					failureView.forward(req, res);
-					return;// 程式中斷
-				}
+//				if (!errorMsgs.isEmpty()) {
+//					RequestDispatcher failureView = req.getRequestDispatcher("/roomType/select_page.jsp");
+//					failureView.forward(req, res);
+//					return;// 程式中斷
+//				}
 
 				/*************************** 2.開始查詢資料 *****************************************/
 				RoomTypeService roomTypeService = new RoomTypeService();

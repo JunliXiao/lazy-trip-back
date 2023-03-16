@@ -18,9 +18,6 @@ public class OrderService {
     public int addOrderAndOrderDetail(List<OrderVO> orderVOs) {
         return dao.createOrderAndOrderDetail(orderVOs);
     }
-//    public List<OrderVO> showOrderAllByMemberID(Integer memberID){
-//        return dao.selectFindOrderAllByMemberID(memberID);
-//    }
     public Map<Integer,OrderVO> showOrderAllByMemberID(Integer memberID){
         return dao.selectFindOrderAllByMemberID(memberID);
     }
@@ -29,5 +26,11 @@ public class OrderService {
     }
     public List<OrderVO> showOrderAllAndStatusWaitPayByOrderID(Integer orderID){
         return dao.selectFindOrderAllAndStatusWaitPayByOrderID(orderID);
+    }
+    public List<OrderVO> showOrderByCompanyID(Integer companyID){
+        return dao.selectFindOrderByCompanyID(companyID);
+    }
+    public List<OrderDetailVO> showOrderDetailByOrderID(Integer orderID){
+        return dao.selectFindOrderDetailByOrderID(orderID);
     }
 }

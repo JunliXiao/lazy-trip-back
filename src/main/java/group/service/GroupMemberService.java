@@ -10,7 +10,7 @@ import member.model.Member;
 
 public class GroupMemberService {
 	private Group_memberDAO_interface dao;
-	
+
 	public GroupMemberService() {
 		dao = new Group_memberDAOImpl();
 
@@ -36,32 +36,43 @@ public class GroupMemberService {
 		dao.inviteFriendtoGroup(list);
 	}
 
+	public int inviteFriendBylink(Integer memId, Integer groupId) {
+		return dao.inviteByLink(memId, groupId);
+	}
+
 	public List<Group_memberVO> getAllInvite(Integer memberid) {
 		return dao.getAllInvite(memberid);
 	}
-	
-	public void acceptInvite(Integer id ,Integer needApproval) {
-		if(needApproval.equals(1)) {
+
+	public void acceptInvite(Integer id, Integer needApproval) {
+		if (needApproval.equals(1)) {
 			dao.insertNeedApprove(id);
-		}else if(needApproval.equals(2)){
+		} else if (needApproval.equals(2)) {
 			dao.insertDirectly(id);
 		}
 	}
-	
+
 	public Group_memberVO getOne(Integer id) {
 		return dao.getOne(id);
 	}
-	
+
 	public void updateInfo(Group_memberVO vo) {
 		dao.updateInfo(vo);
 	}
+
 	public void deleteOne(Integer id) {
 		dao.deleteOne(id);
 	}
+
 	public void deleteAll(Integer id) {
 		dao.deleteAll(id);
 	}
-	public void opMembers(List<Integer>list) {
+
+	public void exitGroup(Integer id,Integer group) {
+		dao.exitGroup(id ,group);
+	}
+	
+	public void opMembers(List<Integer> list) {
 		dao.opMembers(list);
 	}
 

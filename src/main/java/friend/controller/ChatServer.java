@@ -11,6 +11,9 @@ import member.model.Member;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+
+import com.google.gson.internal.LinkedTreeMap;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -58,14 +61,14 @@ public class ChatServer {
                             .collect(Collectors.toSet());
 
             // 儲存訊息
-//            if (wrapper.getMessageContent() instanceof LinkedTreeMap<?, ?> messageMap) {
-//                ChatMessage newMessage = new ChatMessage();
-//                newMessage.setMessage((String) messageMap.get("message"));
-//                newMessage.setSentAt(((Double) messageMap.get("sentAt")).intValue());
-//                newMessage.setChatroomId(wrapper.getChatroomId());
-//                newMessage.setSenderId(wrapper.getMemberId());
-//                chatMessageService.saveMessage(newMessage);
-//            }
+            if (wrapper.getMessageContent() instanceof LinkedTreeMap<?, ?> messageMap) {
+                ChatMessage newMessage = new ChatMessage();
+                newMessage.setMessage((String) messageMap.get("message"));
+                newMessage.setSentAt(((Double) messageMap.get("sentAt")).intValue());
+                newMessage.setChatroomId(wrapper.getChatroomId());
+                newMessage.setSenderId(wrapper.getMemberId());
+                chatMessageService.saveMessage(newMessage);
+            }
             // 推播訊息
             broadcast(wrapper, chatroomMembersId);
         }

@@ -15,4 +15,5 @@ public interface MemberService {
 	public Member findByAccount(String account);
 	public Member changeImgById(Member member);
 	public List<Member> findAll();
+	public List<Member> findAll(String type, String text);
 }

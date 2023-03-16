@@ -40,6 +40,11 @@ public class FriendController extends HttpServlet {
             case "blocklist" -> service.getBlockedMembers(id);
             default -> new ArrayList<>();
         };
+//        if (dataList.size() == 0) {
+//            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+//        } else {
+//            response.setStatus(HttpServletResponse.SC_OK);
+//        }
 
         output = gson.toJson(new ModelWrapper(dataList));
         out.println(output);

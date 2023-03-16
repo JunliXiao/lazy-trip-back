@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +21,7 @@ import group.model.GroupVO;
 import group.model.Group_memberVO;
 import group.service.GroupService;
 import member.model.Member;
+import redis.clients.jedis.Jedis;
 import tour.model.TourVO;
 
 @WebServlet("/group")
@@ -39,8 +41,7 @@ public class GroupServlet extends HttpServlet {
 
 		HttpSession session = req.getSession();
 		Member member = (Member) session.getAttribute("member");
-
-
+		
 		if ("getUsingMember".equals(action)) {
 			PrintWriter out = res.getWriter();
 			String jsonStr1 = new Gson().toJson(member);
@@ -121,6 +122,19 @@ public class GroupServlet extends HttpServlet {
 			out.println(jsonStr);
 			return;
 		}
+		
+		//產生邀請連結
+		if("generateLink".equals(action)) {
+			Jedis jedis = new Jedis("localhost", 6379);
+			String id = req.getParameter("groupId");
+			String link = UUID.randomUUID().toString().replace("-", "");
+			jedis.setex("groupLinks:"+link,300,id);
+			jedis.close();
+			PrintWriter out = res.getWriter();
+			out.println(link);
+			return;
+		}
+		
 		if (action.equals("") || action.trim().length() == 0 || !action.isEmpty()) {
 			error.addProperty("errorMessage", "Unknown Action");
 			PrintWriter out = res.getWriter();
@@ -162,7 +176,7 @@ public class GroupServlet extends HttpServlet {
 			service.updateGroupTour(groupVO);
 			return;
 		}
-		
+
 		if (action.equals("") || action.trim().length() == 0 || !action.isEmpty()) {
 			error.addProperty("errorMessage", "Unknown Action");
 			PrintWriter out = res.getWriter();

@@ -1,26 +1,17 @@
-package company.model;
+package order.model;
 
 public class RoomTypeImgVO implements java.io.Serializable {
 	private Integer roomTypeImgID;
 	private Integer roomTypeID;
-	private byte[] roomTypeImg;
-	private String roomTypeImgOutput;
+	private String roomTypeImg;
+
 	
-	
 
-	public String getRoomTypeImgOutput() {
-		return roomTypeImgOutput;
-	}
-
-	public void setRoomTypeImgOutput(String roomTypeImgOutput) {
-		this.roomTypeImgOutput = roomTypeImgOutput;
-	}
-
-	public byte[] getRoomTypeImg() {
+	public String getRoomTypeImg() {
 		return roomTypeImg;
 	}
 
-	public void setRoomTypeImg(byte[] roomTypeImg) {
+	public void setRoomTypeImg(String roomTypeImg) {
 		this.roomTypeImg = roomTypeImg;
 	}
 
@@ -40,7 +31,12 @@ public class RoomTypeImgVO implements java.io.Serializable {
 		this.roomTypeID = roomTypeID;
 	}
 
-	
-
-	
+	@Override
+	public String toString() {
+		return "RoomTypeImgVO{" +
+				"roomTypeImgID=" + roomTypeImgID +
+				", roomTypeID=" + roomTypeID +
+				", roomTypeImg='" + roomTypeImg + '\'' +
+				'}';
+	}
 }

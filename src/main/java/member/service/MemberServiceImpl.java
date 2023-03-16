@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import member.controller.HashedPassword;
 import member.dao.MemberDAO;
 import member.dao.MemberDAOImpl;
 import member.model.Member;
@@ -57,16 +58,21 @@ public class MemberServiceImpl implements MemberService{
 		final String account = member.getAccount();
 		final String password = member.getPassword();
 		Member temp = dao.selectByAccount(account);
-		System.out.println(temp.getPassword() + " ; " + verifyPassword(password, temp.getPassword()) + " ; " + hashPassword(password));
-		if(account == null || account.isEmpty() || password == null || password.isEmpty() || !(verifyPassword(password, temp.getPassword()))) {
+		if (temp != null) {
+			System.out.println(temp.getPassword() + " ; " + HashedPassword.verifyPassword(password, temp.getPassword())
+					+ " ; " + HashedPassword.hashPassword(password));
+			if (account == null || account.isEmpty() || password == null || password.isEmpty()
+					|| !(verifyPassword(password, temp.getPassword()))) {
+				return null;
+			} else {
+				member.setPassword(hashPassword(password));
+				member = dao.find(member);
+				return member;
+			}
+		} else {
 			return null;
-		}else {
-			member.setPassword(hashPassword(password));
-			member = dao.find(member);
-			return member;
 		}
-			
-		
+
 	}
 
 	@Override
@@ -138,6 +144,12 @@ public class MemberServiceImpl implements MemberService{
 	public List<Member> findAll() {
 		return dao.getAll();
 	}
+	
+	@Override
+	public List<Member> findAll(String type, String text) {
+		return dao.getAll(type, text);
+	}
+	
 	
 	@Override
 	public String savePassword(Member member) {

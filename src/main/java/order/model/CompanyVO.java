@@ -1,4 +1,4 @@
-package company.model;
+package order.model;
 
 public class CompanyVO implements java.io.Serializable {
 	private Integer companyID;
@@ -121,12 +121,19 @@ public class CompanyVO implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "CompanyVO [companyID=" + companyID + ", companyUserName=" + companyUserName + ", companyPassword="
-				+ companyPassword + ", taxID=" + taxID + ", companyName=" + companyName + ", introduction="
-				+ introduction + ", addressCounty=" + addressCounty + ", addressArea=" + addressArea
-				+ ", addressStreet=" + addressStreet + ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", companyImg=" + companyImg + ", roomTypeVO=" + roomTypeVO + "]";
+		return "CompanyVO{" +
+				"companyID=" + companyID +
+				", companyUserName='" + companyUserName + '\'' +
+				", companyPassword='" + companyPassword + '\'' +
+				", taxID='" + taxID + '\'' +
+				", companyName='" + companyName + '\'' +
+				", introduction='" + introduction + '\'' +
+				", addressCounty='" + addressCounty + '\'' +
+				", addressArea='" + addressArea + '\'' +
+				", addressStreet='" + addressStreet + '\'' +
+				", latitude=" + latitude +
+				", longitude=" + longitude +
+				", companyImg='" + companyImg + '\'' +
+				'}'+roomTypeVO.toString();
 	}
-
-	
 }

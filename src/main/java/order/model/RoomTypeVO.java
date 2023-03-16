@@ -1,6 +1,4 @@
-package company.model;
-
-import java.util.Date;
+package order.model;
 
 public class RoomTypeVO {
 	private Integer roomTypeID;
@@ -10,22 +8,7 @@ public class RoomTypeVO {
 	private Integer roomTypeQuantity;
 	private Integer roomTypePrice;
 	private RoomTypeImgVO roomTypeImgVO;
-	private String orderCheckInDate;
-	private String orderCheckOutDate;
 	
-	
-	public String getOrderCheckInDate() {
-		return orderCheckInDate;
-	}
-	public void setOrderCheckInDate(String orderCheckInDate) {
-		this.orderCheckInDate = orderCheckInDate;
-	}
-	public String getOrderCheckOutDate() {
-		return orderCheckOutDate;
-	}
-	public void setOrderCheckOutDate(String orderCheckOutDate) {
-		this.orderCheckOutDate = orderCheckOutDate;
-	}
 	public RoomTypeImgVO getRoomTypeImgVO() {
 		return roomTypeImgVO;
 	}
@@ -67,5 +50,17 @@ public class RoomTypeVO {
 	}
 	public void setRoomTypeQuantity(Integer roomTypeQuantity) {
 		this.roomTypeQuantity = roomTypeQuantity;
+	}
+
+	@Override
+	public String toString() {
+		return "RoomTypeVO{" +
+				"roomTypeID=" + roomTypeID +
+				", companyID=" + companyID +
+				", roomTypeName='" + roomTypeName + '\'' +
+				", roomTypePerson=" + roomTypePerson +
+				", roomTypeQuantity=" + roomTypeQuantity +
+				", roomTypePrice=" + roomTypePrice +
+				'}'+roomTypeImgVO.toString();
 	}
 }
