@@ -34,12 +34,12 @@ public class TourComVO implements Serializable {
 		this.feature = feature;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "TourComVO [tourComId=" + tourComId + ", tourTitle=" + tourTitle + ", startDate=" + startDate
-//				+ ", endDate=" + endDate + ", tourImg=" + tourImg + ", cost=" + cost + ", tourPerson=" + tourPerson
-//				+ ", companyId=" + companyId + ", status=" + status + ", feature=" + feature + "]";
-//	}
+	@Override
+	public String toString() {
+		return "TourComVO [tourComId=" + tourComId + ", tourTitle=" + tourTitle + ", startDate=" + startDate
+				+ ", endDate=" + endDate + ", tourImg=" + tourImg + ", cost=" + cost + ", tourPerson=" + tourPerson
+				+ ", companyId=" + companyId + ", status=" + status + ", feature=" + feature + "]";
+	}
 	
 	public String getStatus() {
 		return status;

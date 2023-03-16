@@ -1,6 +1,8 @@
 package tour.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.naming.NamingException;
@@ -54,25 +56,35 @@ public class TourComServiceImpl implements TourComService {
 	}
 
 	@Override
-	public List<String> queryAll(Integer memberId) {
+	public List<TourComVO> queryAll(Integer memberId) {
 		final List<TourComVO> resultTourCom = tourComDao.getAll();
 		final List<TourVO> resultTour = tourDao.getAll(memberId);
 		final List<String> strList;
+		// 取得所有旅客行程的標題array
 		strList = resultTour.stream()
 							.map(TourVO::getTourTitle)
 							.collect(Collectors.toList());
+		// 取得所有廠商上架行程的特色標籤名array
 		List<String> featureList = resultTourCom.stream()
 									.map(TourComVO::getFeature)
 									.filter(strList::contains)
 									.collect(Collectors.toList());
-		System.out.println(resultTourCom.toString());
+		
+		List<TourComVO> recommendResult = new ArrayList<TourComVO>();
+		List<TourComVO> result = new ArrayList<TourComVO>();
+		for (TourComVO tour : resultTourCom) {
+			if(featureList.contains(tour.getFeature())) {
+				result.add(tour);
+			}
+		}
+		recommendResult = result.stream().limit(3).collect(Collectors.toList());
+		
 		 if(featureList.size() <= 0) {
-			 List<String> top3TourRecommend = resultTourCom.stream()
+			 List<TourComVO> top3TourRecommend = resultTourCom.stream()
 			 			.limit(3)
-			 			.map(TourComVO::getTourTitle)
 			 			.collect(Collectors.toList());
 			 return top3TourRecommend;
 		 }
-		return featureList;
+		return recommendResult;
 	}
 }

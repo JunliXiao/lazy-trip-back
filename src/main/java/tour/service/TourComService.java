@@ -13,7 +13,7 @@ public interface TourComService {
 
     List<TourComVO> tourComQueryAll(Integer companyId);
     
-    List<String> queryAll(Integer memberId);
+    List<TourComVO> queryAll(Integer memberId);
     
     TourComVO getTourInfoByTourComId(Integer tourComId);
 }

@@ -2,11 +2,6 @@ package tour.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 public class TourScheduleComVO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer tourScheduleComId;
@@ -17,12 +12,19 @@ public class TourScheduleComVO implements Serializable{
 	private Integer stayTime;
 	private String endTime;
 	private String status;
+	private String carRouteTime;
 	private AttractionVO attractionVO;
-	
-	public TourScheduleComVO() {
+	@Override
+	public String toString() {
+		return "TourScheduleComVO [tourScheduleComId=" + tourScheduleComId + ", tourComId=" + tourComId
+				+ ", attractionId=" + attractionId + ", date=" + date + ", startTime=" + startTime + ", stayTime="
+				+ stayTime + ", endTime=" + endTime + ", status=" + status + ", carRouteTime=" + carRouteTime
+				 + "]";
 	}
+
 	public TourScheduleComVO(Integer tourScheduleComId, Integer tourComId, Integer attractionId, String date,
-			String startTime, Integer stayTime, String endTime, AttractionVO attractionVO) {
+			String startTime, Integer stayTime, String endTime, String status, String carRouteTime,
+			AttractionVO attractionVO) {
 		super();
 		this.tourScheduleComId = tourScheduleComId;
 		this.tourComId = tourComId;
@@ -31,7 +33,57 @@ public class TourScheduleComVO implements Serializable{
 		this.startTime = startTime;
 		this.stayTime = stayTime;
 		this.endTime = endTime;
+		this.status = status;
+		this.carRouteTime = carRouteTime;
 		this.attractionVO = attractionVO;
+	}
+
+	public Integer getTourScheduleComId() {
+		return tourScheduleComId;
+	}
+
+	public void setTourScheduleComId(Integer tourScheduleComId) {
+		this.tourScheduleComId = tourScheduleComId;
+	}
+
+	public Integer getTourComId() {
+		return tourComId;
+	}
+
+	public void setTourComId(Integer tourComId) {
+		this.tourComId = tourComId;
+	}
+
+	public Integer getAttractionId() {
+		return attractionId;
+	}
+
+	public void setAttractionId(Integer attractionId) {
+		this.attractionId = attractionId;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public Integer getStayTime() {
+		return stayTime;
+	}
+
+	public void setStayTime(Integer stayTime) {
+		this.stayTime = stayTime;
 	}
 
 	public String getEndTime() {
@@ -42,6 +94,22 @@ public class TourScheduleComVO implements Serializable{
 		this.endTime = endTime;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getCarRouteTime() {
+		return carRouteTime;
+	}
+
+	public void setCarRouteTime(String carRouteTime) {
+		this.carRouteTime = carRouteTime;
+	}
+
 	public AttractionVO getAttractionVO() {
 		return attractionVO;
 	}
@@ -50,53 +118,7 @@ public class TourScheduleComVO implements Serializable{
 		this.attractionVO = attractionVO;
 	}
 	
-	public Integer getTourScheduleComId() {
-		return tourScheduleComId;
+	public TourScheduleComVO() {
 	}
-	public void setTourScheduleComId(Integer tourScheduleComId) {
-		this.tourScheduleComId = tourScheduleComId;
-	}
-	public Integer getTourComId() {
-		return tourComId;
-	}
-	public void setTourComId(Integer tourComId) {
-		this.tourComId = tourComId;
-	}
-	public Integer getAttractionId() {
-		return attractionId;
-	}
-	public void setAttractionId(Integer attractionId) {
-		this.attractionId = attractionId;
-	}
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
-	public String getStartTime() {
-		return startTime;
-	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-	public Integer getStayTime() {
-		return stayTime;
-	}
-	public void setStayTime(Integer stayTime) {
-		this.stayTime = stayTime;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	@Override
-	public String toString() {
-		return "TourScheduleComVO [tourScheduleComId=" + tourScheduleComId + ", tourComId=" + tourComId
-				+ ", attractionId=" + attractionId + ", date=" + date + ", startTime=" + startTime + ", stayTime="
-				+ stayTime + ", endTime=" + endTime + ", attractionVO=" + attractionVO + "]";
-	}
-
+	
 }

@@ -13,17 +13,16 @@ import java.util.Date;
 import java.util.List;
 
 import common.HikariDataSource;
-import tour.model.DTO;
 import tour.model.TourComVO;
 
 public class TourComDaoImpl implements TourComDao {
 	
-    private static final String INSERT_SQL = "insert into tour_company (tour_title, start_date, end_date, tour_img, cost, tour_person, company_id) values (?,?,?,?,?,?,?);";
+    private static final String INSERT_SQL = "insert into tour_company (tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, feature) values (?,?,?,?,?,?,?,?);";
     private static final String UPDATE_SQL = "update tour_company set tour_title=?, start_date=?, end_date=?, tour_img=?, cost=?, tour_person=? where c_tour_id=? and company_id=?;";
     private static final String DELETE_SQL = "update tour_company set status=? where c_tour_id = ?";
     private static final String GET_ALL_SQL_COM = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, status from tour_company where company_id=?;";
     private static final String GET_ONE_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id form tour_company where c_tour_id=?;";
-    private static final String GET_ALL_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, feature from tour_company;";
+    private static final String GET_ALL_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, feature from tour_company where status is null;";
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     @Override
     public int insert(TourComVO tourComVO) {
@@ -40,6 +39,7 @@ public class TourComDaoImpl implements TourComDao {
             ps.setInt(5, tourComVO.getCost());
             ps.setInt(6, tourComVO.getTourPerson());
             ps.setInt(7, tourComVO.getCompanyId());
+            ps.setString(8, tourComVO.getFeature());
             int insertRow = ps.executeUpdate();
 			if (insertRow > 0) {
 				ResultSet rs = ps.getGeneratedKeys();
@@ -190,9 +190,10 @@ public class TourComDaoImpl implements TourComDao {
 				tourComVO.setCost(rs.getInt("cost"));
 				tourComVO.setTourPerson(rs.getInt("tour_person"));
 				tourComVO.setFeature(rs.getString("feature"));
+				
                 list.add(tourComVO);
             }
-//            System.out.println(list.toString());
+            System.out.println(list.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }

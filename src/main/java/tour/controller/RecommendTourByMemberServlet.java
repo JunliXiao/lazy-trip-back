@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import tour.model.TourComVO;
 import tour.service.TourComService;
 import tour.service.TourComServiceImpl;
 
@@ -24,11 +25,15 @@ public class RecommendTourByMemberServlet extends HttpServlet{
 			Gson gson = new Gson();
 			String memberId = req.getParameter("memberId");
 			TourComService service = new TourComServiceImpl();
-			final List<String> result = service.queryAll(Integer.valueOf(memberId));
-//			System.out.println(tourTagVO.toString());
-			resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().print(gson.toJson(result));
+			final List<TourComVO> result = service.queryAll(Integer.valueOf(memberId));
+			System.out.println(result.size());
+			if(result != null && result.size() > 0) {
+				resp.setContentType("application/json");
+				resp.setCharacterEncoding("UTF-8");
+				resp.getWriter().print(gson.toJson(result));
+			} else {
+				resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+			}
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
