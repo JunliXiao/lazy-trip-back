@@ -125,7 +125,7 @@ public class GroupServlet extends HttpServlet {
 		
 		//產生邀請連結
 		if("generateLink".equals(action)) {
-			Jedis jedis = new Jedis("localhost", 6379);
+			Jedis jedis = new Jedis();
 			String id = req.getParameter("groupId");
 			String link = UUID.randomUUID().toString().replace("-", "");
 			jedis.setex("groupLinks:"+link,300,id);
