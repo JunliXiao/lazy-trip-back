@@ -12,25 +12,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import tour.model.TourComDTO;
 import tour.model.TourComVO;
 import tour.service.TourComService;
 import tour.service.TourComServiceImpl;
 
-@WebServlet("/tourComQueryOne")
-public class TourComQueryOneServlet extends HttpServlet{
+@WebServlet("/tourComSelected")
+public class TourComSelectedServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson gson = new Gson();
-        String companyId = req.getParameter("companyId");
-        TourComService service;
+        req.setCharacterEncoding("UTF-8");
+        TourComDTO tourComVO = gson.fromJson(req.getReader(), TourComDTO.class);
 		try {
-			service = new TourComServiceImpl();
-			final List<TourComVO> resultLists = service.tourComQueryAll(Integer.valueOf(companyId));
+			TourComService service = new TourComServiceImpl();
+			final List<TourComVO> result = service.queryAllBySelection(tourComVO);
 			resp.setContentType("application/json");
 			resp.setCharacterEncoding("UTF-8");
-			resp.getWriter().print(gson.toJson(resultLists));
+			resp.getWriter().print(gson.toJson(result));
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}

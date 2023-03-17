@@ -2,7 +2,6 @@ package tour.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.naming.NamingException;
@@ -11,6 +10,7 @@ import tour.dao.TourComDao;
 import tour.dao.TourComDaoImpl;
 import tour.dao.TourDao;
 import tour.dao.TourDaoImpl;
+import tour.model.TourComDTO;
 import tour.model.TourComVO;
 import tour.model.TourVO;
 
@@ -86,5 +86,11 @@ public class TourComServiceImpl implements TourComService {
 			 return top3TourRecommend;
 		 }
 		return recommendResult;
+	}
+
+	@Override
+	public List<TourComVO> queryAllBySelection(TourComDTO tourComVO) {
+		final List<TourComVO> result = tourComDao.getInfoBySelection(tourComVO);
+		return result;
 	}
 }
