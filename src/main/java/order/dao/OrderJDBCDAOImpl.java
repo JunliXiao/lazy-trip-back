@@ -114,7 +114,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
     //(廠商使用) 透過廠商編號找到該廠商相關的所有訂單(無訂單明細) 1?
     //方法已做
     private static final String SELECT_FIND_ORDER_BY_COMPANY_ID =
-            "SELECT order_id, member_id, company_id, order_check_in_date, order_check_out_date, order_total_price, order_status, order_create_datetime, order_pay_deadline, order_pay_datetime, traveler_name, traveler_id_number, traveler_email, traveler_phone FROM lazy.order WHERE company_id = ?;\n";
+            "SELECT order_id, member_id, company_id, order_check_in_date, order_check_out_date, order_number_of_nights,order_total_price, order_status, order_create_datetime, order_pay_deadline, order_pay_datetime, traveler_name, traveler_id_number, traveler_email, traveler_phone FROM lazy.order WHERE company_id = ?;\n";
 
 
     //(廠商使用)選取當前訂單，查詢該筆訂單詳細資料 1?
@@ -126,12 +126,12 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
     //從訂單編號找到 "等待付款" 的訂單與訂單明細 2?
     //方法已做
     private static final String SELECT_FIND_ORDER_ALL_AND_STATUS_WAIT_PAY_BY_ORDER_ID =
-            "SELECT o.order_id, o.member_id, o.company_id, o.order_check_in_date, o.order_check_out_date,\n" +
+            "SELECT o.order_id, o.member_id, o.company_id, o.order_check_in_date, o.order_check_out_date, o.order_number_of_nights\n" +
                     "o.order_total_price, o.order_status, o.order_create_datetime, o.order_pay_deadline, o.order_pay_datetime,\n" +
                     "o.order_pay_card_name, o.order_pay_card_number, o.order_pay_card_year, o.order_pay_card_month, o.traveler_name,\n" +
                     "o.traveler_id_number,  o.traveler_email, o.traveler_phone, od.order_detail_id, od.order_id, od.roomtype_id,\n" +
-                    "od.order_detail_room_price, od.order_detail_room_quantity,\n" +
-                    " FROM lazy.order_detail od JOIN  lazy.order o ON o.order_id = od.order_id WHERE o.order_status = ? AND o.order_id = ?;";
+                    "od.order_detail_room_price, od.order_detail_room_quantity\n" +
+                    "FROM lazy.order_detail od JOIN  lazy.order o ON o.order_id = od.order_id WHERE o.order_status = ? AND o.order_id = ?;";
 
 
     //====================================================================================
@@ -139,13 +139,13 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
     // 從會員編號找到所有訂單與訂單明細和廠商資料(裡面沒有廠商的帳號密碼)並用訂單編號從大到小排序 1?
     //方法已做
     String SELECT_FIND_ORDER_ALL_BY_MEMBER_ID = "SELECT o.order_id, o.member_id, o.company_id, o.order_check_in_date, \n" +
-            "o.order_check_out_date, o.order_total_price, o.order_status, o.order_create_datetime, \n" +
+            "o.order_check_out_date, o.order_number_of_nights, o.order_total_price, o.order_status, o.order_create_datetime, \n" +
             "o.order_pay_deadline, o.order_pay_datetime, o.traveler_name, o.traveler_id_number, \n" +
             "o.traveler_email, o.traveler_phone, od.order_detail_id, od.roomtype_id, od.roomtype_name, \n" +
             "od.roomtype_person, od.order_detail_room_price, od.order_detail_room_quantity, \n" +
             "cm.company_name, cm.address_county, cm.address_area, cm.address_street, cm.company_img\n" +
             "FROM lazy.order_detail od JOIN  lazy.order o ON o.order_id = od.order_id\n" +
-            "JOIN lazy.company cm ON o.company_id = cm.company_id WHERE o.member_id = 2 ORDER BY o.order_id DESC;";
+            "JOIN lazy.company cm ON o.company_id = cm.company_id WHERE o.member_id = ? ORDER BY o.order_id DESC;";
 
 
     //====================================================================================
@@ -154,7 +154,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
     //方法已做
     private static final String SELECT_FIND_ORDER_ALL_AND_ALREADY_PAY_BY_COMPANY_ID =
             "SELECT o.order_id, o.member_id, o.company_id, o.order_check_in_date, \n" +
-                    "o.order_check_out_date, o.order_total_price, o.order_status, o.order_create_datetime, \n" +
+                    "o.order_check_out_date, o.order_number_of_nights, o.order_total_price, o.order_status, o.order_create_datetime, \n" +
                     "o.order_pay_deadline, o.order_pay_datetime, o.traveler_name, o.traveler_id_number, \n" +
                     "o.traveler_email, o.traveler_phone, od.order_detail_id, od.order_detail_room_price, \n" +
                     "od.roomtype_id, od.roomtype_name, od.roomtype_person, od.order_detail_room_quantity\n" +
@@ -621,6 +621,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 orderVO.setCompanyID(rs.getInt("company_id"));
                 orderVO.setOrderCheckInDate(rs.getObject("order_check_in_date",LocalDate.class));
                 orderVO.setOrderCheckOutDate(rs.getObject("order_check_out_date",LocalDate.class));
+                orderVO.setOrderNumberOfNights(rs.getInt("order_number_of_nights"));
                 orderVO.setOrderTotalPrice(rs.getInt("order_total_price"));
                 orderVO.setOrderStatus(rs.getString("order_status"));
                 orderVO.setOrderCreateDatetime(rs.getObject("order_create_datetime",LocalDateTime.class));
@@ -691,6 +692,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 orderVO.setOrderCheckInDate(rs.getObject("o.order_check_in_date", LocalDate.class));
                 orderVO.setOrderCheckOutDate(rs.getObject("o.order_check_out_date", LocalDate.class));
                 orderVO.setOrderTotalPrice(rs.getInt("o.order_total_price"));
+                orderVO.setOrderNumberOfNights(rs.getInt("order_number_of_nights"));
                 orderVO.setOrderStatus(rs.getString("o.order_status"));
                 orderVO.setOrderCreateDatetime(rs.getObject("o.order_create_datetime", LocalDateTime.class));
                 orderVO.setOrderPayDeadline(rs.getObject("o.order_pay_deadline", LocalDateTime.class));
@@ -727,6 +729,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
 
         try (Connection con = HikariDataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_FIND_ORDER_ALL_BY_MEMBER_ID);) {
+        	ps.setInt(1, memberID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 OrderVO orderVO = new OrderVO();
@@ -736,6 +739,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 orderVO.setCompanyID(rs.getInt("o.company_id"));
                 orderVO.setOrderCheckInDate(rs.getObject("o.order_check_in_date", LocalDate.class));
                 orderVO.setOrderCheckOutDate(rs.getObject("o.order_check_out_date", LocalDate.class));
+                orderVO.setOrderNumberOfNights(rs.getInt("o.order_number_of_nights"));
                 orderVO.setOrderTotalPrice(rs.getInt("o.order_total_price"));
                 orderVO.setOrderStatus(rs.getString("o.order_status"));
                 orderVO.setOrderCreateDatetime(rs.getObject("o.order_create_datetime", LocalDateTime.class));
@@ -802,6 +806,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
                 orderVO.setCompanyID(rs.getInt("o.company_id"));
                 orderVO.setOrderCheckInDate(rs.getObject("o.order_check_in_date", LocalDate.class));
                 orderVO.setOrderCheckOutDate(rs.getObject("o.order_check_out_date", LocalDate.class));
+                orderVO.setOrderNumberOfNights(rs.getInt("o.order_number_of_nights"));
                 orderVO.setOrderTotalPrice(rs.getInt("o.order_total_price"));
                 orderVO.setOrderStatus(rs.getString("o.order_status"));
                 orderVO.setOrderCreateDatetime(rs.getObject("o.order_create_datetime", LocalDateTime.class));

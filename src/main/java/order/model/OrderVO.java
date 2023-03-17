@@ -13,6 +13,7 @@ public class OrderVO implements Serializable {
     private String couponID;
     private LocalDate orderCheckInDate;
     private LocalDate orderCheckOutDate;
+    private Integer orderNumberOfNights;
     private Integer orderTotalPrice;
     private String orderStatus;
     private LocalDateTime orderCreateDatetime;
@@ -77,6 +78,14 @@ public class OrderVO implements Serializable {
 
     public void setOrderCheckOutDate(LocalDate orderCheckOutDate) {
         this.orderCheckOutDate = orderCheckOutDate;
+    }
+
+    public Integer getOrderNumberOfNights() {
+        return orderNumberOfNights;
+    }
+
+    public void setOrderNumberOfNights(Integer orderNumberOfNights) {
+        this.orderNumberOfNights = orderNumberOfNights;
     }
 
     public Integer getOrderTotalPrice() {
@@ -182,6 +191,7 @@ public class OrderVO implements Serializable {
     public void setTravelerPhone(String travelerPhone) {
         this.travelerPhone = travelerPhone;
     }
+
     public OrderDetailVO getOrderDetailVO() {
         return orderDetailVO;
     }

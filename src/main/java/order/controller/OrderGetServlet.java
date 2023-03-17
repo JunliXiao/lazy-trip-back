@@ -62,7 +62,7 @@ public class OrderGetServlet extends HttpServlet {
 
 
         } else if (req.getParameter("type").equals("showPayTableFromTheOrderID")) {
-            System.out.println("orderID: " + req.getParameter("payTableFromTheOrderID"));
+            System.out.println("orderID: " + req.getParameter("orderID"));
 
             try {
                 Integer orderID = Integer.valueOf(req.getParameter("orderID"));
