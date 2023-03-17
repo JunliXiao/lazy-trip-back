@@ -87,8 +87,8 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
     //送出訂單與訂單明細  10?
     //方法已做
     private static final String CREATE_ORDER =
-            "INSERT INTO lazy.order (member_id, company_id, order_check_in_date, order_check_out_date, order_total_price, order_pay_deadline, traveler_name, traveler_id_number, traveler_email, traveler_phone)\n" +
-                    "VALUES (?, ?, ?, ?, ?, DATE_ADD(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL '23:59:59' HOUR_SECOND), ?, ?, ?, ?);";
+            "INSERT INTO lazy.order (member_id, company_id, order_check_in_date, order_check_out_date, order_number_of_nights, order_total_price, order_pay_deadline, traveler_name, traveler_id_number, traveler_email, traveler_phone)\n" +
+                    "VALUES (?, ?, ?, ?, ?, ?, DATE_ADD(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL '23:59:59' HOUR_SECOND), ?, ?, ?, ?);";
 
     //7? 方法已做
     private static final String CREATE_ORDER_DETAIL =
@@ -464,11 +464,12 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
             ps.setInt(2, orderVOs.get(0).getCompanyID());
             ps.setObject(3, orderVOs.get(0).getOrderCheckInDate());
             ps.setObject(4, orderVOs.get(0).getOrderCheckOutDate());
-            ps.setInt(5, orderVOs.get(0).getOrderTotalPrice());
-            ps.setString(6, orderVOs.get(0).getTravelerName());
-            ps.setString(7, orderVOs.get(0).getTravelerIDNumber());
-            ps.setString(8, orderVOs.get(0).getTravelerEmail());
-            ps.setString(9, orderVOs.get(0).getTravelerPhone());
+            ps.setInt(5,orderVOs.get(0).getOrderNumberOfNights());
+            ps.setInt(6, orderVOs.get(0).getOrderTotalPrice());
+            ps.setString(7, orderVOs.get(0).getTravelerName());
+            ps.setString(8, orderVOs.get(0).getTravelerIDNumber());
+            ps.setString(9, orderVOs.get(0).getTravelerEmail());
+            ps.setString(10, orderVOs.get(0).getTravelerPhone());
 
             int rowCount = ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
