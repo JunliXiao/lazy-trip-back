@@ -44,13 +44,13 @@ public class MemberForgetPS extends HttpServlet{
 				jedis.expire(db.toString(), 1800);
 				req.getSession().setAttribute("forgetMemId", member.getId());
 
-				String toEmail = "fortibameclass@gmail.com";
+				String toEmail = "fortibamejava@gmail.com";
 				String subject = "寄送驗證碼";
 				String text = "您想要修改密碼，請輸入以下的驗證碼來修改您的密碼 ，" + "驗證碼: " + code;
 				try {
-					SendEmail.sendEmail(toEmail, subject, text);
+					SendEmail mail = new SendEmail(); 
+					mail.sendEmail(toEmail, subject, text);
 				} catch (MessagingException e) {
-					resp.getWriter().write("Failed to send email. Error message: " + e.getMessage());
 				}
 
 				resp.sendRedirect("verify.html");
