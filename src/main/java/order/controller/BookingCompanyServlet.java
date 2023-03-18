@@ -26,14 +26,13 @@ public class BookingCompanyServlet extends HttpServlet {
             try {
                 Integer companyID = Integer.valueOf(req.getParameter("companyID"));
                 List<CompanyVO> result = companySvc.showCompanyAllByCompanyID(companyID);
+               
 
                 res.setCharacterEncoding("UTF-8");
                 res.setContentType("application/json");
                 PrintWriter out = res.getWriter();
                 out.print(gson.toJson(result));
                 System.out.println("開啟飯店頁面 companyID: "+companyID);
-                System.out.println(result.get(0).toString());
-                System.out.println(result.get(1).toString());
             }catch (Exception e){
                 System.out.println("Company.do_showCompanyInformation: "+e.getMessage());
             }
