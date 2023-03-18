@@ -13,6 +13,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import article.model.ArticleVO;
+import common.HikariDataSource;
 
 public class ArticleDAO implements ArticleDAO_interface {
 
@@ -27,20 +28,20 @@ public class ArticleDAO implements ArticleDAO_interface {
 	}
 
 	private static final String INSERT_STMT =
-			"insert into article(articleTitle,articleContent,articleDate,articleDateChange,articleImage,adminID,memberID,tourID) values(?,?,?,?,?,?,?,?)";
+			"insert into article(article_title,article_content,article_date,article_date_change,article_image,admin_id,member_id,tour_id) values(?,?,?,?,?,?,?,?)";
 	private static final String UPDATE = 
-			"UPDATE article set articleTitle=?,articleContent=?,articleDateChange=?,articleImage=? where articleId=?;";
+			"UPDATE article set article_title=?,articl_content=?,article_date_change=?,article_image=? where article_id=?;";
 	private static final String DELETE = 
-			"DELETE FROM article where articleId = ?";
+			"DELETE FROM article where article_id = ?";
 	private static final String GET_ONE_STMT = 
-			"SELECT * FROM article where articleId = ?";
+			"SELECT * FROM article where article_id = ?";
 	private static final String GET_MEMBER_STMT=
-			"select * from article where memberId = ?";
+			"select * from article where member_id = ?";
 	private static final String GET_ALL_STMT = 
-			"SELECT * FROM article order by articleId";
+			"SELECT * FROM article order by article_id";
 	
 	private static final String SEARCH = 
-			"select * from article where articleTitle like ?";
+			"select * from article where article_title like ?";
 	
 	@Override
 	public void insert(ArticleVO articleVO) {
@@ -49,7 +50,7 @@ public class ArticleDAO implements ArticleDAO_interface {
 
 		try {
 
-			con = ds.getConnection();
+			con = HikariDataSource.getConnection();
 			pstmt = con.prepareStatement(INSERT_STMT);
 
 			pstmt.setString(1, articleVO.getArticleTitle());
@@ -93,7 +94,7 @@ public class ArticleDAO implements ArticleDAO_interface {
 
 		try {
 
-			con = ds.getConnection();
+			con = HikariDataSource.getConnection();;
 			pstmt = con.prepareStatement(UPDATE);
 
 			pstmt.setString(1, articleVO.getArticleTitle());
@@ -133,7 +134,7 @@ public class ArticleDAO implements ArticleDAO_interface {
 
 		try {
 
-			con = ds.getConnection();
+			con = HikariDataSource.getConnection();;
 			pstmt = con.prepareStatement(DELETE);
 
 			pstmt.setInt(1, articleId);
@@ -171,7 +172,7 @@ public class ArticleDAO implements ArticleDAO_interface {
 
 		try {
 
-			con = ds.getConnection();
+			con = HikariDataSource.getConnection();;
 			pstmt = con.prepareStatement(GET_ONE_STMT);
 
 			pstmt.setInt(1, articleId);
@@ -181,14 +182,14 @@ public class ArticleDAO implements ArticleDAO_interface {
 			while (rs.next()) {
 				// articleVo 也稱為 Domain objects
 				articleVO = new ArticleVO();
-				articleVO.setArticleId(rs.getInt("articleId"));
-				articleVO.setArticleTitle(rs.getString("articleTitle"));
-				articleVO.setArticleContent(rs.getString("articleContent"));
-				articleVO.setArticleDate(rs.getTimestamp("articleDate"));
-				articleVO.setArticleDateChange(rs.getTimestamp("articleDateChange"));
-				articleVO.setArticleImage(rs.getBytes("articleImage"));
-				articleVO.setMemberId(rs.getInt("memberId"));
-				articleVO.setTourId(rs.getInt("tourId"));
+				articleVO.setArticleId(rs.getInt("article_id"));
+				articleVO.setArticleTitle(rs.getString("article_title"));
+				articleVO.setArticleContent(rs.getString("article_content"));
+				articleVO.setArticleDate(rs.getTimestamp("article_date"));
+				articleVO.setArticleDateChange(rs.getTimestamp("article_date_change"));
+				articleVO.setArticleImage(rs.getBytes("article_image"));
+				articleVO.setMemberId(rs.getInt("member_id"));
+				articleVO.setTourId(rs.getInt("tour_id"));
 			}
 
 			// Handle any driver errors
@@ -232,7 +233,7 @@ public class ArticleDAO implements ArticleDAO_interface {
 
 		try {
 
-			con = ds.getConnection();
+			con = HikariDataSource.getConnection();;
 			pstmt = con.prepareStatement(GET_MEMBER_STMT);
 
 			pstmt.setInt(1, memberId);
@@ -242,14 +243,14 @@ public class ArticleDAO implements ArticleDAO_interface {
 			while (rs.next()) {
 				// articleVo 也稱為 Domain objects
 				ArticleVO articleVO = new ArticleVO();
-				articleVO.setArticleId(rs.getInt("articleId"));
-				articleVO.setArticleTitle(rs.getString("articleTitle"));
-				articleVO.setArticleContent(rs.getString("articleContent"));
-				articleVO.setArticleDate(rs.getTimestamp("articleDate"));
-				articleVO.setArticleDateChange(rs.getTimestamp("articleDateChange"));
-				articleVO.setArticleImage(rs.getBytes("articleImage"));
-				articleVO.setMemberId(rs.getInt("memberId"));
-				articleVO.setTourId(rs.getInt("tourId"));
+				articleVO.setArticleId(rs.getInt("article_id"));
+				articleVO.setArticleTitle(rs.getString("article_title"));
+				articleVO.setArticleContent(rs.getString("article_content"));
+				articleVO.setArticleDate(rs.getTimestamp("article_date"));
+				articleVO.setArticleDateChange(rs.getTimestamp("article_date_change"));
+				articleVO.setArticleImage(rs.getBytes("article_image"));
+				articleVO.setMemberId(rs.getInt("member_id"));
+				articleVO.setTourId(rs.getInt("tour_id"));
 				list.add(articleVO);
 			}
 
@@ -296,22 +297,22 @@ public class ArticleDAO implements ArticleDAO_interface {
 
 		try {
 
-			con = ds.getConnection();
+			con = HikariDataSource.getConnection();;
 			pstmt = con.prepareStatement(GET_ALL_STMT);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
 				// empVO 也稱為 Domain objects
 				articleVO = new ArticleVO();
-				articleVO.setArticleId(rs.getInt("articleId"));
-				articleVO.setArticleTitle(rs.getString("articleTitle"));
-				articleVO.setArticleContent(rs.getString("articleContent"));
-				articleVO.setArticleDate(rs.getTimestamp("articleDate"));
-				articleVO.setArticleDateChange(rs.getTimestamp("articleDateChange"));
+				articleVO.setArticleId(rs.getInt("article_id"));
+				articleVO.setArticleTitle(rs.getString("article_title"));
+				articleVO.setArticleContent(rs.getString("article_content"));
+				articleVO.setArticleDate(rs.getTimestamp("article_date"));
+				articleVO.setArticleDateChange(rs.getTimestamp("article_date_change"));
 //				articleVO.setArticleImage(rs.getBytes("articleImage"));
-				articleVO.setAdminId(rs.getInt("adminId"));
-				articleVO.setMemberId(rs.getInt("memberId"));
-				articleVO.setTourId(rs.getInt("tourId"));
+				articleVO.setAdminId(rs.getInt("admin_id"));
+				articleVO.setMemberId(rs.getInt("member_id"));
+				articleVO.setTourId(rs.getInt("tour_id"));
 				list.add(articleVO); // Store the row in the list
 			}
 
@@ -354,15 +355,15 @@ public class ArticleDAO implements ArticleDAO_interface {
 		ArticleVO articleVO = null;
 		
 		try {
-			con = ds.getConnection();
-			pstmt = con.prepareStatement("select articleId, articleImage from article where articleId = ?");
+			con = HikariDataSource.getConnection();;
+			pstmt = con.prepareStatement("select article_id, article_image from article where article_id = ?");
 			pstmt.setInt(1, articleId);
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
 				articleVO = new ArticleVO();
-				articleVO.setArticleId(rs.getInt("articleId"));
-				articleVO.setArticleImage(rs.getBytes("articleImage"));
+				articleVO.setArticleId(rs.getInt("article_id"));
+				articleVO.setArticleImage(rs.getBytes("article_image"));
 				}
 			} finally {
 		    if (rs != null) {
@@ -390,21 +391,21 @@ public class ArticleDAO implements ArticleDAO_interface {
 		ResultSet rs = null;
 		
 		try {
-			con = ds.getConnection();
+			con = HikariDataSource.getConnection();;
 			pstmt = con.prepareStatement(SEARCH);
 			pstmt.setString(1, "%" + words + "%");
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
 				articleVO = new ArticleVO();
-				articleVO.setArticleId(rs.getInt("articleId"));
-				articleVO.setArticleTitle(rs.getString("articleTitle"));
-				articleVO.setArticleContent(rs.getString("articleContent"));
-				articleVO.setArticleDate(rs.getTimestamp("articleDate"));
-				articleVO.setArticleDateChange(rs.getTimestamp("articleDateChange"));
-				articleVO.setArticleImage(rs.getBytes("articleImage"));
-				articleVO.setMemberId(rs.getInt("memberId"));
-				articleVO.setTourId(rs.getInt("tourId"));
+				articleVO.setArticleId(rs.getInt("article_id"));
+				articleVO.setArticleTitle(rs.getString("article_title"));
+				articleVO.setArticleContent(rs.getString("article_content"));
+				articleVO.setArticleDate(rs.getTimestamp("article_date"));
+				articleVO.setArticleDateChange(rs.getTimestamp("article_date_change"));
+				articleVO.setArticleImage(rs.getBytes("article_image"));
+				articleVO.setMemberId(rs.getInt("member_id"));
+				articleVO.setTourId(rs.getInt("tour_id"));
 				list.add(articleVO);
 				
 			}

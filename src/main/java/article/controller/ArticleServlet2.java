@@ -16,11 +16,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import article.dao.ArticleDAO;
 import article.model.ArticleVO;
 import article.service.ArticleService;
+import member.model.Member;
 
 @WebServlet("/article/ArticleServlet2")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 5 * 5 * 1024 * 1024)
@@ -73,7 +75,7 @@ if ("getOne_For_Display".equals(action)) { // 來自select_page.jsp的請求//�
 				
 				/***************************3.查詢完成,準備轉交(Send the Success view)*************/
 				request.setAttribute("articleVO", articleVO); // 資料庫取出的empVO物件,存入req
-				String url = "/article/oneArticle.jsp";
+				String url = "/page/article/oneArticle.jsp";
 				RequestDispatcher successView = request.getRequestDispatcher(url); // 成功轉交 listOneEmp.jsp
 				successView.forward(request, response);
 		}
@@ -92,7 +94,7 @@ if ("getMember_For_Display".equals(action)) { // 來自select_page.jsp的請求/
 			
 			/***************************3.查詢完成,準備轉交(Send the Success view)*************/
 			request.setAttribute("articleVO", articleVO); // 資料庫取出的empVO物件,存入req
-			String url = "/article/myArticle.jsp";
+			String url = "/page/article/myArticle.jsp";
 			RequestDispatcher successView = request.getRequestDispatcher(url); // 成功轉交 listOneEmp.jsp
 			successView.forward(request, response);
 	}
@@ -114,7 +116,7 @@ if ("getOne_For_Update".equals(action)) { // 來自listAllEmp.jsp的請求
 								
 				/***************************3.查詢完成,準備轉交(Send the Success view)************/
 				request.setAttribute("articleVO", articleVO);         // 資料庫取出的empVO物件,存入req
-				String url = "/article/updateArticle.jsp";
+				String url = "/page/article/updateArticle.jsp";
 				RequestDispatcher successView = request.getRequestDispatcher(url);// 成功轉交 update_emp_input.jsp
 				successView.forward(request, response);
 		}
@@ -145,13 +147,6 @@ if ("update".equals(action)) { // 來自update_emp_input.jsp的請求
 				Timestamp articleDate = Timestamp.valueOf(request.getParameter("articleDate").trim());
 				Timestamp articleDateChange = Timestamp.valueOf(request.getParameter("articleDateChange").trim());
 				
-//				java.sql.Timestamp articleDateChange = null;
-//				try {
-//					articleDateChange = java.sql.Timestamp.valueOf(request.getParameter("articleDateChange").trim());
-//				} catch (IllegalArgumentException e) {
-//					articleDateChange=new java.sql.Timestamp(System.currentTimeMillis());
-//					errorMsgs.add("請輸入日期xyz!");
-//				}
 				
 				
 				//圖片
@@ -199,7 +194,7 @@ if ("update".equals(action)) { // 來自update_emp_input.jsp的請求
 				if (!errorMsgs.isEmpty()) {
 					request.setAttribute("articleVO", articleVO); // 含有輸入格式錯誤的empVO物件,也存入req
 					RequestDispatcher failureView = request
-							.getRequestDispatcher("/article/updateArticle.jsp");
+							.getRequestDispatcher("/page/article/updateArticle.jsp");
 					failureView.forward(request, response);
 					return; //程式中斷
 				}
@@ -210,7 +205,7 @@ if ("update".equals(action)) { // 來自update_emp_input.jsp的請求
 				
 				/***************************3.修改完成,準備轉交(Send the Success view)*************/
 				request.setAttribute("articleVO", articleVO); // 資料庫update成功後,正確的的empVO物件,存入req
-				String url = "/article/myArticle.jsp";
+				String url = "/page/article/myArticle.jsp";
 				RequestDispatcher successView = request.getRequestDispatcher(url); // 修改成功後,轉交listOneEmp.jsp
 				successView.forward(request, response);
 		}
@@ -230,6 +225,7 @@ if ("insert".equals(action)) { // 來自addEmp.jsp的請求
 		if (articleContent == null || articleContent.trim().length() == 0) {
 			errorMsgs.add("請輸入文章內容");
 		}	
+		
 		
 		Timestamp articleDate = Timestamp.valueOf(request.getParameter("articleDate").trim());
 		
@@ -261,8 +257,23 @@ if ("insert".equals(action)) { // 來自addEmp.jsp的請求
 		}
 		
 		Integer adminId = 1;
-		Integer memberId = 1;
-		Integer tourId = 1;
+//		Integer memberId = 1;
+//		Integer tourId = 1;
+//		Integer adminId = Integer.valueOf(request.getParameter("adminId").trim());
+		
+		HttpSession session = request.getSession();
+//		Integer memberId = (Integer) session.getAttribute("member");
+//		session.setAttribute("memberId", memberId);
+//System.out.println("memberId in session: " + memberId);
+
+
+Member member = (Member)session.getAttribute("member");
+System.out.println("member = " + member + ", member id = " + member.getId());
+Integer memberId = member.getId();
+System.out.println("memberId = " + memberId);
+
+
+		Integer tourId = Integer.valueOf(request.getParameter("tourId").trim());
 //		Integer tourId = Integer.valueOf(request.getParameter("tourId").trim());
 //		if (tourId == null || tourId == 0) {
 //			errorMsgs.add("請輸入行程編號");
@@ -282,7 +293,7 @@ if ("insert".equals(action)) { // 來自addEmp.jsp的請求
 		if (!errorMsgs.isEmpty()) {
 			request.setAttribute("articleVO", articleVO); // 含有輸入格式錯誤的empVO物件,也存入req
 			RequestDispatcher failureView = request
-					.getRequestDispatcher("/article/addArticle.jsp");
+					.getRequestDispatcher("/page/article/addArticle.jsp");
 			failureView.forward(request, response);
 			return; //程式中斷
 		}
@@ -294,7 +305,7 @@ if ("insert".equals(action)) { // 來自addEmp.jsp的請求
 		
 		/***************************3.修改完成,準備轉交(Send the Success view)*************/
 		request.setAttribute("articleVO", articleVO); // 資料庫update成功後,正確的的empVO物件,存入req
-		String url = "/article/allArticle.jsp";
+		String url = "/page/article/allArticle.jsp";
 		RequestDispatcher successView = request.getRequestDispatcher(url); // 修改成功後,轉交listOneEmp.jsp
 		successView.forward(request, response);
 		}
@@ -311,7 +322,7 @@ if ("delete".equals(action)) { // 來自listAllEmp.jsp
 		articleSvc.deleteArticle(articleId);
 		
 		/***************************3.刪除完成,準備轉交(Send the Success view)***********/								
-		String url = "/article/myArticle.jsp";
+		String url = "/page/article/myArticle.jsp";
 		RequestDispatcher successView = request.getRequestDispatcher(url);// 刪除成功後,轉交回送出刪除的來源網頁
 		successView.forward(request, response);
 		}
@@ -323,7 +334,7 @@ if("search".equals(action)) {
 	List<ArticleVO> sum = articleDAO.findByWords(select);
 	request.setAttribute("Msgs", sum);
 	
-	RequestDispatcher successView = request.getRequestDispatcher("/article/searchAllArticle.jsp");
+	RequestDispatcher successView = request.getRequestDispatcher("/page/article/searchAllArticle.jsp");
 	successView.forward(request, response);
 	
 	

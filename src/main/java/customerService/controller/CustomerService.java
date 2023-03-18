@@ -2,14 +2,13 @@ package customerService.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
+import javax.naming.NamingException;
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -22,17 +21,18 @@ import javax.websocket.server.ServerEndpoint;
 import customerService.jedis.JedisHandleMessage;
 import customerService.model.ChatMessage;
 import customerService.model.State;
+import member.service.MemberServiceImpl;
+
 import com.google.gson.Gson;
 //import com.Users.model.UsersService;
 
-@ServerEndpoint("/CustomerService/{userId}")
+@ServerEndpoint("/CustomerService/{id}")
 public class CustomerService {
 	private static Map<String, Session> sessionsMap = new ConcurrentHashMap<>(); // P357 並行
 	Gson gson = new Gson();
-	String userId = "1";
 
 	@OnOpen
-	public void onOpen(@PathParam("userId") String userId, Session userSession) throws IOException {
+	public void onOpen(@PathParam("id") String userId, Session userSession) throws IOException {
 		/* save the new user in the map */
 		sessionsMap.put(userId, userSession);
 
@@ -42,11 +42,10 @@ public class CustomerService {
 	}
 
 	@OnMessage
-	public void onMessage(Session userSession, String message) {
+	public void onMessage(Session userSession, String message) throws NamingException {
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
 		String sender = chatMessage.getSender();
 		String receiver = chatMessage.getReceiver();
-System.out.println("chatMessage.getType()="+chatMessage.getType());
 		if ("history".equals(chatMessage.getType())) {
 			List<String> historyData = JedisHandleMessage.getHistoryMsg(sender, receiver);
 			String historyMsg = gson.toJson(historyData);
@@ -69,9 +68,12 @@ System.out.println("chatMessage.getType()="+chatMessage.getType());
 				}
 //				UsersService usersService = new UsersService();
 //				String userName = usersService.getOneUser(Integer.parseInt(receiver)).getUserName();
+				MemberServiceImpl msimpl = new MemberServiceImpl();
+				String userName = msimpl.findById(Integer.parseInt(receiver)).getUsername();
+				
 				Map<String, String> cmAndName = new HashMap<String, String>();
 				cmAndName.put("msgObj", gson.toJson(cmHistory));
-//				cmAndName.put("userName", userName);
+				cmAndName.put("userName", userName);
 				cmAndName.put("type", "history");
 				userSession.getAsyncRemote().sendText(gson.toJson(cmAndName));
 //				System.out.println("history = " + gson.toJson(cmAndName));
@@ -80,6 +82,7 @@ System.out.println("chatMessage.getType()="+chatMessage.getType());
 		} else if ("userlist".equals(chatMessage.getType())) {
 			Set<String> userIds = sessionsMap.keySet();
 //			UsersService usersService = new UsersService();
+			MemberServiceImpl msimpl = new MemberServiceImpl();
 			////////////// 取得上線用戶
 			List<Map<String, String>> userList = new ArrayList<Map<String, String>>();
 			for (String id : userIds) {
@@ -88,6 +91,7 @@ System.out.println("chatMessage.getType()="+chatMessage.getType());
 					users.put("userId", id);
 					users.put("onoff", "online");
 //					users.put("userName", usersService.getOneUser(Integer.parseInt(id)).getUserName());
+					users.put("userName", msimpl.findById(Integer.parseInt(id)).getUsername());
 					List<String> historyData = JedisHandleMessage.getHistoryMsg("employee", id);
 					String status = "read";
 					for(String oneChat : historyData) {
@@ -123,6 +127,7 @@ System.out.println("chatMessage.getType()="+chatMessage.getType());
 				users.put("userId", id);
 				users.put("onoff", "offline");
 //				users.put("userName", usersService.getOneUser(Integer.parseInt(id)).getUserName());
+				users.put("userName", msimpl.findById(Integer.parseInt(id)).getUsername());
 				List<String> historyData = JedisHandleMessage.getHistoryMsg("employee", id);
 				String status = "read";
 				for(String oneChat : historyData) {
