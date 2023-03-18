@@ -2,7 +2,6 @@ package member.controller;
 
 import java.io.IOException;
 
-import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -47,11 +46,9 @@ public class MemberForgetPS extends HttpServlet{
 				String toEmail = "fortibamejava@gmail.com";
 				String subject = "寄送驗證碼";
 				String text = "您想要修改密碼，請輸入以下的驗證碼來修改您的密碼 ，" + "驗證碼: " + code;
-				try {
-					SendEmail mail = new SendEmail(); 
-					mail.sendEmail(toEmail, subject, text);
-				} catch (MessagingException e) {
-				}
+				
+				MailService mail = new MailService(); 
+				mail.sendMail(toEmail, subject, text);
 
 				resp.sendRedirect("verify.html");
 			}
