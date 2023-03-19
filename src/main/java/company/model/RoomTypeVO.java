@@ -1,6 +1,6 @@
 package company.model;
 
-import java.util.Date;
+import java.util.List;
 
 public class RoomTypeVO {
 	private Integer roomTypeID;
@@ -10,29 +10,22 @@ public class RoomTypeVO {
 	private Integer roomTypeQuantity;
 	private Integer roomTypePrice;
 	private RoomTypeImgVO roomTypeImgVO;
-	private String orderCheckInDate;
-	private String orderCheckOutDate;
 	private String companyImg;
+	private List<RoomDateVO> roomDateVo; 
 	
 	
 	
+	public List<RoomDateVO> getRoomDateVo() {
+		return roomDateVo;
+	}
+	public void setRoomDateVo(List<RoomDateVO> roomDateVo) {
+		this.roomDateVo = roomDateVo;
+	}
 	public String getCompanyImg() {
 		return companyImg;
 	}
 	public void setCompanyImg(String companyImg) {
 		this.companyImg = companyImg;
-	}
-	public String getOrderCheckInDate() {
-		return orderCheckInDate;
-	}
-	public void setOrderCheckInDate(String orderCheckInDate) {
-		this.orderCheckInDate = orderCheckInDate;
-	}
-	public String getOrderCheckOutDate() {
-		return orderCheckOutDate;
-	}
-	public void setOrderCheckOutDate(String orderCheckOutDate) {
-		this.orderCheckOutDate = orderCheckOutDate;
 	}
 	public RoomTypeImgVO getRoomTypeImgVO() {
 		return roomTypeImgVO;

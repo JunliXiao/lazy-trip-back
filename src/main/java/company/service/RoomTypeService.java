@@ -1,8 +1,10 @@
 package company.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import company.dao.RoomTypeDAO;
+import company.model.RoomDateVO;
 import company.model.RoomTypeVO;
 import company.dao.RoomTypeDAO_interface;
 import company.dao.RoomTypeImgDAO;
@@ -12,14 +14,14 @@ public class RoomTypeService {
 
 	private RoomTypeDAO_interface dao;
 	private RoomTypeImgDAO_interface imgDao;
+
 	public RoomTypeService() {
 		dao = new RoomTypeDAO();
 		imgDao = new RoomTypeImgDAO();
 	}
-	
-	public RoomTypeVO addRoomType(Integer roomTypeID,Integer companyID, String roomTypeName,Integer roomTypePerson, 
-			Integer roomTypeQuantity, Integer roomTypePrice
-			) {
+
+	public RoomTypeVO addRoomType(Integer roomTypeID, Integer companyID, String roomTypeName, Integer roomTypePerson,
+			Integer roomTypeQuantity, Integer roomTypePrice) {
 
 		RoomTypeVO roomTypeVO = new RoomTypeVO();
 
@@ -33,9 +35,8 @@ public class RoomTypeService {
 		return roomTypeVO;
 	}
 
-	public RoomTypeVO updateRoomType(Integer roomTypeID,Integer companyID, String roomTypeName,Integer roomTypePerson, 
-			Integer roomTypeQuantity, Integer roomTypePrice
-			) {
+	public RoomTypeVO updateRoomType(Integer roomTypeID, Integer companyID, String roomTypeName, Integer roomTypePerson,
+			Integer roomTypeQuantity, Integer roomTypePrice) {
 
 		RoomTypeVO roomTypeVO = new RoomTypeVO();
 
@@ -59,10 +60,26 @@ public class RoomTypeService {
 		return dao.findByPrimaryKey(roomTypeID);
 	}
 
-	
 	public List<RoomTypeVO> getAllByCompanyID(Integer companyID) {
-		return dao.getAllByCompanyID(companyID);
+		List<RoomTypeVO> roomTypeVOList = new ArrayList<RoomTypeVO>();
+		roomTypeVOList = dao.getAllByCompanyID(companyID);
+
+		List<RoomDateVO> roomDateVoList = new ArrayList<RoomDateVO>();
+		roomDateVoList = dao.getDateCompanyID(companyID);
+		
+		//
+		
+		for (RoomTypeVO roomTypeVO : roomTypeVOList) {
+			List<RoomDateVO> sameRoomTypeIdList = new ArrayList<RoomDateVO>();
+			for (RoomDateVO roomDateVO : roomDateVoList) {						
+				if (roomDateVO.getRoomTypeID().equals(roomTypeVO.getRoomTypeID())) {
+					sameRoomTypeIdList.add(roomDateVO);					
+				}				
+			}
+			roomTypeVO.setRoomDateVo(sameRoomTypeIdList);
+		}
+
+		return roomTypeVOList;
 	}
-	
-	
+
 }

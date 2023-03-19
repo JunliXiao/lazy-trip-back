@@ -2,6 +2,7 @@ package company.dao;
 
 import java.util.List;
 
+import company.model.RoomDateVO;
 import company.model.RoomTypeVO;
 
 public interface RoomTypeDAO_interface {
@@ -19,5 +20,7 @@ public interface RoomTypeDAO_interface {
 
 
 	List<RoomTypeVO> getAllByCompanyID(Integer companyID);
+
+	List<RoomDateVO> getDateCompanyID(Integer companyID);
 
 }

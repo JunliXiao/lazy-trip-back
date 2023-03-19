@@ -17,6 +17,7 @@ import java.util.List;
 
 import common.HikariDataSource;
 import company.model.CompanyVO;
+import company.model.RoomDateVO;
 import company.model.RoomTypeImgVO;
 import company.model.RoomTypeVO;
 import order.model.OrderVO;
@@ -45,16 +46,18 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 	private static final String GET_ALL_BY_COMPANYID = """
 			SELECT a.roomtype_id as aRoomTypeID,a.company_id as companyID,a.roomtype_name as roomTypeName, 
 			a.roomtype_person as roomTypePerson, a.roomtype_quantity as roomTypeQuantity, a.roomtype_price as roomTypePrice,
-			b.roomtype_img_id as roomTypeImgID,b.roomtype_id as bRoomTypeID,b.roomtype_img as roomTypeImg ,
-			o.order_check_in_date as orderCheckInDate, o.order_check_out_date as  orderCheckOutDate, c.company_img as companyImg
+			b.roomtype_img_id as roomTypeImgID,b.roomtype_id as bRoomTypeID,b.roomtype_img as roomTypeImg ,c.company_img as companyImg
 			FROM roomtype a
 			left join roomtype_img b on a.roomtype_id = b.roomtype_id 
-            left join order_detail od on a.roomtype_id = od.roomtype_id
-            left join lazy.order o on o.company_id = a.company_id
             left join company c on a.company_id = c.company_id
             where a.company_id = ? order by a.roomtype_id
 			""";
-	
+	private static final String GET_DATE_COMPANYID = """
+			SELECT od.roomtype_id as roomTypeID ,o.order_check_in_date as orderCheckInDate, o.order_check_out_date as  orderCheckOutDate
+			FROM lazy.order o
+			left join order_detail od on o.order_id = od.order_id
+			where o.company_id = ? order by o.order_check_in_date 
+			""";
 	
 	@Override
 	public void insert(RoomTypeVO roomTypeVO) {
@@ -315,32 +318,19 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 			pstmt = con.prepareStatement(GET_ALL_BY_COMPANYID);
 			pstmt.setInt(1, companyID);
 			rs = pstmt.executeQuery();
-
+			
 			while (rs.next()) {
-				// EquipmentVO 也稱為 Domain objects
-
 				RoomTypeVO roomTypeVO = new RoomTypeVO();
+				// EquipmentVO 也稱為 Domain objects				
 				roomTypeVO.setRoomTypeID(rs.getInt("aRoomTypeID"));
 				roomTypeVO.setCompanyID(rs.getInt("companyID"));
 				roomTypeVO.setRoomTypePerson(rs.getInt("roomTypePerson"));
 				roomTypeVO.setRoomTypeName(rs.getString("roomTypeName"));
 				roomTypeVO.setRoomTypeQuantity(rs.getInt("roomTypeQuantity"));
 				roomTypeVO.setRoomTypePrice(rs.getInt("roomTypePrice"));
-				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				
 				
 				roomTypeVO.setCompanyImg(rs.getString("companyImg") );
-									
-				//加判斷是避免no point exception
-		        // 解析日期字串成 Date 物件
-				if(rs.getDate("orderCheckInDate") != null &&  rs.getDate("orderCheckOutDate") != null) {
-					Date start = dateFormat.parse(rs.getDate("orderCheckInDate").toString());
-			        Date end = dateFormat.parse(rs.getDate("orderCheckOutDate").toString());
-			        // 格式化日期
-			        String startformattedDate = dateFormat.format(start);
-			        String endformattedDate = dateFormat.format(end);
-					roomTypeVO.setOrderCheckInDate(startformattedDate);
-					roomTypeVO.setOrderCheckOutDate(endformattedDate);
-				}      
 				
 //				Blob blob = rs.getBlob("roomTypeImg");
 //			    InputStream inputStream = blob.getBinaryStream();
@@ -353,11 +343,10 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 					roomTypeImgVO.setRoomTypeID(rs.getInt("bRoomTypeID"));
 					roomTypeImgVO.setRoomTypeImgOutput(rs.getString("roomTypeImg"));	
 					roomTypeVO.setRoomTypeImgVO(roomTypeImgVO);
-				}  
-				
+				}
 				list.add(roomTypeVO); // Store the row in the list
 			}
-
+			
 			// Handle any driver errors
 		} catch (Exception se) {
 			throw new RuntimeException("A database error occured. " + se.getMessage());
@@ -386,6 +375,69 @@ public class RoomTypeDAO implements RoomTypeDAO_interface {
 			}
 		}
 		return list;
+	}
+	
+	@Override
+	public List<RoomDateVO> getDateCompanyID(Integer companyID) {
+//		RoomTypeVO roomTypeVO = null;
+		List<RoomDateVO> roomDateVOList = new ArrayList<RoomDateVO>();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {			
+			con = HikariDataSource.getConnection();
+			pstmt = con.prepareStatement(GET_DATE_COMPANYID);
+			pstmt.setInt(1, companyID);
+			rs = pstmt.executeQuery();
+
+			//加判斷是避免no point exception
+	        // 解析日期字串成 Date 物件  GET_DATE_COMPANYID
+			
+			while (rs.next()) {				
+				if(rs.getDate("orderCheckInDate") != null &&  rs.getDate("orderCheckOutDate") != null) {
+					RoomDateVO roomDateVO = new RoomDateVO();
+					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					Date start = dateFormat.parse(rs.getDate("orderCheckInDate").toString());
+			        Date end = dateFormat.parse(rs.getDate("orderCheckOutDate").toString());
+			        // 格式化日期
+			        String startformattedDate = dateFormat.format(start);
+			        String endformattedDate = dateFormat.format(end);
+			        roomDateVO.setRoomTypeID(rs.getInt("roomTypeID"));
+			        roomDateVO.setOrderCheckInDate(startformattedDate);
+			        roomDateVO.setOrderCheckOutDate(endformattedDate);
+			        roomDateVOList.add(roomDateVO);
+				}				
+			}
+			
+			// Handle any driver errors
+		} catch (Exception se) {
+			throw new RuntimeException("A database error occured. " + se.getMessage());
+			// Clean up JDBC resources
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return roomDateVOList;
 	}
 
 	
