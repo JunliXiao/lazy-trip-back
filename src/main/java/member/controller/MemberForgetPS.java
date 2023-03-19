@@ -43,9 +43,10 @@ public class MemberForgetPS extends HttpServlet{
 				jedis.expire(db.toString(), 1800);
 				req.getSession().setAttribute("forgetMemId", member.getId());
 
-				String toEmail = "fortibamejava@gmail.com";
-				String subject = "寄送驗證碼";
-				String text = "您想要修改密碼，請輸入以下的驗證碼來修改您的密碼 ，" + "驗證碼: " + code;
+//				String toEmail = "fortibamejava@gmail.com";
+				String toEmail = member.getAccount();
+				String subject = "LazyTrip 密碼驗證信";
+				String text = "會員 " + member.getAccount() + "您好，請輸入以下的驗證碼來完成修改密碼的動作 ，" + "驗證碼: " + code;
 				
 				MailService mail = new MailService(); 
 				mail.sendMail(toEmail, subject, text);

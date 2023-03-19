@@ -1,5 +1,6 @@
 package admin.service;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -12,7 +13,8 @@ import member.dao.MemberDAOImpl;
 import member.model.Member;
 import member.controller.HashedPassword;
 
-public class AdminService {
+public class AdminService implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private AdminDAO dao;
 	
 	public AdminService() {
@@ -50,10 +52,10 @@ public class AdminService {
 			System.out.println(temp.getPassword() + " ; " + HashedPassword.verifyPassword(password, temp.getPassword())
 					+ " ; " + HashedPassword.hashPassword(password));
 			if (account == null || account.isEmpty() || password == null || password.isEmpty()
-					|| !(verifyPassword(password, temp.getPassword()))) {
+					|| !(HashedPassword.verifyPassword(password, temp.getPassword()))) {
 				return null;
 			} else {
-				admin.setPassword(hashPassword(password));
+				admin.setPassword(HashedPassword.hashPassword(password));
 				admin = dao.login(admin);
 				return admin;
 			}
@@ -66,29 +68,6 @@ public class AdminService {
 		return dao.getAll();
 	};
 	
-	private boolean verifyPassword(String password, String hashedPassword) {
-        // Compare the hashed password with the hashed user input
-        return hashedPassword.equals(hashPassword(password));
-    }
 	
-	private String hashPassword(String password) {
-        // Hash the password using SHA-256 algorithm
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(password.getBytes());
-            StringBuilder hexString = new StringBuilder();
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 	
 }
