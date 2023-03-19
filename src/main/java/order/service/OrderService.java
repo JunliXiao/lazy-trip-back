@@ -8,6 +8,8 @@ import order.model.OrderVO;
 import java.util.List;
 import java.util.Map;
 
+import member.model.Member;
+
 public class OrderService {
     private OrderDAOInterface dao;
 
@@ -32,5 +34,8 @@ public class OrderService {
     }
     public List<OrderDetailVO> showOrderDetailByOrderID(Integer orderID){
         return dao.selectFindOrderDetailByOrderID(orderID);
+    }
+    public Member showMemberByMemberID(Integer id){
+        return dao.selectFindMemberByMemberID(id);
     }
 }

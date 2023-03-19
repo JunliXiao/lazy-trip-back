@@ -5,6 +5,8 @@ import order.model.*;
 import java.util.List;
 import java.util.Map;
 
+import member.model.Member;
+
 public interface OrderDAOInterface {
 
     public List<CompanyVO> selectFindCompanyAndRoomTypePriceByPosition(String addressCounty);
@@ -18,13 +20,14 @@ public interface OrderDAOInterface {
     public List<CompanyVO> SelectFindCompanyAllByCompanyID(Integer companyID);
     public List<CompanyVO> selectShowSearchKeyWordByCompanyNameOrAddress(CompanyVO companyVO);
     public int createOrderAndOrderDetail(List<OrderVO> orderVOs);
-    public int orderPay(OrderVO orderVO);
+    public int orderPay(Integer orderID);
     public int updateOrderOverTimeForPay();
     public List<OrderVO> selectFindOrderByCompanyID(Integer companyID);
     public List<OrderDetailVO> selectFindOrderDetailByOrderID(Integer orderID);
     public List<OrderVO> selectFindOrderAllAndStatusWaitPayByOrderID(Integer orderID);
     public Map<Integer, OrderVO> selectFindOrderAllByMemberID(Integer memberID);
     public Map<Integer, OrderVO> selectFindOrderAllAndAlreadyPayByCompanyID(Integer companyID);
+    public Member selectFindMemberByMemberID(Integer id);
 
 
 }

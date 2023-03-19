@@ -1,6 +1,8 @@
 package order.controller;
 
 import com.google.gson.Gson;
+
+import member.model.Member;
 import order.model.OrderDetailVO;
 import order.model.OrderVO;
 import order.service.OrderService;
@@ -109,6 +111,23 @@ public class OrderGetServlet extends HttpServlet {
 
             } catch (Exception e) {
                 System.out.println("Order.do_showOrderDetailByOrderID: " + e.getMessage());
+                e.printStackTrace();
+            }
+            
+        }else if (req.getParameter("type").equals("showMemberByMemberID")) {
+            System.out.println("memberID: " + req.getParameter("memberID"));
+
+            try {
+                Integer memberID = Integer.valueOf(req.getParameter("memberID"));
+
+                Member member = orderSvc.showMemberByMemberID(memberID);
+                res.setCharacterEncoding("UTF-8");
+                res.setContentType("application/json");
+                PrintWriter out = res.getWriter();
+                out.print(gsonUtils.toJson(member));
+
+            } catch (Exception e) {
+                System.out.println("Order.do_showMemberByMemberID: " + e.getMessage());
                 e.printStackTrace();
             }
 
