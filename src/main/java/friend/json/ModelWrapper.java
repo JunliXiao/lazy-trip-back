@@ -36,4 +36,5 @@ public class ModelWrapper {
             this.dataType = "none";
         }
     }
+
 }

@@ -36,6 +36,7 @@ public class ChatroomController extends HttpServlet {
         out.println(output);
     }
 
+    // 給予會員編號 list，建立聊天室
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         String output;

@@ -2,6 +2,7 @@ package friend.controller;
 
 import com.google.gson.Gson;
 import friend.json.ModelWrapper;
+import friend.repository.MemberPagerAndSorter;
 import friend.service.FriendMemberService;
 import friend.service.FriendMemberServiceImpl;
 import member.model.Member;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serial;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/api/friend/request")
 public class FriendRequestController extends HttpServlet {
@@ -73,14 +75,20 @@ public class FriendRequestController extends HttpServlet {
         String output;
 
         FriendMemberService service = new FriendMemberServiceImpl();
-        int id = Integer.parseInt(request.getParameter("member_id"));
-        String direction = request.getParameter("direction");
+        Map<String, String[]> parametersMap = request.getParameterMap();
+        MemberPagerAndSorter pagerAndSorter = new MemberPagerAndSorter();
+        int id = Integer.parseInt(parametersMap.get("member_id")[0]);
+        String direction = parametersMap.get("direction")[0];
+        pagerAndSorter.setLimit(Integer.parseInt(parametersMap.get("limit")[0]));
+        pagerAndSorter.setOffset(Integer.parseInt(parametersMap.get("offset")[0]));
+        pagerAndSorter.setSortingColumn(parametersMap.get("sortingColumn")[0]);
+        pagerAndSorter.setSortingOrder(parametersMap.get("sortingOrder")[0]);
 
         List<Member> dataList = null;
         if (direction.equals("sent")) {
-            dataList = service.getSentRequests(id);
+            dataList = service.getSentRequests(id, pagerAndSorter);
         } else if (direction.equals("received")) {
-            dataList = service.getReceivedRequests(id);
+            dataList = service.getReceivedRequests(id, pagerAndSorter);
         }
 
         output = gson.toJson(new ModelWrapper(dataList));

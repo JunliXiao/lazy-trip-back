@@ -1,8 +1,10 @@
 package friend.controller;
 
 import com.google.gson.Gson;
+import friend.json.ModelWrapper;
 import friend.service.ChatMemberService;
 import friend.service.ChatMemberServiceImpl;
+import member.model.Member;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 @WebServlet("/api/chat/member")
 public class ChatMemberController extends HttpServlet {
@@ -26,14 +29,17 @@ public class ChatMemberController extends HttpServlet {
 
         ChatMemberService service = new ChatMemberServiceImpl();
         String target = request.getParameter("action");
+        List<Member> dataList = null;
 
         if (target.equals("member")) {
             String searchText = request.getParameter("search_text");
-            output = gson.toJson(service.searchMembersByText(searchText));
+            dataList = service.searchMembersByText(searchText);
         } else if (target.equals("chatroom_member")) {
             Integer id = Integer.parseInt(request.getParameter("chatroom_id"));
-            output = gson.toJson(service.getMembersByChatroom(id));
+            dataList = service.getMembersByChatroom(id);
         }
+        
+        output = gson.toJson(new ModelWrapper(dataList));
         out.println(output);
     }
 }

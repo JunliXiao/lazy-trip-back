@@ -2,6 +2,7 @@ package friend.service;
 
 import friend.repository.FriendMemberRepository;
 import friend.repository.FriendMemberRepositoryImpl;
+import friend.repository.MemberPagerAndSorter;
 import member.model.Member;
 
 import java.util.List;
@@ -42,28 +43,53 @@ public class FriendMemberServiceImpl implements FriendMemberService {
 	}
 
 	@Override
-	public List<Member> getFriends(Integer memberId) {
-		return repository.getMembersByFriendship(memberId, "A");
+	public List<Member> getFriends(Integer memberId, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByFriendship(memberId, "A", pagerAndSorter);
 	}
 
 	@Override
-	public List<Member> getBlockedMembers(Integer memberId) {
-		return repository.getMembersByFriendship(memberId, "B");
+	public List<Member> getFriends(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByFriendship(memberId, "A", searchText, pagerAndSorter);
 	}
 
 	@Override
-	public List<Member> getSentRequests(Integer memberId) {
-		return repository.getMembersByRequest(memberId, "sent");
-	}
-	
-	@Override
-	public List<Member> getReceivedRequests(Integer memberId) {
-		return repository.getMembersByRequest(memberId, "received");
+	public List<Member> getBlockedMembers(Integer memberId, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByFriendship(memberId, "B", pagerAndSorter);
 	}
 
 	@Override
-	public List<Member> getFriendSuggestions(Integer memberId) {
-		return repository.getMembersByNonFriendship(memberId);
+	public List<Member> getBlockedMembers(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByFriendship(memberId, "B", searchText, pagerAndSorter);
 	}
-    
+
+	@Override
+	public List<Member> getSentRequests(Integer memberId, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByRequest(memberId, "sent", pagerAndSorter);
+	}
+
+	@Override
+	public List<Member> getSentRequests(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByRequest(memberId, "sent", searchText, pagerAndSorter);
+	}
+
+	@Override
+	public List<Member> getReceivedRequests(Integer memberId, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByRequest(memberId, "received", pagerAndSorter);
+	}
+
+	@Override
+	public List<Member> getReceivedRequests(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByRequest(memberId, "received", searchText, pagerAndSorter);
+	}
+
+	@Override
+	public List<Member> getFriendSuggestions(Integer memberId, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByNonFriendship(memberId, pagerAndSorter);
+	}
+
+	@Override
+	public List<Member> getFriendSuggestions(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter) {
+		return repository.getMembersByNonFriendship(memberId, searchText, pagerAndSorter);
+	}
+
 }

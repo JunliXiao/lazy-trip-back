@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface ChatMemberService {
 
-    boolean createChatroom(List<Integer> membersId);
+    Chatroom createChatroom(List<Integer> membersId);
 
     List<Chatroom> getChatroomsByMember(Integer memberId);
 

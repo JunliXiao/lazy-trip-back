@@ -14,21 +14,21 @@ import java.util.List;
 public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
 
     @Override
-    public boolean addChatroom(List<Integer> membersId) {
+    public Integer addChatroom(List<Integer> membersId) {
         boolean hasAdded = false;
         String sqlInsertChatroom = "INSERT INTO `chatroom` (`chatroom_name`) VALUES (' ');";
         String sqlInsertChatroomMember = "INSERT INTO `chatroom_member` (`chatroom_id`, `member_id`) VALUES (?, ?);";
-        String[] generatedColumns = {"chatroom_id"};
+        String[] generatedColumnsA = {"chatroom_id"};
         int chatroomId;
 
         try (Connection connection = HikariDataSource.getConnection();
-             PreparedStatement ps1 = connection.prepareStatement(sqlInsertChatroom, generatedColumns);
+             PreparedStatement ps1 = connection.prepareStatement(sqlInsertChatroom, generatedColumnsA);
              PreparedStatement ps2 = connection.prepareStatement(sqlInsertChatroomMember)) {
             hasAdded = ps1.executeUpdate() != 0;
-            ResultSet rs = ps1.getGeneratedKeys();
+            ResultSet rsA = ps1.getGeneratedKeys();
 
-            if (rs.next()) {
-                chatroomId = rs.getInt(1);
+            if (rsA.next()) {
+                chatroomId = rsA.getInt(1);
                 ps2.setInt(1, chatroomId);
             } else {
                 throw new RuntimeException("Failed to create a chatroom");
@@ -46,7 +46,7 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
 //            throw new RuntimeException("無法將該名會員加入聊天室");
             throw new RuntimeException(e);
         }
-        return hasAdded;
+        return chatroomId;
     }
 
     @Override
@@ -84,6 +84,32 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             throw new RuntimeException("無法從聊天室移除該名成員");
         }
         return hasDeleted;
+    }
+
+    @Override
+    public Chatroom getChatroom(Integer chatroomId) {
+        Chatroom chatroom = null;
+        String sql = "SELECT chatroom_id, chatroom_name, UNIX_TIMESTAMP(created_at) created_at_unix FROM lazy.chatroom WHERE chatroom_id = ?;";
+
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, chatroomId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                chatroom = new Chatroom();
+                chatroom.setId(rs.getInt("chatroom_id"));
+                chatroom.setName(rs.getString("chatroom_name"));
+                chatroom.setCreatedAt(rs.getLong("created_at_unix"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+//            throw new RuntimeException("目前資料庫有異狀，無法取得所有聊天室");
+            throw new RuntimeException(e);
+        }
+
+        return chatroom;
     }
 
     @Override

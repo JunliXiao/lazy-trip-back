@@ -20,8 +20,9 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     }
 
     @Override
-    public boolean createChatroom(List<Integer> membersId) {
+    public Chatroom createChatroom(List<Integer> membersId) {
         boolean canCreateNewChatroom = false;
+        Chatroom createdChatroom = null;
 
         // 檢查是否輸入的會員已有共同的聊天室，而不能新增
         List<List<Integer>> listOfCurrentChatroomsId = membersId
@@ -43,9 +44,10 @@ public class ChatMemberServiceImpl implements ChatMemberService {
         }
 
         if (canCreateNewChatroom) {
-            return chatroomMemberRepository.addChatroom(membersId);
+            Integer chatroom = chatroomMemberRepository.addChatroom(membersId);
+            createdChatroom = chatroomMemberRepository.getChatroom(chatroom);
         }
-        return canCreateNewChatroom;
+        return createdChatroom;
     }
 
     @Override

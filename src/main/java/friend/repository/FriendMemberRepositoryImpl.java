@@ -100,21 +100,22 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
     }
 
     @Override
-    public List<Member> getMembersByFriendship(Integer memberId, String statusCode) {
+    public List<Member> getMembersByFriendship(Integer memberId, String statusCode, MemberPagerAndSorter pagerAndSorter) {
         List<Member> friends = new ArrayList<>();
         String statusAR = """
                 SELECT member_id, member_account, member_name, member_username FROM member\r
                 	WHERE member_id IN \r
                 (SELECT addressee_id FROM friendship WHERE status_code = ? AND requester_id = ?\r
                 	UNION\r
-                SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?);
+                SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?)
                 """;
         String statusB = """
                 SELECT member_id, member_account, member_name, member_username FROM member
                 	WHERE member_id IN
-                (SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?);
+                (SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?)
                 """;
         String sql = statusCode.equals("B") ? statusB : statusAR;
+        sql = sql + pagerAndSorter.asQueryClause();
         try (Connection connection = HikariDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             if (statusCode.equals("B")) {
@@ -143,19 +144,71 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
     }
 
     @Override
-	public List<Member> getMembersByRequest(Integer memberId, String direction) {
+    public List<Member> getMembersByFriendship(Integer memberId, String statusCode, String searchText, MemberPagerAndSorter pagerAndSorter) {
         List<Member> friends = new ArrayList<>();
-        String sql = direction.equals("sent") 
-        		? """
+        String statusAR = """
                 SELECT member_id, member_account, member_name, member_username FROM member\r
                 	WHERE member_id IN \r
-                (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ? AND status_code = 'R');
+                (SELECT addressee_id FROM friendship WHERE status_code = ? AND requester_id = ?\r
+                	UNION\r
+                SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?)
+                    AND (member_name LIKE ? OR member_username LIKE ?)
+                """;
+        String statusB = """
+                SELECT member_id, member_account, member_name, member_username FROM member
+                	WHERE member_id IN
+                (SELECT requester_id FROM friendship WHERE status_code = ? AND addressee_id = ?)
+                    AND (member_name LIKE ? OR member_username LIKE ?)
+                """;
+        String sql = statusCode.equals("B") ? statusB : statusAR;
+        sql = sql + pagerAndSorter.asQueryClause();
+        String text = "%" + searchText + "%";
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            if (statusCode.equals("B")) {
+                ps.setString(1, statusCode);
+                ps.setInt(2, memberId);
+                ps.setString(3, text);
+                ps.setString(4, text);
+            } else {
+                ps.setString(1, statusCode);
+                ps.setInt(2, memberId);
+                ps.setString(3, statusCode);
+                ps.setInt(4, memberId);
+                ps.setString(5, text);
+                ps.setString(6, text);
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Member friend = new Member();
+                friend.setId(Integer.parseInt(rs.getString("member_id")));
+                friend.setAccount(rs.getString("member_account"));
+                friend.setName(rs.getString("member_name"));
+                friend.setUsername(rs.getString("member_username"));
+                friends.add(friend);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return friends;
+    }
+
+    @Override
+    public List<Member> getMembersByRequest(Integer memberId, String direction, MemberPagerAndSorter pagerAndSorter) {
+        List<Member> friends = new ArrayList<>();
+        String sql = direction.equals("sent")
+                ? """
+                SELECT member_id, member_account, member_name, member_username FROM member\r
+                	WHERE member_id IN \r
+                (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ? AND status_code = 'R')
                 """
-        		: """
+                : """
                 SELECT member_id, member_account, member_name, member_username FROM member\r
                       	WHERE member_id IN \r
-                      (SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ? AND status_code = 'R');
+                      (SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ? AND status_code = 'R')
                 """;
+        sql = sql + pagerAndSorter.asQueryClause();
 
         try (Connection connection = HikariDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -173,18 +226,56 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
             e.printStackTrace();
         }
         return friends;
-	}
-    
-    
-	@Override
-	public List<Member> getMembersByNonFriendship(Integer memberId) {
+    }
+
+    @Override
+    public List<Member> getMembersByRequest(Integer memberId, String direction, String searchText, MemberPagerAndSorter pagerAndSorter) {
+        List<Member> friends = new ArrayList<>();
+        String sql = direction.equals("sent")
+                ? """
+                SELECT member_id, member_account, member_name, member_username FROM member\r
+                	WHERE member_id IN \r
+                (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ? AND status_code = 'R')
+                    AND (member_name LIKE ? OR member_username LIKE ?)
+                """
+                : """
+                SELECT member_id, member_account, member_name, member_username FROM member\r
+                      	WHERE member_id IN \r
+                (SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ? AND status_code = 'R')
+                    AND (member_name LIKE ? OR member_username LIKE ?)
+                """;
+        String text = "%" + searchText + "%";
+        sql = sql + pagerAndSorter.asQueryClause();
+
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, memberId);
+            ps.setString(2, text);
+            ps.setString(3, text);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Member friend = new Member();
+                friend.setId(Integer.parseInt(rs.getString("member_id")));
+                friend.setAccount(rs.getString("member_account"));
+                friend.setName(rs.getString("member_name"));
+                friend.setUsername(rs.getString("member_username"));
+                friends.add(friend);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return friends;
+    }
+
+    @Override
+    public List<Member> getMembersByNonFriendship(Integer memberId, MemberPagerAndSorter pagerAndSorter) {
         List<Member> nonFriends = new ArrayList<>();
         String sql = """
                 SELECT member_id, member_account, member_name, member_username FROM member\r
                 	WHERE member_id NOT IN \r
                 (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ?\r
                 	UNION\r
-                SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ?) AND member_id != ?;""";
+                SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ?) AND member_id != ?""" + pagerAndSorter.asQueryClause();
 
         try (Connection connection = HikariDataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -200,11 +291,48 @@ public class FriendMemberRepositoryImpl implements FriendMemberRepository {
                 nonFriend.setUsername(rs.getString("member_username"));
                 nonFriends.add(nonFriend);
             }
-        	
-            } catch (SQLException e) {
-                e.printStackTrace();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nonFriends;
+    }
+
+    @Override
+    public List<Member> getMembersByNonFriendship(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter) {
+        List<Member> nonFriends = new ArrayList<>();
+        String sql = """
+                SELECT member_id, member_account, member_name, member_username FROM member\r
+                	WHERE member_id NOT IN \r
+                (SELECT addressee_id AS friend_id FROM friendship WHERE requester_id = ?\r
+                	UNION\r
+                SELECT requester_id AS friend_id FROM friendship WHERE addressee_id = ?)
+                    AND member_id != ? AND (member_name LIKE ? OR member_username LIKE ?)
+                """;
+        String text = "%" + searchText + "%";
+        sql = sql + pagerAndSorter.asQueryClause();
+
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, memberId);
+            ps.setInt(2, memberId);
+            ps.setInt(3, memberId);
+            ps.setString(4, text);
+            ps.setString(5, text);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Member nonFriend = new Member();
+                nonFriend.setId(Integer.parseInt(rs.getString("member_id")));
+                nonFriend.setAccount(rs.getString("member_account"));
+                nonFriend.setName(rs.getString("member_name"));
+                nonFriend.setUsername(rs.getString("member_username"));
+                nonFriends.add(nonFriend);
             }
-    	return nonFriends;
-	}
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nonFriends;
+    }
 
 }

@@ -1,5 +1,6 @@
 package friend.service;
 
+import friend.repository.MemberPagerAndSorter;
 import member.model.Member;
 
 import java.util.List;
@@ -17,13 +18,23 @@ public interface FriendMemberService {
 
     Map<String, String> checkFriendshipBetween(Integer specifierId, Integer otherId);
 
-    List<Member> getFriends(Integer memberId);
+    List<Member> getFriends(Integer memberId, MemberPagerAndSorter pagerAndSorter);
 
-    List<Member> getSentRequests(Integer memberId);
+    List<Member> getFriends(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter);
 
-    List<Member> getReceivedRequests(Integer memberId);
+    List<Member> getSentRequests(Integer memberId, MemberPagerAndSorter pagerAndSorter);
 
-    List<Member> getBlockedMembers(Integer memberId);
+    List<Member> getSentRequests(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter);
 
-    List<Member> getFriendSuggestions(Integer memberId);
+    List<Member> getReceivedRequests(Integer memberId, MemberPagerAndSorter pagerAndSorter);
+
+    List<Member> getReceivedRequests(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter);
+
+    List<Member> getBlockedMembers(Integer memberId, MemberPagerAndSorter pagerAndSorter);
+
+    List<Member> getBlockedMembers(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter);
+
+    List<Member> getFriendSuggestions(Integer memberId, MemberPagerAndSorter pagerAndSorter);
+
+    List<Member> getFriendSuggestions(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter);
 }

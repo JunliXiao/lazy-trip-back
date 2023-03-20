@@ -15,10 +15,16 @@ public interface FriendMemberRepository {
 
     Map<String, String> getFriendshipBetween(Integer specifierId, Integer otherId);
 
-    List<Member> getMembersByFriendship(Integer memberId, String statusCode);
+    List<Member> getMembersByFriendship(Integer memberId, String statusCode, MemberPagerAndSorter pagerAndSorter);
 
-    List<Member> getMembersByRequest(Integer memberId, String direction);
+    List<Member> getMembersByFriendship(Integer memberId, String statusCode, String searchText, MemberPagerAndSorter pagerAndSorter);
 
-    List<Member> getMembersByNonFriendship(Integer memberId);
+    List<Member> getMembersByRequest(Integer memberId, String direction, MemberPagerAndSorter pagerAndSorter);
+
+    List<Member> getMembersByRequest(Integer memberId, String direction, String searchText, MemberPagerAndSorter pagerAndSorter);
+
+    List<Member> getMembersByNonFriendship(Integer memberId, MemberPagerAndSorter pagerAndSorter);
+
+    List<Member> getMembersByNonFriendship(Integer memberId, String searchText, MemberPagerAndSorter pagerAndSorter);
 
 }
