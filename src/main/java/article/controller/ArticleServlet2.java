@@ -63,6 +63,8 @@ public class ArticleServlet2 extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		String action = request.getParameter("action");
 		
+		
+		
 if ("getOne_For_Display".equals(action)) { // 來自select_page.jsp的請求//查詢單一文章
 
 
@@ -176,8 +178,18 @@ if ("update".equals(action)) { // 來自update_emp_input.jsp的請求
 				
 
 				Integer adminId = 1;
-				Integer memberId = 1;
-				Integer tourId = 1;
+//				Integer memberId = 1;
+//				Integer tourId = 1;
+				
+				HttpSession session = request.getSession();
+				Member member = (Member)session.getAttribute("member");
+				Integer memberId = member.getId();
+				
+				Integer tourId = Integer.valueOf(request.getParameter("tourId").trim());
+				if (tourId == null || tourId == 0) {
+				errorMsgs.add("請輸入行程編號");
+			}		
+				
 				
 				ArticleVO articleVO = new ArticleVO();
 				articleVO.setArticleId(articleId);
@@ -261,12 +273,9 @@ if ("insert".equals(action)) { // 來自addEmp.jsp的請求
 //		Integer tourId = 1;
 //		Integer adminId = Integer.valueOf(request.getParameter("adminId").trim());
 		
+//		HttpSession session = request.getSession();
+
 		HttpSession session = request.getSession();
-//		Integer memberId = (Integer) session.getAttribute("member");
-//		session.setAttribute("memberId", memberId);
-//System.out.println("memberId in session: " + memberId);
-
-
 Member member = (Member)session.getAttribute("member");
 System.out.println("member = " + member + ", member id = " + member.getId());
 Integer memberId = member.getId();
@@ -274,6 +283,10 @@ System.out.println("memberId = " + memberId);
 
 
 		Integer tourId = Integer.valueOf(request.getParameter("tourId").trim());
+		if (tourId == null || tourId == 0) {
+		errorMsgs.add("請輸入行程編號");
+	}	
+		
 //		Integer tourId = Integer.valueOf(request.getParameter("tourId").trim());
 //		if (tourId == null || tourId == 0) {
 //			errorMsgs.add("請輸入行程編號");
