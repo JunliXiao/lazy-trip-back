@@ -27,7 +27,7 @@ public class RoomTypeImgDAO implements RoomTypeImgDAO_interface {
 		private static final String UPDATE = 
 			"UPDATE roomtype_img set roomtype_img=? where roomtype_id = ?";
 		private static final String GET_ALL_BY_ROOMTYPEIMGID = """
-				SELECT SELECT roomtype_img_id as roomTypeImgID,roomtype_id as roomTypeID,roomtype_img as roomTypeImg 
+				SELECT roomtype_img_id as roomTypeImgID,roomtype_id as roomTypeID,roomtype_img as roomTypeImg 
 				FROM roomtype_img  where roomtype_img_id = ? order by roomtype_id;
 				""";
 		

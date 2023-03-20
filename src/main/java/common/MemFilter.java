@@ -1,21 +1,20 @@
 package common;
 
-import java.io.IOException;
+import member.model.Member;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
-import member.model.Member;
-
-@WebFilter(urlPatterns={ "/page/member/main.html" , "/page/group/group_htmls/*" , "/page/tour/tour.html", "/page/tour/tourSchedule.html"})
+@WebFilter(urlPatterns = {"/page/member/main.html"
+		, "/page/group/group_htmls/*"
+		, "/page/tour/tour.html"
+		, "/page/tour/tourSchedule.html"
+		, "/page/friend/friend_main.html"})
 public class MemFilter implements Filter{
 
 	@Override

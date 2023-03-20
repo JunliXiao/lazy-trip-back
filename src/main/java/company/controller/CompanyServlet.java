@@ -53,7 +53,7 @@ public class CompanyServlet extends HttpServlet {
 
 
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) *************/
-			req.setAttribute("companyVO", companyVO); // 資料庫取出的empVO物件,存入req
+			req.setAttribute("companyVO", companyVO); // 資料庫取出的compVO物件,存入req
 
 			Gson gson = new Gson();
 			res.setContentType("application/json");
@@ -76,8 +76,7 @@ public class CompanyServlet extends HttpServlet {
 			CompanyVO companyVO = companyService.getOneCompany(companyID);
 
 			/*************************** 3.查詢完成,準備轉交(Send the Success view) ************/
-			req.setAttribute("companyVO", companyVO); // 資料庫取出的empVO物件,存入req
-			String url = "/company/table company test.jsp";
+			
 			Gson gson = new Gson();
 			res.setContentType("application/json");
 			res.getWriter().print(gson.toJson(companyVO));
@@ -129,13 +128,7 @@ public class CompanyServlet extends HttpServlet {
 			companyVO.setLongitude(longitude);
 			companyVO.setCompanyImg(companyImg);
 
-			// Send the use back to the form, if there were errors
-			if (!errorMsgs.isEmpty()) {
-				req.setAttribute("companyVO", companyVO); // 含有輸入格式錯誤的empVO物件,也存入req
-				RequestDispatcher failureView = req.getRequestDispatcher("/company/table company test.jsp");
-				failureView.forward(req, res);
-				return; // 程式中斷
-			}
+			
 
 			/*************************** 2.開始修改資料 *****************************************/
 			CompanyService companyService = new CompanyService();
@@ -143,8 +136,7 @@ public class CompanyServlet extends HttpServlet {
 					introduction, addressCounty, addressArea, addressStreet, latitude, longitude, companyImg);
 
 			/*************************** 3.修改完成,準備轉交(Send the Success view) *************/
-			req.setAttribute("companyVO", companyVO); // 資料庫update成功後,正確的的empVO物件,存入req
-			String url = "/company/table company test.jsp";
+			
 			Gson gson = new Gson();
 			res.setContentType("application/json");
 

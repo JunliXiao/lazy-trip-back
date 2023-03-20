@@ -34,7 +34,7 @@ public class MemberLogout extends HttpServlet{
 		        }
 		    }
 			req.getSession().invalidate();
-			resp.sendRedirect(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()  + req.getContextPath() + "/" + "index.html");
+			resp.sendRedirect(req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort()  + req.getContextPath() + "/" );
 			
 		} catch (Exception e) {
 			e.printStackTrace();

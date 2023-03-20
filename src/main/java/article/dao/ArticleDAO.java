@@ -17,20 +17,20 @@ import common.HikariDataSource;
 
 public class ArticleDAO implements ArticleDAO_interface {
 
-	private static DataSource ds = null;
-	static {
-		try {
-			Context ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
-	}
+//	private static DataSource ds = null;
+//	static {
+//		try {
+//			Context ctx = new InitialContext();
+//			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB");
+//		} catch (NamingException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	private static final String INSERT_STMT =
 			"insert into article(article_title,article_content,article_date,article_date_change,article_image,admin_id,member_id,tour_id) values(?,?,?,?,?,?,?,?)";
 	private static final String UPDATE = 
-			"UPDATE article set article_title=?,articl_content=?,article_date_change=?,article_image=? where article_id=?;";
+			"UPDATE article set article_title=?,article_content=?,article_date_change=?,article_image=? where article_id=?;";
 	private static final String DELETE = 
 			"DELETE FROM article where article_id = ?";
 	private static final String GET_ONE_STMT = 
