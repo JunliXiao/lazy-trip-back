@@ -21,8 +21,8 @@ public class TourComDaoImpl implements TourComDao {
 	private static final String INSERT_SQL = "insert into tour_company (tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, feature) values (?,?,?,?,?,?,?,?);";
 	private static final String UPDATE_SQL = "update tour_company set tour_title=?, start_date=?, end_date=?, tour_img=?, cost=?, tour_person=? where c_tour_id=? and company_id=?;";
 	private static final String DELETE_SQL = "update tour_company set status=? where c_tour_id = ?";
-	private static final String GET_ALL_SQL_COM = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, status from tour_company where company_id=? order by start_date;";
-	private static final String GET_ONE_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id form tour_company where c_tour_id= ? order by start_date;";
+	private static final String GET_ALL_SQL_COM = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, status, feature from tour_company where company_id=? order by start_date;";
+	private static final String GET_ONE_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, feature form tour_company where c_tour_id= ? order by start_date;";
 	private static final String GET_ALL_SQL = "select c_tour_id, tour_title, start_date, end_date, tour_img, cost, tour_person, company_id, feature from tour_company where status is null order by start_date;";
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -126,6 +126,7 @@ public class TourComDaoImpl implements TourComDao {
 				tourComVO.setCost(rs.getInt("cost"));
 				tourComVO.setTourPerson(rs.getInt("tour_person"));
 				tourComVO.setCompanyId(rs.getInt("company_id"));
+				tourComVO.setFeature(rs.getString("feature"));
 				tourComVO.setStatus(rs.getString("status"));
 				if (tourComVO.getStatus() != null && tourComVO.getStatus().equals("D")) {
 					continue;
@@ -164,6 +165,7 @@ public class TourComDaoImpl implements TourComDao {
 				tourComVO.setCompanyId(rs.getInt("company_id"));
 				tourComVO.setCost(rs.getInt("cost"));
 				tourComVO.setTourPerson(rs.getInt("tour_person"));
+				tourComVO.setFeature(rs.getString("feature"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -216,19 +218,23 @@ public class TourComDaoImpl implements TourComDao {
 		ResultSet rs = null;
 
 		if (text.getTourTitle() != null && !text.getTourTitle().isEmpty()) {
-			getInfoText = "tour_title like \"%" + text.getTourTitle() + "%\"";
+			getInfoText = "tour_title like ?";
 			SQL.append(" and ").append(getInfoText);
 		}
 		if (text.getStartDate() != null && !text.getStartDate().isEmpty()) {
-			getInfoText = "start_date >= " + text.getStartDate();
+			getInfoText = "start_date >= ?";
 			SQL.append(" and ").append(getInfoText);
 		}
 		if (text.getEndDate() != null && !text.getEndDate().isEmpty()) {
-			getInfoText = "end_date <= " + text.getEndDate();
+			getInfoText = "end_date <= ?";
+			SQL.append(" and ").append(getInfoText);
+		}
+		if (text.getCost() != null && !text.getCost().isEmpty()) {
+			getInfoText = "cost like ?";
 			SQL.append(" and ").append(getInfoText);
 		}
 		if (text.getFeature() != null && !text.getFeature().isEmpty()) {
-			getInfoText = "feature like \"%" + text.getFeature() + "%\"";
+			getInfoText = "feature like ?";
 			SQL.append(" and ").append(getInfoText);
 		}
 		SQL.append(" order by start_date;");
@@ -237,6 +243,23 @@ public class TourComDaoImpl implements TourComDao {
 		try (Connection conn = HikariDataSource.getConnection();
 				PreparedStatement ps = conn.prepareStatement(SQL.toString())) {
 			ps.setString(1, text.getCompanyId());
+			
+			int index = 2;
+			if (text.getTourTitle() != null && !text.getTourTitle().isEmpty()) {
+				ps.setString(index++, "%" + text.getTourTitle() + "%");
+			}
+			if (text.getStartDate() != null && !text.getStartDate().isEmpty()) {
+				ps.setString(index++, text.getStartDate());
+			}
+			if (text.getEndDate() != null && !text.getEndDate().isEmpty()) {
+				ps.setString(index++, text.getEndDate());
+			}
+			if (text.getCost() != null && !text.getCost().isEmpty()) {
+				ps.setString(index++, "%" + text.getCost() + "%");
+			}
+			if (text.getFeature() != null && !text.getFeature().isEmpty()) {
+				ps.setString(index++, "%" + text.getFeature() + "%");
+			}
 
 			rs = ps.executeQuery();
 

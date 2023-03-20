@@ -24,9 +24,9 @@ public class TourDaoImpl implements TourDao {
 	private static final String INSERT_SQL = "insert into tour (tour_title, start_date, end_date, tour_img, member_id) values (?,?,?,?,?);";
 	private static final String UPDATE_SQL = "update tour set tour_title=?, start_date=?, end_date=?, tour_img=? where tour_id=? and member_id=?;";
 	private static final String DELETE_SQL = "update tour set status=? where tour_id = ?";
-	private static final String GET_ALL_SQL = "select tour_id, tour_title, start_date, end_date, tour_img, member_id, status from tour where member_id=?;";
-	private static final String GET_ONE_SQL = "select tour_id, tour_title, start_date, end_date, tour_img from tour where tour_id=?;";
-	private static final String GET_TOUR_SQL = "select tour_id, tour_title, start_date, end_date, tour_img, status from tour where tour_title like ?;";
+	private static final String GET_ALL_SQL = "select tour_id, tour_title, start_date, end_date, tour_img, member_id, status from tour where member_id=? order by start_date;";
+	private static final String GET_ONE_SQL = "select tour_id, tour_title, start_date, end_date, tour_img from tour where tour_id=? order by start_date;";
+	private static final String GET_TOUR_SQL = "select tour_id, tour_title, start_date, end_date, tour_img, status from tour where tour_title like ? and member_id = ? order by start_date;";
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
@@ -39,7 +39,6 @@ public class TourDaoImpl implements TourDao {
 			Date endDate = dateFormat.parse(tourVO.getEndDate());
 			ps.setObject(2, StartDate);
 			ps.setObject(3, endDate);
-
 			decodedBytes = Base64.getMimeDecoder().decode(tourVO.getTourImg());
 			ps.setBytes(4, decodedBytes);
 			ps.setInt(5, tourVO.getMemberId());
@@ -140,15 +139,16 @@ public class TourDaoImpl implements TourDao {
 	}
 
 	@Override
-	public List<TourVO> findByTourTitle(String queryStr) {
+	public List<TourVO> findByTourTitle(String queryStr, Integer memberId) {
 		List<TourVO> list = new ArrayList<TourVO>();
 		TourVO tourVO = null;
 		ResultSet rs = null;
-		String Str = "%"+queryStr+"%";
+		String Str = "%"+ queryStr +"%";
 		try (Connection conn = HikariDataSource.getConnection();
 				PreparedStatement ps = conn.prepareStatement(GET_TOUR_SQL)) {
 			
 			ps.setString(1, Str);
+			ps.setInt(2, memberId);
 
 			rs = ps.executeQuery();
 

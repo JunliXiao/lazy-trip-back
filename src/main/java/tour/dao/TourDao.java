@@ -15,5 +15,5 @@ public interface TourDao {
     
     TourVO getTourByTourId(Integer tourId);
 
-    List<TourVO> findByTourTitle(String queryStr);
+    List<TourVO> findByTourTitle(String queryStr, Integer memberId);
 }
