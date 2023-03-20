@@ -13,7 +13,7 @@ public interface TourService {
 
     List<TourVO> tourQueryAll(Integer memberId);
 
-    List<TourVO> tourTitleQuery(String queryStr);
+    List<TourVO> tourTitleQuery(String queryStr, Integer memberId);
     
     TourVO getTourInfoByTourId(Integer tourId);
 }
