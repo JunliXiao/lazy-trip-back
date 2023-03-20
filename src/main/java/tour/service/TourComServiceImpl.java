@@ -69,6 +69,7 @@ public class TourComServiceImpl implements TourComService {
 									.map(TourComVO::getFeature)
 									.filter(strList::contains)
 									.collect(Collectors.toList());
+		System.out.println(featureList.toString());
 		
 		List<TourComVO> recommendResult = new ArrayList<TourComVO>();
 		List<TourComVO> result = new ArrayList<TourComVO>();

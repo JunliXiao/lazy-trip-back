@@ -25,10 +25,10 @@ public class TourTitleQuery extends HttpServlet {
         Gson gson = new Gson();
         req.setCharacterEncoding("UTF-8");
         String queryStr = req.getParameter("queryStr");
-        System.out.println(queryStr);
+        String memberId = req.getParameter("memberId");
         try {
             TourService service = new TourServiceImpl();
-            final List<TourVO> result = service.tourTitleQuery(queryStr);
+            final List<TourVO> result = service.tourTitleQuery(queryStr, Integer.valueOf(memberId));
             System.out.println(result.toString());
             resp.setContentType("application/json");
             resp.getWriter().print(gson.toJson(result));
