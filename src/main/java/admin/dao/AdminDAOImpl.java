@@ -183,7 +183,7 @@ public class AdminDAOImpl implements AdminDAO{
 		if(acc != null && !acc.isEmpty()) {
 			sql.append("member_account=?");
 		}
-		if(ps != null && !ps.isEmpty()) {
+		if(ps != null && !ps.isEmpty() && !ps.equals("")) {
 			sql.append(", member_password=?");
 		}
 		
@@ -204,13 +204,28 @@ public class AdminDAOImpl implements AdminDAO{
 		try (	Connection con = HikariDataSource.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql.toString());
 		) {
-				pstmt.setString(1, member.getAccount());
-				pstmt.setString(2, member.getPassword());
-				pstmt.setString(3, member.getUsername());
-				pstmt.setString(4, member.getGender());
-				pstmt.setDate(5, member.getBirthday());
-				pstmt.setString(6, member.getAccessnum());
-				pstmt.setInt(7, member.getId());
+				int nxtSeq = 1;
+				
+				if(acc != null && !acc.isEmpty()) {
+					pstmt.setString(nxtSeq++, member.getAccount());
+				}
+				if(ps != null && !ps.isEmpty() && !ps.equals("")) {
+					pstmt.setString(nxtSeq++, member.getPassword());
+				}
+				if (un != null && !un.isEmpty()) {
+					pstmt.setString(nxtSeq++, member.getUsername());
+				}
+				if (gender != null && !gender.isEmpty()) {
+					pstmt.setString(nxtSeq++, member.getGender());
+				}
+				if (birth != null) {
+					pstmt.setDate(nxtSeq++, member.getBirthday());
+				}
+				if (status != null && !status.isEmpty()) {
+					pstmt.setString(nxtSeq++, member.getAccessnum());
+				}
+				pstmt.setInt(nxtSeq, member.getId());
+				System.out.println(sql);
 				return pstmt.executeUpdate();
 
 		} catch (Exception e) {

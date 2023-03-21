@@ -40,8 +40,10 @@ public class AdminService implements Serializable{
 	
 	public String updateMemberById(Member member) {
 //		String secret = hashPassword(member.getPassword());
-		String secret = HashedPassword.hashPassword(member.getPassword());
-		member.setPassword(secret);
+		if(member.getPassword() != null && !member.getPassword().equals("")) {
+			String secret = HashedPassword.hashPassword(member.getPassword());
+			member.setPassword(secret);
+		}
 		final int resultCount = dao.updateMemberById(member);
 		return resultCount > 0 ? "會員資料修改成功":"會員資料修改失敗";
 	}
