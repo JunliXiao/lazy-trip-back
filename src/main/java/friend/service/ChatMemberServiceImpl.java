@@ -54,6 +54,21 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     }
 
     @Override
+    public boolean addNewChatMembers(List<Integer> membersId, Integer chatroomId) {
+        return chatroomMemberRepository.addMembersToChatroom(membersId, chatroomId);
+    }
+
+    @Override
+    public boolean removeChatMember(Integer memberId, Integer chatroomId) {
+        return chatroomMemberRepository.deleteMemberFromChatroom(memberId, chatroomId);
+    }
+
+    @Override
+    public boolean renameChatroom(String name, Integer chatroomId) {
+        return chatroomMemberRepository.updateChatroomName(name, chatroomId);
+    }
+
+    @Override
     public List<Chatroom> getChatroomsByMember(Integer memberId) {
         return chatroomMemberRepository.getChatrooms(memberId);
     }

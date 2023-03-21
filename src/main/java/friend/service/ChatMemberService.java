@@ -11,6 +11,12 @@ public interface ChatMemberService {
 
     Chatroom createChatroom(List<Integer> membersId);
 
+    boolean addNewChatMembers(List<Integer> membersId, Integer chatroomId);
+
+    boolean removeChatMember(Integer memberId, Integer chatroomId);
+
+    boolean renameChatroom(String name, Integer chatroomId);
+
     List<Chatroom> getChatroomsByMember(Integer memberId);
 
     Map<String, Set<Integer>> getChatroomsIdAndChatroomMembersId(Integer memberId);

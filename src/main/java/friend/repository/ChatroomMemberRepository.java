@@ -13,6 +13,8 @@ public interface ChatroomMemberRepository {
 
     boolean deleteMemberFromChatroom(Integer memberId, Integer chatroomId);
 
+    boolean updateChatroomName(String name, Integer chatroomId);
+
     Chatroom getChatroom(Integer chatroomId);
 
     List<Chatroom> getChatrooms(Integer memberId);

@@ -45,14 +45,14 @@ public class MemberPagerAndSorter {
 
     public String asQueryClause() {
         String clauseTempA = " ORDER BY %s %s LIMIT %d OFFSET %d;";
-        String clauseTempB = " ORDER BY CONVERT(SUBSTR(%s,1,1) USING BIG5), BINARY SUBSTR(%s,1,1) %s LIMIT %d OFFSET %d;";
+        String clauseTempB = " ORDER BY CONVERT(SUBSTR(%s,1,1) USING BIG5) %s, BINARY SUBSTR(%s,1,1) ASC LIMIT %d OFFSET %d;";
         String clauseFinal = null;
 
         switch (this.sortingColumn) {
             case "member_account" ->
                     clauseFinal = String.format(clauseTempA, this.sortingColumn, this.sortingOrder, this.limit, this.offset);
             case "member_name", "member_username" ->
-                    clauseFinal = String.format(clauseTempB, this.sortingColumn, this.sortingColumn, this.sortingOrder, this.limit, this.offset);
+                    clauseFinal = String.format(clauseTempB, this.sortingColumn, this.sortingOrder, this.sortingColumn, this.limit, this.offset);
             default ->
                     clauseFinal = String.format(clauseTempA, "member_id", this.sortingOrder, this.limit, this.offset);
         }

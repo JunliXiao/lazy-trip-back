@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalInt;
 
 public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
 
@@ -62,13 +64,15 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
                 ps.addBatch();
             }
 
-            ps.executeBatch();
+            int[] result = ps.executeBatch();
+            OptionalInt sum = Arrays.stream(result).reduce(Integer::sum);
+            hasAdded = sum.getAsInt() == result.length;
 
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return false;
+        return hasAdded;
     }
 
     @Override
@@ -84,6 +88,22 @@ public class ChatroomMemberRepositoryImpl implements ChatroomMemberRepository {
             throw new RuntimeException("無法從聊天室移除該名成員");
         }
         return hasDeleted;
+    }
+
+    @Override
+    public boolean updateChatroomName(String name, Integer chatroomId) {
+        boolean hasUpdated = false;
+        String sql = "UPDATE `lazy`.`chatroom` SET `chatroom_name` = ? WHERE (`chatroom_id` = ?);";
+        try (Connection connection = HikariDataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, chatroomId);
+            hasUpdated = ps.executeUpdate() != 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hasUpdated;
     }
 
     @Override

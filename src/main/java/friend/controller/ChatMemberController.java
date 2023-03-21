@@ -1,6 +1,7 @@
 package friend.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import friend.json.ModelWrapper;
 import friend.service.ChatMemberService;
 import friend.service.ChatMemberServiceImpl;
@@ -13,14 +14,44 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.util.List;
 
 @WebServlet("/api/chat/member")
 public class ChatMemberController extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
-	
-	Gson gson = new Gson();
+    private static final long serialVersionUID = 1L;
+
+    Gson gson = new Gson();
+
+    @Override // 新增會員到聊天室
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        String output;
+
+        ChatMemberService service = new ChatMemberServiceImpl();
+        Integer chatroomId = Integer.parseInt(request.getParameter("chatroom_id"));
+        // Custom type for JSON processing
+        Type typeOfMemberIdList = new TypeToken<List<Integer>>() {
+        }.getType();
+        List<Integer> memberIds = gson.fromJson(request.getReader(), typeOfMemberIdList);
+
+        output = gson.toJson(service.addNewChatMembers(memberIds, chatroomId));
+        out.println(output);
+    }
+
+    @Override // 從聊天室刪除特定會員
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
+        String output;
+
+        ChatMemberService service = new ChatMemberServiceImpl();
+        int memberId = Integer.parseInt(request.getParameter("member_id"));
+        int chatroomId = Integer.parseInt(request.getParameter("chatroom_id"));
+        output = gson.toJson(service.removeChatMember(memberId, chatroomId));
+
+        out.println(output);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

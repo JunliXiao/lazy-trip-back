@@ -51,4 +51,17 @@ public class ChatroomController extends HttpServlet {
         out.println(output);
     }
 
+    // 為聊天室重新命名
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
+        String output;
+
+        ChatMemberService service = new ChatMemberServiceImpl();
+        String newName = request.getParameter("new_name");
+        int chatroomId = Integer.parseInt(request.getParameter("chatroom_id"));
+        output = gson.toJson(service.renameChatroom(newName, chatroomId));
+
+        out.println(output);
+    }
+
 }
