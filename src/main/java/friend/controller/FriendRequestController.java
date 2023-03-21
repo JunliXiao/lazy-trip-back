@@ -76,6 +76,7 @@ public class FriendRequestController extends HttpServlet {
 
         FriendMemberService service = new FriendMemberServiceImpl();
         Map<String, String[]> parametersMap = request.getParameterMap();
+        System.out.println(parametersMap);
         MemberPagerAndSorter pagerAndSorter = new MemberPagerAndSorter();
         int id = Integer.parseInt(parametersMap.get("member_id")[0]);
         String direction = parametersMap.get("direction")[0];

@@ -1,7 +1,9 @@
 package friend.controller;
 
+import com.google.gson.internal.LinkedTreeMap;
 import friend.json.ChatMessageWrapper;
 import friend.model.ChatMessage;
+import friend.model.Chatroom;
 import friend.service.ChatMemberService;
 import friend.service.ChatMemberServiceImpl;
 import friend.service.ChatMessageService;
@@ -11,9 +13,6 @@ import member.model.Member;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-
-import com.google.gson.internal.LinkedTreeMap;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +66,7 @@ public class ChatServer {
                 newMessage.setSentAt(((Double) messageMap.get("sentAt")).intValue());
                 newMessage.setChatroomId(wrapper.getChatroomId());
                 newMessage.setSenderId(wrapper.getMemberId());
+                newMessage.setSenderNickname((String) messageMap.get("senderNickname"));
                 chatMessageService.saveMessage(newMessage);
             }
             // 推播訊息
@@ -88,6 +88,17 @@ public class ChatServer {
         // 會員下線
         sessionsMap.remove(memberId, memberSession);
         System.out.println("Connection with member ID " + memberId + " closed");
+    }
+
+    public static void notifyNewChatroom(Chatroom chatroom) {
+        ChatMessageWrapper wrapper = new ChatMessageWrapper("new-chatroom", chatroom);
+        ChatMemberService service = new ChatMemberServiceImpl();
+        service.getMembersByChatroom(chatroom.getId()).stream()
+                .map(Member::getId)
+                .map(id -> sessionsMap.get(id))
+                .forEach(session -> {
+                    if (session.isOpen()) session.getAsyncRemote().sendObject(wrapper);
+                });
     }
 
     private static void broadcast(ChatMessageWrapper wrapper, Set<Integer> receiversId) {

@@ -8,9 +8,12 @@ public class MemberStatus {
     private String status; // online, offline
     private List<Integer> commonChatroomsId;
 
-    public MemberStatus(int memberId, String status) {
+    private String updateType; // server-push, request, response, ring
+
+    public MemberStatus(int memberId, String status, String updateType) {
         this.memberId = memberId;
         this.status = status;
+        this.updateType = updateType;
     }
 
     public int getMemberId() {
@@ -35,5 +38,13 @@ public class MemberStatus {
 
     public void setCommonChatroomsId(List<Integer> commonChatroomsId) {
         this.commonChatroomsId = commonChatroomsId;
+    }
+
+    public String getUpdateType() {
+        return updateType;
+    }
+
+    public void setUpdateType(String updateType) {
+        this.updateType = updateType;
     }
 }

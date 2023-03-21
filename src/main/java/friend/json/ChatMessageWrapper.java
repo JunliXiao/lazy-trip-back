@@ -2,7 +2,7 @@ package friend.json;
 
 public class ChatMessageWrapper {
 
-    private String messageType; // new-message, reload-history, retrieve-history, error
+    private String messageType; // new-message, reload-history, retrieve-history, new-chatroom, error
     private Object messageContent;
 
     private Integer memberId;

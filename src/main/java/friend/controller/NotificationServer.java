@@ -1,5 +1,6 @@
 package friend.controller;
 
+import com.google.gson.Gson;
 import friend.json.ChatMessageWrapper;
 import friend.json.MemberStatus;
 import friend.json.MemberStatusBatch;
@@ -35,7 +36,8 @@ public class NotificationServer {
         // 會員上線
         this.memberId = memberId;
         sessionsMap.put(memberId, memberSession);
-        MemberStatus onlineNotification = new MemberStatus(memberId, "online");
+        System.out.println("All members online: " + sessionsMap.keySet());
+        MemberStatus onlineNotification = new MemberStatus(memberId, "online", "server-push");
 
         Map<String, Set<Integer>> chatroomsIdAndChatroomMembersId =
                 chatMemberService.getChatroomsIdAndChatroomMembersId(memberId);
@@ -65,9 +67,28 @@ public class NotificationServer {
         memberSession.getAsyncRemote().sendObject(new MemberStatusBatch("online-batch", membersIdAndChatroomsId));
     }
 
+    @OnMessage
+    public void onMessage(Session memberSession, String text) {
+        Gson gson = new Gson();
+        MemberStatus update = gson.fromJson(text, MemberStatus.class);
+
+        if (Objects.equals(update.getUpdateType(), "request")) {
+            String status = sessionsMap.containsKey(update.getMemberId()) ? "online" : "offline";
+            MemberStatus response = new MemberStatus(update.getMemberId(), status, "response");
+            if (memberSession.isOpen()) memberSession.getAsyncRemote().sendObject(response);
+        }
+
+        if (Objects.equals(update.getUpdateType(), "ring")) {
+            if (sessionsMap.containsKey(update.getMemberId())) {
+                String greeting = String.format("好友 %s 跟你說早安", update.getStatus());
+                MemberStatus ring = new MemberStatus(update.getMemberId(), greeting, "ring");
+                sessionsMap.get(update.getMemberId()).getAsyncRemote().sendObject(ring);
+            }
+        }
+    }
+
     @OnError
     public void onError(Session memberSession, Throwable e) {
-        //TODO 修改回傳格式
         if (memberSession.isOpen()) {
             memberSession.getAsyncRemote().sendObject(new ChatMessageWrapper("error", e));
         }
@@ -79,7 +100,7 @@ public class NotificationServer {
         // 會員下線
         sessionsMap.remove(memberId, memberSession);
 
-        MemberStatus offlineNotification = new MemberStatus(memberId, "offline");
+        MemberStatus offlineNotification = new MemberStatus(memberId, "offline", "server-push");
 
         Map<String, Set<Integer>> chatroomsIdAndChatroomMembersId =
                 chatMemberService.getChatroomsIdAndChatroomMembersId(memberId);

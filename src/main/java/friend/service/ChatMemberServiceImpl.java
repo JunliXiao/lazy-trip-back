@@ -1,5 +1,6 @@
 package friend.service;
 
+import friend.controller.ChatServer;
 import friend.model.Chatroom;
 import friend.repository.ChatroomMemberRepository;
 import friend.repository.ChatroomMemberRepositoryImpl;
@@ -46,6 +47,8 @@ public class ChatMemberServiceImpl implements ChatMemberService {
         if (canCreateNewChatroom) {
             Integer chatroom = chatroomMemberRepository.addChatroom(membersId);
             createdChatroom = chatroomMemberRepository.getChatroom(chatroom);
+            //TODO 即時通知其他正在上線的聊天室成員產生新聊天室；是否該移至 ChatroomController ?
+            ChatServer.notifyNewChatroom(createdChatroom);
         }
         return createdChatroom;
     }
