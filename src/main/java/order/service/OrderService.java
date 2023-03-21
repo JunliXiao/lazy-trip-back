@@ -38,4 +38,7 @@ public class OrderService {
     public Member showMemberByMemberID(Integer id){
         return dao.selectFindMemberByMemberID(id);
     }
+    public List<OrderVO> showOrderAllAndStatusAlreadyPayByOrderID(Integer orderID){
+    	return dao.selectFindOrderAllAndStatusAlreadyPayByOrderID(orderID);
+    }
 }

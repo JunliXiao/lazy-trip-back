@@ -29,6 +29,10 @@ public class OrderPostServlet extends HttpServlet {
 		try {
 			List<OrderVO> orderVOs = gsonUtils.fromJson(req.getReader(), new TypeToken<List<OrderVO>>() {
 			}.getType());
+			
+			for(int i =0;i<orderVOs.size();i++) {
+				System.out.println(orderVOs.get(i).toString());
+			}
 
 			int orderID = orderSvc.addOrderAndOrderDetail(orderVOs);
 

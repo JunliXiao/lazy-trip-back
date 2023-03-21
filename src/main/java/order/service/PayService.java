@@ -10,7 +10,6 @@ public class PayService {
     public PayService() {
         dao = new OrderJDBCDAOImpl();
     }
-
     public int orderPay(Integer orderID) {
     	return dao.orderPay(orderID);
     }

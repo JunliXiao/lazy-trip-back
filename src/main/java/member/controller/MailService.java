@@ -24,7 +24,7 @@ public class MailService {
 			   props.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
 			   props.put("mail.smtp.auth", "true");
 			   props.put("mail.smtp.port", "465");
-
+			   
 	       // ●設定 gmail 的帳號 & 密碼 (將藉由你的Gmail來傳送Email)
 	       // ●1) 登入你的Gmail的: 
 	       // ●2) 點選【管理你的 Google 帳戶】
@@ -44,7 +44,7 @@ public class MailService {
 					   return new PasswordAuthentication(myGmail, myGmail_password);
 				   }
 			   });
-
+			   
 			   Message message = new MimeMessage(session);
 			   message.setFrom(new InternetAddress(myGmail));
 			   message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(to));

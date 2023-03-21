@@ -25,6 +25,7 @@ public interface OrderDAOInterface {
     public List<OrderVO> selectFindOrderByCompanyID(Integer companyID);
     public List<OrderDetailVO> selectFindOrderDetailByOrderID(Integer orderID);
     public List<OrderVO> selectFindOrderAllAndStatusWaitPayByOrderID(Integer orderID);
+    public List<OrderVO> selectFindOrderAllAndStatusAlreadyPayByOrderID(Integer orderID);
     public Map<Integer, OrderVO> selectFindOrderAllByMemberID(Integer memberID);
     public Map<Integer, OrderVO> selectFindOrderAllAndAlreadyPayByCompanyID(Integer companyID);
     public Member selectFindMemberByMemberID(Integer id);

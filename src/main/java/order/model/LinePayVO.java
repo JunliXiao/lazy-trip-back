@@ -44,6 +44,8 @@ public class LinePayVO {
 	public void setOrderID(Integer orderID) {
 		this.orderID = orderID;
 	}
+
+	
 	
 
 

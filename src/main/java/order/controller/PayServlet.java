@@ -21,9 +21,11 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import member.model.Member;
 import order.model.LinePayVO;
 import order.model.OrderVO;
 import order.service.OrderService;
+import order.service.PayMailService;
 import order.service.PayService;
 import order.utils.GsonLocalDateAndTimeUtils;
 
@@ -95,6 +97,8 @@ public class PayServlet extends HttpServlet {
 		String channelId = "1660748179";
 		String channelSecret = "45b294aab39d564db301042a8f8df979";
 		PayService paySvc  = new PayService();
+		PayMailService payMailService = new PayMailService();
+		OrderService orderService = new OrderService();
 
 		req.setCharacterEncoding("UTF-8");
 		String transactionId = req.getParameter("transactionId");
@@ -148,9 +152,52 @@ public class PayServlet extends HttpServlet {
 			
 			//值是Success.就導向付款成功網址
 			if(returnMessage.equals("Success.")) {
-				
+//				寄送訂單到信箱
 				int result = paySvc.orderPay(linePayVO.getOrderID());
 				if(result == 1) {
+	
+					
+					List<OrderVO> orderVOs  =  orderService.showOrderAllAndStatusAlreadyPayByOrderID(linePayVO.getOrderID());
+					Member meber = orderService.showMemberByMemberID(orderVOs.get(0).getMemberID());
+					
+					
+					String to = meber.getAccount();
+					String subject = "訂單編號#"+orderVOs.get(0).getOrderID()+" 已確認  │ 入住日期："+orderVOs.get(0).getOrderCheckInDate();;
+					String messageText = "<div\r\n"
+							+ "      style=\"\r\n"
+							+ "        height: 600px;\r\n"
+							+ "        width: 700px;\r\n"
+							+ "        background-color: white;\r\n"
+							+ "        position: absolute;\r\n"
+							+ "        top: 50%;\r\n"
+							+ "        left: 50%;\r\n"
+							+ "\r\n"
+							+ "        margin-top: -300px;\r\n"
+							+ "        margin-left: -350px;\r\n"
+							+ "      \"\r\n"
+							+ "    >\r\n"
+							+ "      <strong style=\"font-size: 50px; color: green\">預訂成功！</strong>\r\n"
+							+ "      <div style=\"height: 20px\"></div>\r\n"
+							+ "      <div style=\"font-size: 20px\">\r\n"
+							+ "        親愛的&nbsp;"+meber.getName()+"，你的預訂已確認且完成付款&nbsp;<span\r\n"
+							+ "          style=\"color: blue\"\r\n"
+							+ "          >TWD&nbsp;"+orderVOs.get(0).getOrderTotalPrice()+"。</span\r\n"
+							+ "        >\r\n"
+							+ "      </div>\r\n"
+							+ "      <div style=\"height: 30px\"></div>\r\n"
+							+ "      <div style=\"font-size: 20px\">飯店名稱:&emsp;<span>"+orderVOs.get(0).getCompanyVO().getCompanyName()+"</span></div>\r\n"
+							+ "      <div style=\"font-size: 20px\">\r\n"
+							+ "        飯店地址:&emsp;<span>"+orderVOs.get(0).getCompanyVO().getAddressCounty()+", "+orderVOs.get(0).getCompanyVO().getAddressArea()+", "+orderVOs.get(0).getCompanyVO().getAddressStreet()+"</span>\r\n"
+							+ "      </div>\r\n"
+							+ "      <div style=\"font-size: 20px\">入住日期:&emsp;<span>"+orderVOs.get(0).getOrderCheckInDate()+"</span></div>\r\n"
+							+ "      <div style=\"font-size: 20px\">退房日期:&emsp;<span>"+orderVOs.get(0).getOrderCheckOutDate()+"</span></div>\r\n"
+							+ "      <div style=\"font-size: 20px\">住宿期間:&emsp;<span>"+orderVOs.get(0).getOrderNumberOfNights()+"晚</span></div>\r\n"
+							+ "      <div style=\"font-size: 20px\">確認號碼:&emsp;<span>"+orderVOs.get(0).getOrderID()+"</span></div>\r\n"
+							+ "      <div style=\"height: 20px\"></div>\r\n"
+							+ "      <div style=\"font-size: 20px\">感謝您使用LazyTrip.io，祝您旅途愉快！</div>\r\n"
+							+ "    </div>";
+					payMailService.sendMail(to, subject, messageText);
+					
 					String successUrl = contextPath + "/page/order/order_pay_success.html";
 					res.sendRedirect(successUrl);
 				}else if(result == 0){

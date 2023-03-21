@@ -53,7 +53,7 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
 			+ "cm.longitude, cm.latitude, cm.company_img, rt.roomtype_id, rt.company_id, rt.roomtype_name, "
 			+ "rt.roomtype_person, rt.roomtype_quantity, rt.roomtype_price, rti.roomtype_img_id, rti.roomtype_id, "
 			+ "rti.roomtype_img FROM lazy.company cm JOIN lazy.roomtype rt ON cm.company_id = rt.company_id "
-			+ "JOIN lazy.roomtype_img rti ON rt.roomtype_id = rti.roomtype_id WHERE cm.company_id = ? LIMIT 20;";
+			+ "JOIN lazy.roomtype_img rti ON rt.roomtype_id = rti.roomtype_id WHERE cm.company_id = ? ;";
 
 	// ====================================================================================
 
@@ -107,6 +107,21 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
 
 	// ====================================================================================
 
+	// 從訂單編號找到 "已付款" 的訂單與訂單明細 2?
+	// 方法已做
+	private static final String SELECT_FIND_ORDER_ALL_AND_STATUS_ALREADY_PAY_BY_ORDER_ID = "SELECT o.order_id, o.member_id, o.company_id, cm.company_name, cm.address_county, cm.address_area, cm.address_street, o.order_check_in_date, o.order_check_out_date, o.order_number_of_nights, "
+			+ "o.order_total_price, o.order_status, o.order_create_datetime, o.order_pay_deadline, o.order_pay_datetime, "
+			+ "o.order_pay_card_name, o.order_pay_card_number, o.order_pay_card_year, o.order_pay_card_month, o.traveler_name, "
+			+ "o.traveler_id_number,  o.traveler_email, o.traveler_phone, od.order_detail_id, od.order_id, od.roomtype_id, od.roomtype_name, "
+			+ "od.order_detail_room_price, od.order_detail_room_quantity "
+			+ "FROM lazy.order_detail od JOIN  lazy.order o ON o.order_id = od.order_id "
+			+ "JOIN lazy.company cm ON o.company_id = cm.company_id WHERE o.order_status = ? AND o.order_id = ?;";
+			
+	
+	// ====================================================================================
+	
+	
+	
 	// 從會員編號找到所有訂單與訂單明細和廠商資料(裡面沒有廠商的帳號密碼)並用訂單編號從大到小排序 1?
 	// 方法已做
 	String SELECT_FIND_ORDER_ALL_BY_MEMBER_ID = "SELECT o.order_id, o.member_id, o.company_id, o.order_check_in_date, \n"
@@ -681,6 +696,69 @@ public class OrderJDBCDAOImpl implements OrderDAOInterface {
 		}
 		return orderVOs;
 	}
+	
+	
+	// 從訂單編號找到 "已付款" 的訂單與訂單明細 2?
+	public List<OrderVO> selectFindOrderAllAndStatusAlreadyPayByOrderID(Integer orderID) {
+
+		List<OrderVO> orderVOs = new ArrayList<>();
+
+		try (Connection con = HikariDataSource.getConnection();
+				PreparedStatement ps = con.prepareStatement(SELECT_FIND_ORDER_ALL_AND_STATUS_ALREADY_PAY_BY_ORDER_ID);) {
+
+			ps.setString(1, "已付款");
+			ps.setInt(2, orderID);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				OrderVO orderVO = new OrderVO();
+				orderVO.setOrderID(rs.getInt("o.order_id"));
+				orderVO.setMemberID(rs.getInt("o.member_id"));
+				orderVO.setCompanyID(rs.getInt("o.company_id"));
+				orderVO.setOrderCheckInDate(rs.getObject("o.order_check_in_date", LocalDate.class));
+				orderVO.setOrderCheckOutDate(rs.getObject("o.order_check_out_date", LocalDate.class));
+				orderVO.setOrderNumberOfNights(rs.getInt("o.order_number_of_nights"));
+				orderVO.setOrderTotalPrice(rs.getInt("o.order_total_price"));
+				orderVO.setOrderStatus(rs.getString("o.order_status"));
+				orderVO.setOrderCreateDatetime(rs.getObject("o.order_create_datetime", LocalDateTime.class));
+				orderVO.setOrderPayDeadline(rs.getObject("o.order_pay_deadline", LocalDateTime.class));
+				orderVO.setOrderPayDatetime(rs.getObject("o.order_pay_datetime", LocalDateTime.class));
+				orderVO.setOrderPayCardName(rs.getString("o.order_pay_card_name"));
+				orderVO.setOrderPayCardNumber(rs.getString("o.order_pay_card_number"));
+				orderVO.setOrderPayCardYear(rs.getString("o.order_pay_card_year"));
+				orderVO.setOrderPayCardMonth(rs.getString("o.order_pay_card_month"));
+				orderVO.setTravelerName(rs.getString("o.traveler_name"));
+				orderVO.setTravelerIDNumber(rs.getString("o.traveler_id_number"));
+				orderVO.setTravelerEmail(rs.getString("o.traveler_email"));
+				orderVO.setTravelerPhone(rs.getString("o.traveler_phone"));
+				OrderDetailVO orderDetailVO = new OrderDetailVO();
+				orderDetailVO.setOrderDetailID(rs.getInt("od.order_detail_id"));
+				orderDetailVO.setRoomTypeName(rs.getString("od.roomtype_name"));
+				orderDetailVO.setOrderID(rs.getInt("od.order_id"));
+				orderDetailVO.setRoomTypeID(rs.getInt("od.roomtype_id"));
+				orderDetailVO.setOrderDetailRoomPrice(rs.getInt("od.order_detail_room_price"));
+				orderDetailVO.setOrderDetailRoomQuantity(rs.getByte("od.order_detail_room_quantity"));
+				orderVO.setOrderDetailVO(orderDetailVO);
+				CompanyVO companyVO = new CompanyVO();
+				companyVO.setCompanyName(rs.getString("cm.company_name"));
+				companyVO.setAddressCounty(rs.getString("cm.address_county"));
+				companyVO.setAddressArea(rs.getString("cm.address_area"));
+				companyVO.setAddressStreet(rs.getString("cm.address_street"));
+				orderVO.setCompanyVO(companyVO);
+				
+				orderVOs.add(orderVO);
+			}
+		} catch (SQLException e) {
+			System.out.println("selectFindOrderAllAndStatusAlreadyPayByOrderID: " + e.getMessage());
+		}
+		return orderVOs;
+	}
+	
+	
+	
+	
+	
+	
 
 	// 新方法
 	// 從會員編號找到所有訂單與訂單明細和廠商資料(裡面沒有廠商的帳號密碼)並用訂單編號從小到大排序 1?
