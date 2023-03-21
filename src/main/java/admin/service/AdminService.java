@@ -31,6 +31,8 @@ public class AdminService implements Serializable{
 		
 	};
 	public String updateById(Admin admin){
+		String secret = HashedPassword.hashPassword(admin.getPassword());
+		admin.setPassword(secret);
 		final int resultCount = dao.updateById(admin);
 		return resultCount > 0 ? "修改成功" : "修改失敗";
 		
