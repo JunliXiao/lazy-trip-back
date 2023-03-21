@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import company.model.CompanyVO;
-
-@WebFilter(urlPatterns={ "/page/tour/tour_company.html" ,"/page/company/roomManagement.html"})
+//"/page/tour/tour_company.html" ,
+@WebFilter(urlPatterns={ "/page/company/roomManagement.html"})
 public class ComFilter implements Filter{
 
 	@Override
