@@ -37,8 +37,8 @@ public class PayServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		String channelId = "1660748179";
-		String channelSecret = "45b294aab39d564db301042a8f8df979";
+		String channelId = "你的channelId";
+		String channelSecret = "你的channelSecret";
 		String url = "https://sandbox-api-pay.line.me/v2/payments/request";
 
 		Gson gson = new Gson();
@@ -94,8 +94,8 @@ public class PayServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		String channelId = "1660748179";
-		String channelSecret = "45b294aab39d564db301042a8f8df979";
+		String channelId = "你的channelId";
+		String channelSecret = "你的channelSecret";
 		PayService paySvc  = new PayService();
 		PayMailService payMailService = new PayMailService();
 		OrderService orderService = new OrderService();

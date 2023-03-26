@@ -36,8 +36,8 @@ public class PayMailService {
 			// ●5-1) 下拉式選單【選取應用程式】--> 選取【郵件】
 			// ●5-2) 下拉式選單【選取裝置】--> 選取【Windows 電腦】
 			// ●5-3) 最後按【產生】密碼
-			final String myGmail = "lazytripbooking@gmail.com";
-			final String myGmail_password = "spqaqthpjzsdqouc";
+			final String myGmail = "你的電子郵件@gmail.com";
+			final String myGmail_password = "你的郵件透過gmail設定生成的應用程式密碼";
 			Session session = Session.getInstance(props, new Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(myGmail, myGmail_password);
@@ -58,6 +58,7 @@ public class PayMailService {
 			Transport.send(message);
 			System.out.println("傳送成功!");
 		} catch (MessagingException e) {
+			System.out.println("我把帳號密碼拿掉了，要用自己的");
 			System.out.println("傳送失敗!");
 			e.printStackTrace();
 		}
