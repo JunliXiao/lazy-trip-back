@@ -11,10 +11,10 @@ public class HikariDataSource {
     private static final com.zaxxer.hikari.HikariDataSource ds;
 
     static {
-        config.setJdbcUrl("jdbc:mysql://localhost:1433/lazy");
+        config.setJdbcUrl("jdbc:mysql://localhost:3306/lazy");
         config.setDriverClassName("com.mysql.cj.jdbc.Driver");
         config.setUsername("root");
-        config.setPassword("Aristotle43");
+        config.setPassword("Aristotle43"); // 更改為你自己的密碼
         config.addDataSourceProperty("maximumPoolSize", "20");
         config.addDataSourceProperty("minimumIdle", 10);
         config.addDataSourceProperty("cachePrepStmts", "true");
