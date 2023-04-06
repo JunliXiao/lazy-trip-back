@@ -3,7 +3,8 @@
 ## 關於
 
 緯育 TGA105 第 3 組專題製作，網站後端部分。  
-前端：[https://github.com/JunliXiao/lazy-trip-front](https://github.com/JunliXiao/lazy-trip-front)
+前端：[https://github.com/JunliXiao/lazy-trip-front](https://github.com/JunliXiao/lazy-trip-front)  
+Demo：[http://35.194.214.76/lazy-trip-back/](http://35.194.214.76/lazy-trip-back/) (2023/5 起將關閉)
 
 ## 分工
 
